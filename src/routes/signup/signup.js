@@ -1,4 +1,4 @@
-import { EMAIL_REGEX, ERROR_MESSAGE, NAME_REGEX } from '../constants';
+import { EMAIL_REGEX, ERROR_MESSAGE, NAME_REGEX } from '../../../old/constants';
 
 const form = document.querySelector('form');
 const formInputs = form.querySelectorAll('input');
