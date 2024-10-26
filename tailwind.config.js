@@ -19,9 +19,11 @@ export default {
         "card-secondary": "hsla(var(--card-secondary))",
         surface: "hsla(var(--surface))",
         accent: "hsla(var(--accent))",
+        "accent-hover": "hsla(var(--accent-hover))",
         copy: "hsla(var(--copy))",
         "copy-secondary": "hsla(var(--copy-secondary))",
         link: "hsla(var(--link))",
+        "link-hover": "hsla(var(--link-hover))",
         "link-secondary": "hsla(var(--link-secondary))",
       },
       fontFamily: {
@@ -29,6 +31,11 @@ export default {
       },
       gridTemplateColumns: {
         base: "1rem auto 1rem",
+        sm: "1.875rem auto 1.875rem",
+        md: "3.125rem auto 3.125rem",
+        lg: "4.375rem auto 4.375rem",
+        xl: "5.625rem auto 5.625rem",
+        "auto-fit": "repeat(auto-fit, minmax(250px, 1fr))",
       },
       gridTemplateRows: {
         base: "auto auto auto",

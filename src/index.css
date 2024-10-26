@@ -2,7 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-.dark-theme,
 html[style="color-scheme: dark"] {
   --background: 210, 33%, 9%;
   --brand: 210, 96%, 40%;
@@ -15,7 +14,8 @@ html[style="color-scheme: dark"] {
 
   --surface: 215, 61%, 13%, 0.502;
 
-  --accent: 240, 100%, 93%, 0.243;
+  --accent: 240, 100%, 93%;
+  --accent-hover: 220, 19%, 94%;
 
   --copy: 220, 19%, 94%;
   --copy-secondary: 211, 100%, 73%;
@@ -23,7 +23,6 @@ html[style="color-scheme: dark"] {
   --link-secondary: 211, 100%, 73%;
 }
 
-.light-theme,
 html[style="color-scheme: light"] {
   --background: 55, 31%, 93%;
   --brand: 210, 96%, 40%;
@@ -36,7 +35,8 @@ html[style="color-scheme: light"] {
 
   --surface: 214, 33%, 92%, 0.8;
 
-  --border-accent: 227, 92%, 19%, 0.255;
+  --accent: 224, 9%, 34%;
+  --accent-hover: 220, 13%, 13%;
 
   --copy: 220, 13%, 13%;
   --copy-secondary: 212, 100%, 36%;
