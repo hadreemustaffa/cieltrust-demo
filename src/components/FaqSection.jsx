@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { ButtonSecondary } from "./Button";
 
-export default function FAQ() {
+export default function FaqSection() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   const handleExpand = () => {

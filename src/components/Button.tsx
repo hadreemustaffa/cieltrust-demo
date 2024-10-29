@@ -56,7 +56,7 @@ export const ButtonSecondary = ({
 }: ButtonProps) => {
   return (
     <button
-      className={`hover:text-accent-hover hover:border-accent-hover/50 flex items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-6 py-3 hover:cursor-pointer active:bg-accent/10 ${isMobileOnly ? "md:hidden" : ""} ${isFullWidth ? "w-full" : ""}`}
+      className={`flex h-fit items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-6 py-3 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10 ${isMobileOnly ? "md:hidden" : ""} ${isFullWidth ? "w-full" : ""}`}
       {...props}
     >
       {children}
@@ -74,7 +74,7 @@ export const LinkButtonSecondary = ({
   return (
     <Link
       to={to}
-      className={`hover:text-accent-hover hover:border-accent-hover/50 flex items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-6 py-3 hover:cursor-pointer active:bg-accent/10 ${isMobileOnly ? "md:hidden" : ""} ${isFullWidth ? "w-full" : ""}`}
+      className={`flex items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-6 py-3 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10 ${isMobileOnly ? "md:hidden" : ""} ${isFullWidth ? "w-full" : ""}`}
       {...props}
     >
       {children}

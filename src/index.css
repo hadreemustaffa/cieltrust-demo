@@ -43,3 +43,60 @@ html[style="color-scheme: light"] {
   --link: 226, 87%, 6%, 0.682;
   --link-secondary: 212, 100%, 36%;
 }
+
+/* react-tabs */
+.react-tabs {
+  -webkit-tap-highlight-color: transparent;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.react-tabs__tab-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  padding: 1rem;
+  border-radius: 0.375rem;
+  border: 1px solid hsla(var(--accent), 0.1);
+}
+
+.react-tabs__tab {
+  display: inline-block;
+  padding: 0.5rem;
+  border: 1px solid transparent;
+  border-radius: 0.375rem;
+  cursor: pointer;
+}
+
+.react-tabs__tab::first-letter {
+  text-transform: uppercase;
+}
+
+.react-tabs__tab--selected {
+  border-color: hsla(var(--accent), 0.1);
+  background-color: hsla(var(--surface));
+}
+
+.react-tabs__tab--disabled {
+  color: hsla(var(--accent), 0.2);
+  cursor: default;
+}
+
+.react-tabs__tab:hover {
+  border: 1px solid hsla(var(--accent), 0.1);
+}
+.react-tabs__tab:focus {
+  outline: none;
+}
+.react-tabs__tab:focus-visible {
+  outline: 2px solid currentColor;
+}
+.react-tabs__tab-panel {
+  display: none;
+}
+.react-tabs__tab-panel--selected {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}

@@ -1,16 +1,15 @@
-import { Link } from "react-router-dom";
+import { products } from "../../data/products";
+import { features } from "../../data/features";
 
 // components import
 import {
-  ButtonPrimary,
-  ButtonSecondary,
-  ButtonTertiary,
+  LinkButtonPrimary,
   LinkButtonSecondary,
 } from "../../components/Button";
-import Tabs from "../../components/Tabs";
-import FAQ from "../../components/FAQ";
 import Testimonials from "../../components/Testimonials";
 import OpenAccountBanner from "../../components/OpenAccountBanner";
+import FaqSection from "../../components/FaqSection";
+import TabSection from "../../components/TabSection";
 
 export default function Home() {
   return (
@@ -54,9 +53,9 @@ export default function Home() {
             </div>
           </div>
 
-          <Link to="/yourbank-main/signup/">
-            <ButtonPrimary>Open Account</ButtonPrimary>
-          </Link>
+          <LinkButtonPrimary to="/yourbank-main/signup/">
+            Open Account
+          </LinkButtonPrimary>
         </div>
 
         <picture className="hero__illustration">
@@ -78,7 +77,7 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col items-center gap-12">
-        <div className="flex flex-col gap-8">
+        <TabSection hasTitle data={products}>
           <div className="flex flex-col gap-4">
             <h2 className="text-2xl font-semibold">
               Our <span className="text-brand">Products</span>
@@ -89,115 +88,7 @@ export default function Home() {
               and aspirations
             </p>
           </div>
-
-          <Tabs>
-            <ButtonSecondary
-              type="button"
-              role="tab"
-              aria-selected="true"
-              tabIndex="0"
-              isFullWidth
-            >
-              For Individuals
-            </ButtonSecondary>
-            <ButtonTertiary type="button" role="tab" isFullWidth>
-              For Individuals
-            </ButtonTertiary>
-          </Tabs>
-        </div>
-
-        <div className="flex flex-col gap-8">
-          <article className="flex flex-col items-center gap-4">
-            <div className="mx-auto flex rounded-md border border-accent/10 p-4">
-              {/* briefcase-icon  */}
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 35 34"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M15.5454 21.1814C14.5908 21.1814 14.0316 20.644 14.0316 19.6796V18.5637C10.0221 18.2881 6.02625 17.4615 1.88037 15.877V13.6038C6.98089 15.8633 12.0951 16.6624 17.6593 16.6624C23.2372 16.6624 28.3513 15.8633 33.4518 13.6038V15.877C29.3059 17.4615 25.31 18.2881 21.3006 18.5637V19.6796C21.3006 20.644 20.7414 21.1814 19.7867 21.1814H15.5454ZM6.09444 30.3432H29.2377C32.0608 30.3432 33.4518 28.9656 33.4518 26.1412V12.7359C33.4518 9.9115 32.0608 8.53378 29.2377 8.53378H6.09444C3.28506 8.53378 1.88037 9.9115 1.88037 12.7359V26.1412C1.88037 28.9656 3.28506 30.3432 6.09444 30.3432ZM10.7449 9.7324H12.8588V7.29382C12.8588 6.24673 13.4725 5.65431 14.5362 5.65431H20.7959C21.8597 5.65431 22.4598 6.24673 22.4598 7.29382V9.70485H24.5736V7.44537C24.5736 4.85523 23.2234 3.64282 20.7551 3.64282H14.5635C12.2314 3.64282 10.7449 4.85523 10.7449 7.44537V9.7324Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-
-            <h3>Checking Accounts</h3>
-
-            <p>
-              Enjoy easy and convenient access to your funds with our range of
-              checking account options. Benefit from features such as online and
-              mobile banking, debit cards, and free ATM access.
-            </p>
-          </article>
-
-          <div className="h-[1px] w-full bg-accent/10"></div>
-
-          <article className="flex flex-col items-center gap-4">
-            <div className="mx-auto flex rounded-md border border-accent/10 p-4">
-              {/* savings-account-icon  */}
-              <svg
-                width="24"
-                height="24"
-                viewBox="0 0 34 34"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M4.78125 4.25C3.31424 4.25 2.125 5.43924 2.125 6.90625V7.96875C2.125 9.43576 3.31424 10.625 4.78125 10.625H29.2188C30.6858 10.625 31.875 9.43576 31.875 7.96875V6.90625C31.875 5.43924 30.6858 4.25 29.2188 4.25H4.78125Z"
-                  fill="currentColor"
-                />
-                <path
-                  fillRule="evenodd"
-                  clipRule="evenodd"
-                  d="M4.37296 12.75L5.13764 25.7496C5.26978 27.996 7.13003 29.75 9.3803 29.75H24.6193C26.8696 29.75 28.7298 27.996 28.8619 25.7496L29.6266 12.75H4.37296ZM17 14.875C17.5868 14.875 18.0625 15.3507 18.0625 15.9375V22.9349L20.4987 20.4987C20.9136 20.0838 21.5864 20.0838 22.0013 20.4987C22.4162 20.9136 22.4162 21.5864 22.0013 22.0013L17.7513 26.2513C17.3364 26.6662 16.6636 26.6662 16.2487 26.2513L11.9987 22.0013C11.5838 21.5864 11.5838 20.9136 11.9987 20.4987C12.4136 20.0838 13.0864 20.0838 13.5013 20.4987L15.9375 22.9349V15.9375C15.9375 15.3507 16.4132 14.875 17 14.875Z"
-                  fill="currentColor"
-                />
-              </svg>
-            </div>
-
-            <h3>Savings Accounts</h3>
-
-            <p>
-              Build your savings with our competitive interest rates and
-              flexible savings account options. Whether you&apos;re saving for a
-              specific goal or want to grow your wealth over time, we have the
-              right account for you.
-            </p>
-          </article>
-
-          <div className="h-[1px] w-full bg-accent/10"></div>
-
-          <article className="flex flex-col items-center gap-4">
-            <div className="mx-auto flex rounded-md border border-accent/10 p-4">
-              {/* banknotes-icon  */}
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="24"
-                height="24"
-                fill="currentColor"
-              >
-                <path d="M15 9.375c-1.553 0-2.812 1.259-2.812 2.813S13.447 15 15 15s2.813-1.259 2.813-2.812S16.553 9.375 15 9.375z" />
-                <path
-                  fillRule="evenodd"
-                  d="M1.875 6.094c0-1.294 1.049-2.344 2.344-2.344h21.562c1.295 0 2.344 1.049 2.344 2.344v12.188c0 1.294-1.049 2.344-2.344 2.344H4.219c-1.294 0-2.344-1.049-2.344-2.344V6.094zm8.438 6.094A4.69 4.69 0 0 1 15 7.5a4.69 4.69 0 0 1 4.688 4.688A4.69 4.69 0 0 1 15 16.875a4.69 4.69 0 0 1-4.687-4.687zm13.125-.937a.94.94 0 0 0-.937.938v.009a.94.94 0 0 0 .938.938h.009a.94.94 0 0 0 .938-.937v-.009a.94.94 0 0 0-.937-.937h-.009zm-17.812.938a.94.94 0 0 1 .938-.937h.009a.94.94 0 0 1 .938.938v.009a.94.94 0 0 1-.937.938h-.009a.94.94 0 0 1-.937-.937v-.009z"
-                />
-                <path d="M2.813 22.5a.94.94 0 0 0-.937.938.94.94 0 0 0 .938.938c6.75 0 13.288.903 19.5 2.594 1.488.405 3-.698 3-2.275v-1.256a.94.94 0 0 0-.937-.937H2.813z" />
-              </svg>
-            </div>
-
-            <h3>Loans and Mortgages</h3>
-
-            <p>
-              Realize your dreams with our flexible loan and mortgage options.
-              From personal loans to home mortgages, our experienced loan
-              officers are here to guide you through the application process and
-              help you secure the funds you need.
-            </p>
-          </article>
-        </div>
+        </TabSection>
       </div>
 
       <div className="flex flex-col items-center gap-12">
@@ -211,7 +102,7 @@ export default function Home() {
 
         <div className="flex flex-col gap-8">
           <div className="flex flex-col gap-8">
-            <div className="grid-cols-auto-fit grid grid-rows-2 gap-4 rounded-md border border-accent/10 p-4">
+            <div className="grid grid-cols-auto-fit-sm grid-rows-2 gap-4 rounded-md border border-accent/10 p-4 lg:grid-cols-auto-fit-lg">
               <div className="flex flex-col items-center gap-4 rounded-md border border-accent/10 p-4">
                 <div className="mx-auto flex rounded-md border border-accent/10 p-4">
                   {/* money-icon  */}
@@ -338,7 +229,7 @@ export default function Home() {
           </div>
 
           <div className="flex flex-col gap-8">
-            <div className="grid-cols-auto-fit grid grid-rows-2 gap-4 rounded-md border border-accent/10 p-4">
+            <div className="grid grid-cols-auto-fit-sm grid-rows-2 gap-4 rounded-md border border-accent/10 p-4 lg:grid-cols-auto-fit-lg">
               <div className="flex flex-col items-center gap-4 rounded-md border border-accent/10 p-4">
                 <div className="mx-auto flex rounded-md border border-accent/10 p-4">
                   {/* building-office-2-icon  */}
@@ -454,77 +345,19 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col items-center gap-12">
-        <div className="flex flex-col gap-8">
-          <h2 className="text-2xl font-semibold">
-            Our <span className="text-brand">Features</span>
-          </h2>
-          <p>
-            Experience a host of powerful features at Yourbank, including
-            seamless online banking, secure transactions, and personalized
-            financial insights, all designed to enhance your banking experience
-          </p>
-        </div>
-
-        <div className="flex flex-col gap-8">
-          <Tabs isColumn>
-            <ButtonSecondary role="tab" tabIndex="0" isFullWidth>
-              Online Banking
-            </ButtonSecondary>
-            <ButtonTertiary role="tab" isFullWidth>
-              Financial Tools
-            </ButtonTertiary>
-            <ButtonTertiary role="tab" isFullWidth>
-              Customer Support
-            </ButtonTertiary>
-          </Tabs>
-
-          <div className="grid-cols-auto-fit grid grid-rows-2 gap-4 rounded-md border border-accent/10 p-4">
-            <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
-              <div className="flex flex-row justify-between">
-                <h3 className="text-lg font-medium">24/7 Account Access</h3>
-              </div>
-              <p>
-                Enjoy the convenience of accessing your accounts anytime,
-                anywhere through our secure online banking platform. Check
-                balances, transfer funds, and pay bills with ease.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
-              <div className="flex flex-row justify-between">
-                <h3 className="text-lg font-medium">Mobile Banking App</h3>
-              </div>
-              <p>
-                Stay connected to your finances on the go with our user-friendly
-                mobile banking app. Easily manage your accounts, deposit checks,
-                and make payments from your smartphone or tablet.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
-              <div className="flex flex-row justify-between">
-                <h3 className="text-lg font-medium">Secure Transactions</h3>
-              </div>
-              <p>
-                Rest assured knowing that your transactions are protected by
-                industry-leading security measures. We employ encryption and
-                multi-factor authentication to safeguard your financial
-                information.
-              </p>
-            </div>
-
-            <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
-              <div className="flex flex-row justify-between">
-                <h3 className="text-lg font-medium">Bill Pay and Transfers</h3>
-              </div>
-              <p>
-                Save time and avoid late fees with our convenient bill pay
-                service. Set up recurring payments or make one-time transfers
-                between your accounts with just a few clicks.
-              </p>
-            </div>
+        <TabSection hasTitle data={features}>
+          <div className="flex flex-col gap-8">
+            <h2 className="text-2xl font-semibold">
+              Our <span className="text-brand">Features</span>
+            </h2>
+            <p>
+              Experience a host of powerful features at Yourbank, including
+              seamless online banking, secure transactions, and personalized
+              financial insights, all designed to enhance your banking
+              experience
+            </p>
           </div>
-        </div>
+        </TabSection>
       </div>
 
       <div className="flex flex-col items-center gap-12">
@@ -538,7 +371,7 @@ export default function Home() {
           </p>
         </div>
 
-        <FAQ />
+        <FaqSection />
       </div>
 
       <Testimonials />

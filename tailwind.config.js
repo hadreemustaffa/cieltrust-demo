@@ -31,11 +31,12 @@ export default {
       },
       gridTemplateColumns: {
         base: "1rem auto 1rem",
-        sm: "1.875rem auto 1.875rem",
-        md: "3.125rem auto 3.125rem",
-        lg: "4.375rem auto 4.375rem",
-        xl: "5.625rem auto 5.625rem",
-        "auto-fit": "repeat(auto-fit, minmax(250px, 1fr))",
+        sm: "2rem auto 2rem",
+        md: "3rem auto 3rem",
+        lg: "4rem auto 4rem",
+        xl: "5rem auto 5rem",
+        "auto-fit-sm": "repeat(auto-fit, minmax(250px, 1fr))",
+        "auto-fit-lg": "repeat(auto-fit, minmax(400px, 1fr))",
       },
       gridTemplateRows: {
         base: "auto auto auto",
