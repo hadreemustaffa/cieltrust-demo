@@ -63,10 +63,11 @@ html[style="color-scheme: light"] {
 
 .react-tabs__tab {
   display: inline-block;
-  padding: 0.5rem;
+  padding: 0.625rem 1rem;
   border: 1px solid transparent;
   border-radius: 0.375rem;
   cursor: pointer;
+  white-space: nowrap;
 }
 
 .react-tabs__tab::first-letter {
@@ -99,4 +100,22 @@ html[style="color-scheme: light"] {
   display: flex;
   flex-direction: column;
   gap: 2rem;
+}
+#grid-panel .react-tabs__tab-panel--selected {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media screen and (min-width: 48rem) {
+  #grid-panel .react-tabs__tab-panel--selected {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+@media screen and (min-width: 62rem) {
+  .react-tabs__tab-panel--selected {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+  }
 }

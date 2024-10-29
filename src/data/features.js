@@ -61,5 +61,10 @@ export const features = {
       description:
         "Receive customized support for complex issues or specific needs. Our team takes the time to understand your situation and provide the best solutions tailored to you.",
     },
+    {
+      title: "Help Center & FAQs",
+      description:
+        "Find answers to common questions in our comprehensive Help Center. From quick fixes to detailed guides, our resources are designed to make banking simpler.",
+    },
   ],
 };

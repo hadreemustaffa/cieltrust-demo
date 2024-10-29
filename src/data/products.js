@@ -19,7 +19,7 @@ export const products = {
 
   businesses: [
     {
-      title: "Business Checking and Savings Accounts",
+      title: "Business Savings Accounts",
       description:
         "Manage your business finances effortlessly with our Business Checking Accounts. Enjoy seamless access to your funds, with features like online banking, free debit cards, and 24/7 support to help you stay on top of transactions and cash flow—whether you’re a startup or a growing enterprise.",
     },

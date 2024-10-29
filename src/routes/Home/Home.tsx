@@ -9,15 +9,15 @@ import {
 import Testimonials from "../../components/Testimonials";
 import OpenAccountBanner from "../../components/OpenAccountBanner";
 import FaqSection from "../../components/FaqSection";
-import TabSection from "../../components/TabSection";
+import TabSection, { TabSectionTitle } from "../../components/TabSection";
 
 export default function Home() {
   return (
     <>
-      <div className="flex flex-col items-center gap-12">
-        <div className="flex flex-col items-center gap-8">
-          <div className="flex flex-col items-center gap-4">
-            <p className="flex flex-row items-center gap-2 text-sm">
+      <div className="flex flex-col items-center gap-8 lg:flex-row lg:items-start">
+        <div className="flex flex-col items-center gap-8 lg:items-start">
+          <div className="flex flex-col items-center gap-4 lg:items-start">
+            <p className="flex flex-row items-center gap-2 text-sm lg:gap-4">
               {/* check-badge-icon  */}
               <svg
                 aria-hidden="true"
@@ -37,8 +37,8 @@ export default function Home() {
               No LLC Required, No Credit Check.
             </p>
 
-            <div className="flex flex-col gap-2">
-              <h1 className="text-3xl font-medium">
+            <div className="flex max-w-prose flex-col gap-2 lg:items-start lg:gap-4 lg:text-left">
+              <h1 className="text-3xl font-medium lg:text-5xl">
                 Welcome to <span className="text-brand">Yourbank</span>
                 <br />
                 Empowering Your Financial Journey
@@ -57,28 +57,11 @@ export default function Home() {
             Open Account
           </LinkButtonPrimary>
         </div>
-
-        <picture className="hero__illustration">
-          <source
-            media="(min-width: 1440px)"
-            srcSet="./images/illustrations/hero-illustration-desktop.png"
-            type="image/png"
-          />
-          <source
-            media="(min-width: 992px)"
-            srcSet="./images/illustrations/hero-illustration-laptop.png"
-            type="image/png"
-          />
-          <img
-            src="./images/illustrations/hero-illustration-mobile.png"
-            alt="illustration of banking transactions"
-          />
-        </picture>
       </div>
 
-      <div className="flex flex-col items-center gap-12">
-        <TabSection hasTitle data={products}>
-          <div className="flex flex-col gap-4">
+      <div className="flex flex-col items-center gap-8">
+        <TabSection hasTitle isTablistWithTitle={true} data={products}>
+          <div className="flex max-w-[80ch] flex-col gap-4">
             <h2 className="text-2xl font-semibold">
               Our <span className="text-brand">Products</span>
             </h2>
@@ -91,8 +74,8 @@ export default function Home() {
         </TabSection>
       </div>
 
-      <div className="flex flex-col items-center gap-12">
-        <div className="flex flex-col gap-8">
+      <div className="flex flex-col items-center gap-8 lg:items-start">
+        <div className="flex flex-col gap-4 lg:text-left">
           <h2 className="text-2xl font-semibold text-brand">Use Cases</h2>
           <p>
             At Yourbank, we cater to the diverse needs of individuals and
@@ -101,11 +84,10 @@ export default function Home() {
         </div>
 
         <div className="flex flex-col gap-8">
-          <div className="flex flex-col gap-8">
-            <div className="grid grid-cols-auto-fit-sm grid-rows-2 gap-4 rounded-md border border-accent/10 p-4 lg:grid-cols-auto-fit-lg">
+          <div className="flex flex-col gap-8 lg:grid xl:grid-cols-2">
+            <div className="grid grid-cols-auto-fit-sm grid-rows-2 gap-4 rounded-md border border-accent/10 p-4 md:grid-cols-2">
               <div className="flex flex-col items-center gap-4 rounded-md border border-accent/10 p-4">
                 <div className="mx-auto flex rounded-md border border-accent/10 p-4">
-                  {/* money-icon  */}
                   <svg
                     xmlns="http://www.w3.org/2000/svg"
                     width="30"
@@ -191,7 +173,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex flex-col items-center gap-8">
+            <div className="flex flex-col items-center gap-8 lg:items-start lg:text-left">
               <div className="flex flex-col gap-4">
                 <h3 className="text-xl font-medium">For Individuals</h3>
                 <p>
@@ -228,8 +210,8 @@ export default function Home() {
             </div>
           </div>
 
-          <div className="flex flex-col gap-8">
-            <div className="grid grid-cols-auto-fit-sm grid-rows-2 gap-4 rounded-md border border-accent/10 p-4 lg:grid-cols-auto-fit-lg">
+          <div className="flex flex-col gap-8 lg:grid xl:grid-cols-2">
+            <div className="grid grid-cols-auto-fit-sm grid-rows-2 gap-4 rounded-md border border-accent/10 p-4 md:grid-cols-2 xl:order-1">
               <div className="flex flex-col items-center gap-4 rounded-md border border-accent/10 p-4">
                 <div className="mx-auto flex rounded-md border border-accent/10 p-4">
                   {/* building-office-2-icon  */}
@@ -305,7 +287,7 @@ export default function Home() {
               </div>
             </div>
 
-            <div className="flex flex-col items-center gap-8">
+            <div className="flex flex-col items-center gap-8 lg:items-start lg:text-left">
               <div className="flex flex-col gap-4">
                 <h3 className="text-xl font-medium">For Business</h3>
                 <p>
@@ -344,9 +326,9 @@ export default function Home() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-12">
-        <TabSection hasTitle data={features}>
-          <div className="flex flex-col gap-8">
+      <div className="flex flex-col items-center gap-8">
+        <TabSection hasTitle isTablistWithTitle={false} data={features}>
+          <TabSectionTitle>
             <h2 className="text-2xl font-semibold">
               Our <span className="text-brand">Features</span>
             </h2>
@@ -356,12 +338,12 @@ export default function Home() {
               financial insights, all designed to enhance your banking
               experience
             </p>
-          </div>
+          </TabSectionTitle>
         </TabSection>
       </div>
 
-      <div className="flex flex-col items-center gap-12">
-        <div className="flex flex-col gap-8">
+      <div className="flex flex-col items-center gap-8 lg:items-start">
+        <div className="flex flex-col gap-4 lg:text-left">
           <h2 className="text-2xl font-semibold">
             <span className="text-brand">Frequently</span> Asked Questions
           </h2>
