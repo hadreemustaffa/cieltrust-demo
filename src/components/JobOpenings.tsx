@@ -47,29 +47,29 @@ const JobArticle: React.FC<JobArticleProps> = ({
   requirements,
 }) => {
   return (
-    <article className="flex flex-col items-start justify-between gap-8 rounded-md border border-accent/10 bg-surface p-4 text-left">
+    <article className="flex flex-col items-start justify-between gap-8 rounded-md border border-accent/10 p-4 text-left">
       <div className="flex flex-col gap-4">
         <header className="flex flex-col gap-4">
           <h3 className="text-xl font-semibold">{title}</h3>
           <div className="flex flex-row flex-wrap gap-2">
-            <p className="w-fit rounded-md border border-accent/10 bg-card p-2">
+            <p className="w-fit rounded-md border border-accent/10 p-2">
               <strong>Location</strong>: {location}
             </p>
-            <p className="w-fit rounded-md border border-accent/10 bg-card p-2">
+            <p className="w-fit rounded-md border border-accent/10 p-2">
               <strong>Department</strong>: {department}
             </p>
           </div>
         </header>
 
         <section className="flex flex-col gap-4">
-          <h3 className="text-xl font-semibold">About This Job</h3>
+          <h4 className="text-lg font-semibold">About This Job</h4>
           <p>{about}</p>
         </section>
 
         <section className="flex flex-col gap-4">
-          <h3 className="text-xl font-semibold">
+          <h4 className="text-lg font-semibold">
             Requirements & Qualifications
-          </h3>
+          </h4>
 
           <ul className="flex flex-col gap-2">
             {requirements.map((requirement) => (
