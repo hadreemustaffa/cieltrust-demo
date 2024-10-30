@@ -2,9 +2,9 @@ import { formatStr } from "../../utils/formatStr";
 
 // components import
 import { Tab, TabList, TabPanel, Tabs } from "react-tabs";
-import { TabPanelItem, TabPanelItemProps } from "./TabPanelItem";
+import { TabPanelItem } from "./TabPanelItem";
 
-type ConditionalTitleProps =
+type TitleProps =
   | {
       hasTitle: true;
       isTablistWithTitle: boolean;
@@ -16,13 +16,19 @@ type ConditionalTitleProps =
       children?: never;
     };
 
-type DataProps = {
-  data: { [key: string]: TabPanelItemProps[] };
-};
+type Data = {
+  name: string;
+  list: {
+    title: string;
+    description: string;
+  }[];
+}[];
 
-type TabSectionProps = DataProps & ConditionalTitleProps;
+type TabSectionProps = {
+  data: Data;
+} & TitleProps;
 
-const TabSection: React.FC<TabSectionProps & ConditionalTitleProps> = ({
+const TabSection: React.FC<TabSectionProps & TitleProps> = ({
   data,
   hasTitle,
   isTablistWithTitle,
@@ -36,15 +42,17 @@ const TabSection: React.FC<TabSectionProps & ConditionalTitleProps> = ({
             {children}
 
             <TabList>
-              {Object.keys(data).map((item, index) => {
-                return <Tab key={"tab-" + item + index}>{item}</Tab>;
+              {data.map((tab, index) => {
+                return (
+                  <Tab key={"tab-" + tab + index}>{formatStr(tab.name)}</Tab>
+                );
               })}
             </TabList>
           </div>
 
-          {Object.keys(data).map((key, index) => (
-            <TabPanel key={`panel-${key}-${index}`}>
-              {data[key].map((item) => (
+          {data.map((tab, index) => (
+            <TabPanel key={`panel-${tab}-${index}`}>
+              {tab.list.map((item) => (
                 <TabPanelItem
                   key={item.title}
                   title={item.title}
@@ -65,14 +73,16 @@ const TabSection: React.FC<TabSectionProps & ConditionalTitleProps> = ({
             className="flex flex-col items-center gap-8 lg:flex-row lg:items-start"
           >
             <TabList>
-              {Object.keys(data).map((item, index) => {
-                return <Tab key={"tab-" + item + index}>{formatStr(item)}</Tab>;
+              {data.map((tab, index) => {
+                return (
+                  <Tab key={"tab-" + tab + index}>{formatStr(tab.name)}</Tab>
+                );
               })}
             </TabList>
 
-            {Object.keys(data).map((key, index) => (
-              <TabPanel key={`panel-${key}-${index}`} className="hidden">
-                {data[key].map((item) => (
+            {data.map((tab, index) => (
+              <TabPanel key={`panel-${tab}-${index}`} className="hidden">
+                {tab.list.map((item) => (
                   <TabPanelItem
                     key={item.title}
                     title={item.title}

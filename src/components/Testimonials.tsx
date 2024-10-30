@@ -1,6 +1,7 @@
-// import Tabs from "./Tabs";
-import TabSection from "./TabSection/TabSection";
 import { testimonials } from "../data/testimonials";
+
+// components import
+import TabSection from "./TabSection/TabSection";
 import { TabSectionTitle } from "./TabSection/TabSectionTitle";
 
 export default function Testimonials() {
