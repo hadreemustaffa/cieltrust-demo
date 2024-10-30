@@ -9,7 +9,8 @@ import {
 import Testimonials from "../../components/Testimonials";
 import OpenAccountBanner from "../../components/OpenAccountBanner";
 import FaqSection from "../../components/FaqSection";
-import TabSection, { TabSectionTitle } from "../../components/TabSection";
+import TabSection from "../../components/TabSection/TabSection";
+import { TabSectionTitle } from "../../components/TabSection/TabSectionTitle";
 
 export default function Home() {
   return (
@@ -61,7 +62,7 @@ export default function Home() {
 
       <div className="flex flex-col items-center gap-8">
         <TabSection hasTitle isTablistWithTitle={true} data={products}>
-          <div className="flex max-w-[80ch] flex-col gap-4">
+          <TabSectionTitle>
             <h2 className="text-2xl font-semibold">
               Our <span className="text-brand">Products</span>
             </h2>
@@ -70,12 +71,12 @@ export default function Home() {
               products at Yourbank, designed to suit your unique financial needs
               and aspirations
             </p>
-          </div>
+          </TabSectionTitle>
         </TabSection>
       </div>
 
       <div className="flex flex-col items-center gap-8 lg:items-start">
-        <div className="flex flex-col gap-4 lg:text-left">
+        <div className="flex max-w-prose flex-col gap-4 lg:text-left">
           <h2 className="text-2xl font-semibold text-brand">Use Cases</h2>
           <p>
             At Yourbank, we cater to the diverse needs of individuals and
