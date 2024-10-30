@@ -4,13 +4,17 @@ import {
   Route,
   RouterProvider,
 } from "react-router-dom";
+
+// components import
 import Layout from "./components/Layout";
 import Home from "./routes/Home/Home";
+import Careers from "./routes/Careers/Careers";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
       <Route path="/yourbank/" element={<Home />} />
+      <Route path="/yourbank/careers/" element={<Careers />} />
 
       {/* <Route path='/404' element={<NotFound />} /> */}
 

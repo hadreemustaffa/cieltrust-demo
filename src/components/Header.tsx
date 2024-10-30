@@ -11,6 +11,8 @@ import {
 import NavLinks from "./NavLinks";
 import ThemeToggle from "./ThemeToggle";
 
+import logo from "../../public/images/icons/logo.svg";
+
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -19,9 +21,9 @@ export default function Header() {
   };
 
   return (
-    <header className="sticky top-0 col-span-3 col-start-1 flex h-fit flex-row items-center justify-between border-b border-b-accent/10 bg-background px-4 py-3 text-center sm:px-8 md:px-12 lg:px-24 xl:px-40">
+    <header className="sticky top-0 z-50 col-span-3 col-start-1 flex h-fit flex-row items-center justify-between border-b border-b-accent/10 bg-background px-4 py-3 text-center sm:px-8 md:px-12 lg:px-24 xl:px-40">
       <Link to="/yourbank/" className="logo" aria-label="go to homepage">
-        <img src="./images/icons/logo.svg" width="48" height="48" alt="" />
+        <img src={logo} width="48" height="48" alt="" />
       </Link>
 
       <nav

@@ -344,20 +344,12 @@ export default function Home() {
       </div>
 
       <div className="flex flex-col items-center gap-8 lg:items-start">
-        <div className="flex flex-col gap-4 lg:text-left">
-          <h2 className="text-2xl font-semibold">
-            <span className="text-brand">Frequently</span> Asked Questions
-          </h2>
-          <p>
-            Still you have any questions? Contact our Team via
-            support@yourbank.com
-          </p>
-        </div>
-
         <FaqSection />
       </div>
 
-      <Testimonials />
+      <div className="flex flex-col items-center gap-8 lg:items-start">
+        <Testimonials />
+      </div>
 
       <OpenAccountBanner />
     </>
