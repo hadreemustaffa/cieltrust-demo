@@ -9,12 +9,14 @@ import {
 import Layout from "./components/Layout";
 import Home from "./routes/Home/Home";
 import Careers from "./routes/Careers/Careers";
+import About from "./routes/About/About";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
       <Route path="/yourbank/" element={<Home />} />
       <Route path="/yourbank/careers/" element={<Careers />} />
+      <Route path="/yourbank/about/" element={<About />} />
 
       {/* <Route path='/404' element={<NotFound />} /> */}
 

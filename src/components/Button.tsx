@@ -11,6 +11,7 @@ interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   to: string;
   isMobileOnly?: boolean;
   isFullWidth?: boolean;
+  isPaddingless?: boolean;
 }
 
 export const ButtonPrimary = ({
@@ -102,13 +103,14 @@ export const LinkButtonTertiary = ({
   children,
   isMobileOnly,
   isFullWidth,
+  isPaddingless,
   to,
   ...props
 }: LinkProps) => {
   return (
     <Link
       to={to}
-      className={`flex items-center justify-center rounded-md bg-transparent px-6 py-3 hover:cursor-pointer hover:text-copy ${isMobileOnly ? "md:hidden" : ""} ${isFullWidth ? "w-full" : ""}`}
+      className={`flex items-center rounded-md bg-transparent ${isPaddingless ? "" : "px-6 py-3"} hover:cursor-pointer hover:underline ${isMobileOnly ? "md:hidden" : ""} ${isFullWidth ? "w-full" : ""}`}
       {...props}
     >
       {children}
