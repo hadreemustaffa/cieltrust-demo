@@ -1,9 +1,5 @@
 import Testimonials from "../../components/Testimonials";
-import {
-  ButtonPrimary,
-  LinkButtonSecondary,
-  LinkButtonTertiary,
-} from "../../components/Button";
+import { ButtonPrimary } from "../../components/Button";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link } from "react-router-dom";
 
