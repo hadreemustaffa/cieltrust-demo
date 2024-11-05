@@ -10,6 +10,7 @@ import Layout from "./components/Layout";
 import Home from "./routes/Home/Home";
 import Careers from "./routes/Careers/Careers";
 import About from "./routes/About/About";
+import Security from "./routes/Security/Security";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -17,6 +18,7 @@ const router = createBrowserRouter(
       <Route path="/yourbank/" element={<Home />} />
       <Route path="/yourbank/careers/" element={<Careers />} />
       <Route path="/yourbank/about/" element={<About />} />
+      <Route path="/yourbank/security/" element={<Security />} />
 
       {/* <Route path='/404' element={<NotFound />} /> */}
 
