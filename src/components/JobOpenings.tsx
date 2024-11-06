@@ -72,8 +72,11 @@ const JobArticle: React.FC<JobArticleProps> = ({
           </h4>
 
           <ul className="flex flex-col gap-2">
-            {requirements.map((requirement) => (
-              <li className="grid grid-cols-[auto_1fr] items-center gap-2">
+            {requirements.map((requirement, index) => (
+              <li
+                key={index}
+                className="grid grid-cols-[auto_1fr] items-center gap-2"
+              >
                 <svg
                   width="24"
                   height="34"
