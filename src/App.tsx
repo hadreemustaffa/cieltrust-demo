@@ -1,6 +1,7 @@
 import {
   createBrowserRouter,
   createRoutesFromElements,
+  Navigate,
   Route,
   RouterProvider,
 } from "react-router-dom";
@@ -13,6 +14,7 @@ import About from "./routes/About/About";
 import Security from "./routes/Security/Security";
 import SignUp from "./routes/SignUp/SignUp";
 import Login from "./routes/Login/Login";
+import NotFound from "./routes/NotFound/NotFound";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -24,9 +26,9 @@ const router = createBrowserRouter(
       <Route path="/yourbank/signup/" element={<SignUp />} />
       <Route path="/yourbank/login/" element={<Login />} />
 
-      {/* <Route path='/404' element={<NotFound />} /> */}
+      <Route path="/yourbank/404/" element={<NotFound />} />
 
-      {/* <Route path='*' element={<Navigate to='/404' replace />} /> */}
+      <Route path="*" element={<Navigate to="/yourbank/404/" replace />} />
     </Route>,
   ),
 );
