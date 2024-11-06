@@ -95,7 +95,7 @@ function SignUp() {
               )}
             </div>
             <div className="flex w-full flex-col gap-2">
-              <div className="relative flex w-full flex-col gap-2 text-left">
+              <div className="flex w-full flex-col gap-2 text-left">
                 <label className="text-sm" htmlFor="password">
                   Password:
                 </label>
@@ -116,13 +116,6 @@ function SignUp() {
                 {errors.password?.type === "minLength" && (
                   <ErrorMessage error={errors.password.message} />
                 )}
-
-                <Link
-                  to="/yourbank/signup/password-reset/"
-                  className="absolute right-0 top-0 text-sm text-brand/80 hover:text-link-hover hover:underline"
-                >
-                  Forgot Password
-                </Link>
               </div>
             </div>
           </div>
