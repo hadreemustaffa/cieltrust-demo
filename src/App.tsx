@@ -12,6 +12,7 @@ import Careers from "./routes/Careers/Careers";
 import About from "./routes/About/About";
 import Security from "./routes/Security/Security";
 import SignUp from "./routes/SignUp/SignUp";
+import Login from "./routes/Login/Login";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -21,6 +22,7 @@ const router = createBrowserRouter(
       <Route path="/yourbank/about/" element={<About />} />
       <Route path="/yourbank/security/" element={<Security />} />
       <Route path="/yourbank/signup/" element={<SignUp />} />
+      <Route path="/yourbank/login/" element={<Login />} />
 
       {/* <Route path='/404' element={<NotFound />} /> */}
 
