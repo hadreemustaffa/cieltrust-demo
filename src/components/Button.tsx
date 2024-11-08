@@ -91,7 +91,7 @@ export const ButtonTertiary = ({
 }: ButtonProps) => {
   return (
     <button
-      className={`flex items-center justify-center rounded-md bg-transparent px-6 py-3 hover:cursor-pointer hover:underline ${isMobileOnly ? "md:hidden" : ""} ${isFullWidth ? "w-full" : ""}`}
+      className={`flex items-center justify-center gap-2 rounded-md bg-transparent px-6 py-3 hover:cursor-pointer hover:underline ${isMobileOnly ? "md:hidden" : ""} ${isFullWidth ? "w-full" : ""}`}
       {...props}
     >
       {children}

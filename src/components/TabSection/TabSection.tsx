@@ -21,6 +21,7 @@ type Data = {
   list: {
     title: string;
     description: string;
+    icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
   }[];
 }[];
 
@@ -57,6 +58,7 @@ const TabSection: React.FC<TabSectionProps & TitleProps> = ({
                   key={item.title}
                   title={item.title}
                   description={item.description}
+                  icon={item.icon}
                 />
               ))}
             </TabPanel>
@@ -87,6 +89,7 @@ const TabSection: React.FC<TabSectionProps & TitleProps> = ({
                     key={item.title}
                     title={item.title}
                     description={item.description}
+                    icon={item.icon}
                   />
                 ))}
               </TabPanel>

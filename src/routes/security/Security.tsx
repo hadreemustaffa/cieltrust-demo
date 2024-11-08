@@ -3,6 +3,7 @@ import { security } from "../../data/security";
 
 // components import
 import FaqSection from "../../components/FaqSection";
+import Icon from "../../components/Icon";
 
 function Security() {
   return (
@@ -60,14 +61,7 @@ function Security() {
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col items-center gap-4 lg:flex-row">
                     <div className="flex rounded-md border border-accent/10 p-4">
-                      <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        width="34"
-                        height="34"
-                        fill="currentColor"
-                      >
-                        <path d="M8.5 4.25A4.25 4.25 0 0 0 4.25 8.5v3.188a4.25 4.25 0 0 0 4.25 4.25h3.188a4.25 4.25 0 0 0 4.25-4.25V8.5a4.25 4.25 0 0 0-4.25-4.25H8.5zm13.813 0a4.25 4.25 0 0 0-4.25 4.25v3.188a4.25 4.25 0 0 0 4.25 4.25H25.5a4.25 4.25 0 0 0 4.25-4.25V8.5a4.25 4.25 0 0 0-4.25-4.25h-3.187zM8.5 18.063a4.25 4.25 0 0 0-4.25 4.25V25.5a4.25 4.25 0 0 0 4.25 4.25h3.188a4.25 4.25 0 0 0 4.25-4.25v-3.187a4.25 4.25 0 0 0-4.25-4.25H8.5zm16.469 1.062c0-.587-.476-1.062-1.063-1.062s-1.062.476-1.062 1.063v3.719h-3.719a1.06 1.06 0 0 0-1.062 1.062c0 .586.476 1.063 1.063 1.063h3.719v3.719c0 .587.476 1.063 1.062 1.063s1.063-.476 1.063-1.062v-3.719h3.719c.587 0 1.063-.476 1.063-1.063a1.06 1.06 0 0 0-1.062-1.062h-3.719v-3.719z" />
-                      </svg>
+                      <Icon SvgIcon={feature.icon} />
                     </div>
                     <h3 className="text-lg font-medium">{feature.title}</h3>
                   </div>

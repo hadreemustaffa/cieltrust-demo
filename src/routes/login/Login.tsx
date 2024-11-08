@@ -1,7 +1,10 @@
-import { SubmitHandler, useForm } from "react-hook-form";
-import Testimonials from "../../components/Testimonials";
 import { Link } from "react-router-dom";
+import { SubmitHandler, useForm } from "react-hook-form";
+
+// components import
+import Testimonials from "../../components/Testimonials";
 import { ButtonPrimary } from "../../components/Button";
+import ErrorMessage from "../../components/ErrorMessage";
 
 type Inputs = {
   email: string;
@@ -82,13 +85,5 @@ function Login() {
     </>
   );
 }
-
-const ErrorMessage = ({ error }: { error: string | undefined }) => {
-  return (
-    <p role="alert" className="text-sm text-red-500">
-      {error}
-    </p>
-  );
-};
 
 export default Login;

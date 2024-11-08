@@ -1,7 +1,11 @@
+import { SubmitHandler, useForm } from "react-hook-form";
+
+// icons import
+
+// components import
 import Testimonials from "../../components/Testimonials";
 import { ButtonPrimary } from "../../components/Button";
-import { SubmitHandler, useForm } from "react-hook-form";
-import { Link } from "react-router-dom";
+import ErrorMessage from "../../components/ErrorMessage";
 
 type Inputs = {
   firstName: string;
@@ -130,13 +134,5 @@ function SignUp() {
     </>
   );
 }
-
-const ErrorMessage = ({ error }: { error: string | undefined }) => {
-  return (
-    <p role="alert" className="text-sm text-red-500">
-      {error}
-    </p>
-  );
-};
 
 export default SignUp;
