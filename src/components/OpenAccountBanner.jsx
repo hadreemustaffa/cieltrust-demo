@@ -15,9 +15,7 @@ export default function OpenAccountBanner() {
         </p>
       </div>
 
-      <LinkButtonPrimary to="/yourbank-main/signup/">
-        Open Account
-      </LinkButtonPrimary>
+      <LinkButtonPrimary to="/yourbank/signup/">Open Account</LinkButtonPrimary>
     </div>
   );
 }
