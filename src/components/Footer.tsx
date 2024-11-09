@@ -28,7 +28,7 @@ export default function Footer() {
 
       <div className="h-[1px] w-full bg-accent/10"></div>
 
-      <div className="flex flex-col items-center justify-center gap-4">
+      <div className="flex flex-col items-center justify-center gap-4 lg:flex-row">
         <ButtonTertiary>
           <Icon SvgIcon={MailIcon} isBorderless />
           yourbank@example.com.my
