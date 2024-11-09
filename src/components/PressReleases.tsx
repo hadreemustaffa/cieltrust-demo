@@ -57,10 +57,7 @@ const PressReleasesArticle: React.FC<PressReleasesArticleProps> = ({
         />
         <header className="flex flex-col gap-4">
           <h3 className="text-xl font-semibold">
-            <LinkButtonTertiary
-              to={`/yourbank/press-releases/${id}`}
-              isPaddingless
-            >
+            <LinkButtonTertiary to={`/press-releases/${id}`} isPaddingless>
               {title}
             </LinkButtonTertiary>
           </h3>

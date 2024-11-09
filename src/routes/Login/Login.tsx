@@ -66,7 +66,7 @@ function Login() {
                 )}
 
                 <Link
-                  to="/yourbank/signup/password-reset/"
+                  to="/signup/password-reset/"
                   className="absolute right-0 top-0 text-sm text-brand/80 hover:text-link-hover hover:underline"
                 >
                   Forgot Password

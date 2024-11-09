@@ -3,19 +3,19 @@ import { Link } from "react-router-dom";
 function NavLinks() {
   const links = [
     {
-      to: "/yourbank/",
+      to: "/",
       label: "Home",
     },
     {
-      to: "/yourbank/careers/",
+      to: "/careers/",
       label: "Careers",
     },
     {
-      to: "/yourbank/about/",
+      to: "/about/",
       label: "About",
     },
     {
-      to: "/yourbank/security/",
+      to: "/security/",
       label: "Security",
     },
   ];
@@ -23,7 +23,7 @@ function NavLinks() {
     <>
       {links.map((link) => (
         <li key={link.to}>
-          <Link to={link.to} className="hover:text-link-hover text-link">
+          <Link to={link.to} className="text-link hover:text-link-hover">
             {link.label}
           </Link>
         </li>

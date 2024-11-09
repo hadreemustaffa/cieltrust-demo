@@ -14,7 +14,7 @@ function NotFound() {
           head back to our homepage.
         </p>
       </div>
-      <LinkButtonPrimary to="/yourbank/">Back to homepage</LinkButtonPrimary>
+      <LinkButtonPrimary to="/">Back to homepage</LinkButtonPrimary>
     </div>
   );
 }

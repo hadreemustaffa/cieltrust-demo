@@ -22,7 +22,7 @@ export default function Header() {
 
   return (
     <header className="sticky top-0 z-50 col-span-3 col-start-1 flex h-fit flex-row items-center justify-between border-b border-b-accent/10 bg-background px-4 py-3 text-center sm:px-8 md:px-12 lg:px-24 xl:px-40">
-      <Link to="/yourbank/" aria-label="go to homepage">
+      <Link to="/" aria-label="go to homepage">
         <img src={logo} width="48" height="48" alt="" />
       </Link>
 
@@ -57,10 +57,10 @@ export default function Header() {
 
           <HeaderNavButtons>
             <ThemeToggle />
-            <LinkButtonSecondary to="/yourbank/signup/" isFullWidth>
+            <LinkButtonSecondary to="/signup/" isFullWidth>
               Sign Up
             </LinkButtonSecondary>
-            <LinkButtonPrimary to="/yourbank/login/" isFullWidth>
+            <LinkButtonPrimary to="/login/" isFullWidth>
               Login
             </LinkButtonPrimary>
           </HeaderNavButtons>

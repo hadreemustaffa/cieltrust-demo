@@ -51,9 +51,7 @@ export default function Home() {
             </div>
           </div>
 
-          <LinkButtonPrimary to="/yourbank/signup/">
-            Open Account
-          </LinkButtonPrimary>
+          <LinkButtonPrimary to="/signup/">Open Account</LinkButtonPrimary>
         </div>
       </div>
 

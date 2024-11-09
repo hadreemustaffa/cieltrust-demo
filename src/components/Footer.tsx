@@ -17,7 +17,7 @@ export default function Footer() {
   return (
     <footer className="col-span-full col-start-1 flex flex-col items-center gap-8 border border-accent/10 bg-surface p-8 text-center">
       <nav id="secondary-nav" className="flex flex-col items-center gap-8">
-        <a href="/yourbank/" aria-label="go to homepage">
+        <a href="/" aria-label="go to homepage">
           <img src={logo} width="48" height="48" alt="" />
         </a>
 
@@ -62,7 +62,7 @@ export default function Footer() {
 
         <div className="flex flex-row gap-4">
           <Link
-            to="/yourbank/privacy/"
+            to="/privacy/"
             className="text-sm text-link hover:text-link-hover"
           >
             Privacy Policy
