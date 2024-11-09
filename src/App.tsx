@@ -8,13 +8,13 @@ import {
 
 // components import
 import Layout from "./components/Layout";
-import Home from "./routes/Home/Home";
-import Careers from "./routes/Careers/Careers";
-import About from "./routes/About/About";
-import Security from "./routes/Security/Security";
-import SignUp from "./routes/SignUp/SignUp";
-import Login from "./routes/Login/Login";
-import NotFound from "./routes/NotFound/NotFound";
+import Home from "./routes/tmp/Home/Home";
+import Careers from "./routes/tmp/Careers/Careers";
+import About from "./routes/tmp/About/About";
+import Security from "./routes/tmp/Security/Security";
+import SignUp from "./routes/tmp/SignUp/SignUp";
+import Login from "./routes/tmp/Login/Login";
+import NotFound from "./routes/tmp/NotFound/NotFound";
 
 const router = createBrowserRouter(
   createRoutesFromElements(

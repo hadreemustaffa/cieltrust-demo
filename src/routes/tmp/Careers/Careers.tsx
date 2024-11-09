@@ -5,11 +5,11 @@ import ArchiveIcon from "../../images/icons/archive.svg?react";
 import ClockIcon from "../../images/icons/clock.svg?react";
 
 // components import
-import FaqSection from "../../components/FaqSection";
-import Icon from "../../components/Icon";
-import JobOpenings from "../../components/JobOpenings";
-import OpenAccountBanner from "../../components/OpenAccountBanner";
-import Testimonials from "../../components/Testimonials";
+import FaqSection from "../../../components/FaqSection";
+import Icon from "../../../components/Icon";
+import JobOpenings from "../../../components/JobOpenings";
+import OpenAccountBanner from "../../../components/OpenAccountBanner";
+import Testimonials from "../../../components/Testimonials";
 
 function Careers() {
   return (
