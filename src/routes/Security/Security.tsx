@@ -34,7 +34,7 @@ function Security() {
           <p>
             Your security is more than just a feature—it’s our commitment. From
             secure logins to account alerts, we offer a range of tools to help
-            you protect your accounts. Bank confidently with Yourbank, knowing
+            you protect your accounts. Bank confidently with CielTrust, knowing
             your financial safety is always our priority
           </p>
         </div>

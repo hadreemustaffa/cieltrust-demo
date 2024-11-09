@@ -1,7 +1,6 @@
 import { Link } from "react-router-dom";
 
 // icons import
-import logo from "../images/icons/logo.svg";
 import MailIcon from "../images/icons/mail.svg?react";
 import PhoneIcon from "../images/icons/phone.svg?react";
 import MapPinIcon from "../images/icons/map-pin.svg?react";
@@ -17,9 +16,13 @@ export default function Footer() {
   return (
     <footer className="col-span-full col-start-1 flex flex-col items-center gap-8 border border-accent/10 bg-surface p-8 text-center">
       <nav id="secondary-nav" className="flex flex-col items-center gap-8">
-        <a href="/" aria-label="go to homepage">
-          <img src={logo} width="48" height="48" alt="" />
-        </a>
+        <Link
+          to="/"
+          className="font-montserratSubrayada text-3xl font-bold text-brand/90 transition-colors duration-300 hover:text-brand"
+          aria-label="go to homepage"
+        >
+          CielTrust
+        </Link>
 
         <ul className="flex flex-col gap-8 md:flex-row">
           <NavLinks />
@@ -31,7 +34,7 @@ export default function Footer() {
       <div className="flex flex-col items-center justify-center gap-4 lg:flex-row">
         <ButtonTertiary>
           <Icon SvgIcon={MailIcon} isBorderless />
-          yourbank@example.com.my
+          cieltrust@example.com.my
         </ButtonTertiary>
 
         <ButtonTertiary>
@@ -58,7 +61,7 @@ export default function Footer() {
           </LinkButtonSecondary>
         </div>
 
-        <p className="text-sm text-accent/80">Yourbank All Rights Reserved</p>
+        <p className="text-sm text-accent/80">CielTrust All Rights Reserved</p>
 
         <div className="flex flex-row gap-4">
           <Link

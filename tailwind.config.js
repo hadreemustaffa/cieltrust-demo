@@ -28,6 +28,7 @@ export default {
       },
       fontFamily: {
         lexend: ["Lexend", " sans-serif"],
+        montserratSubrayada: ["Montserrat Subrayada", " sans-serif"],
       },
       gridTemplateColumns: {
         base: "1rem auto 1rem",

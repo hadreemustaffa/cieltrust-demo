@@ -16,7 +16,7 @@ export default function FaqSection() {
         </h2>
         <p>
           Still you have any questions? Contact our Team via
-          support@yourbank.com
+          support@cieltrust.com
         </p>
       </div>
 
@@ -26,15 +26,15 @@ export default function FaqSection() {
         >
           <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
             <h3 className="text-lg font-medium">
-              How do I open an account with Yourbank?
+              How do I open an account with CielTrust?
             </h3>
             <div className="h-[1px] w-full bg-accent/10"></div>
             <p>
-              Opening an account with Yourbank is easy. Simply visit our website
-              and click on the &quot;Open an Account&quot; button. Follow the
-              prompts, provide the required information, and complete the
-              application process. If you have any questions or need assistance,
-              our customer support team is available to help.
+              Opening an account with CielTrust is easy. Simply visit our
+              website and click on the &quot;Open an Account&quot; button.
+              Follow the prompts, provide the required information, and complete
+              the application process. If you have any questions or need
+              assistance, our customer support team is available to help.
             </p>
           </div>
           <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
@@ -75,7 +75,7 @@ export default function FaqSection() {
             <div className="h-[1px] w-full bg-accent/10"></div>
 
             <p>
-              At Yourbank, we prioritize the security of your transactions and
+              At CielTrust, we prioritize the security of your transactions and
               personal information. We employ industry-leading encryption and
               multi-factor authentication to ensure that your data is protected.
               Additionally, we regularly update our security measures to stay

@@ -23,7 +23,7 @@ function JobOpenings() {
           <span>Job Openings</span>
         </h2>
         <p>
-          Explore exciting job openings at Yourbank, where we value talent,
+          Explore exciting job openings at CielTrust, where we value talent,
           innovation, and a passion for customer service. Join our team and be
           part of shaping a brighter future in the banking industry
         </p>

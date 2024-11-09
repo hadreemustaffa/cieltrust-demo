@@ -6,7 +6,7 @@ export default function OpenAccountBanner() {
       <div className="flex flex-col gap-4">
         <h2 className="text-2xl font-semibold">
           Start your financial journey with{" "}
-          <span className="text-brand">Yourbank today!</span>
+          <span className="text-brand">CielTrust today!</span>
         </h2>
         <p>
           Enjoy seamless, secure, and convenient financial solutions tailored

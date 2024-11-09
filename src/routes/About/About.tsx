@@ -27,7 +27,7 @@ function About() {
             Building a simpler, brighter financial journey for you.
           </h1>
           <p>
-            At Yourbank, we believe in removing barriers to financial success,
+            At CielTrust, we believe in removing barriers to financial success,
             offering tools and support that make banking easy and rewarding so
             you can focus on what matters most.
           </p>

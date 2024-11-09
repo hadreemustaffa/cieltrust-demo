@@ -22,7 +22,7 @@ function Careers() {
           </h1>
           <p className="basis-1/2">
             Step into a career where your talents and ambitions are truly
-            valued. At Yourbank, we’re dedicated to creating meaningful
+            valued. At CielTrust, we’re dedicated to creating meaningful
             financial experiences for our customers, and we’re looking for
             bright minds to help us lead the way. Here, you’ll grow
             professionally, gain invaluable insights, and play a key role in
@@ -77,7 +77,7 @@ function Careers() {
             Our <span className="text-brand">Values</span>
           </h2>
           <p>
-            At Yourbank, our values form the foundation of our organization and
+            At CielTrust, our values form the foundation of our organization and
             guide our actions. We believe in upholding the highest standards of
             integrity, delivering exceptional service, and embracing innovation.
             These values define our culture and shape the way we work together
@@ -134,7 +134,7 @@ function Careers() {
             Our <span className="text-brand">Benefits</span>
           </h2>
           <p>
-            At Yourbank, we value our employees and are dedicated to their
+            At CielTrust, we value our employees and are dedicated to their
             well-being and success. We offer a comprehensive range of benefits
             designed to support their personal and professional growth.
           </p>
@@ -152,7 +152,7 @@ function Careers() {
             </div>
             <p>
               We provide a competitive salary package that recognizes the skills
-              and expertise of our employees. Yourbank believes in rewarding
+              and expertise of our employees. CielTrust believes in rewarding
               exceptional performance and offering opportunities for financial
               growth.
             </p>
@@ -181,7 +181,7 @@ function Careers() {
               <h3 className="text-xl font-semibold">Retirement Planning</h3>
             </div>
             <p>
-              Yourbank is committed to helping employees plan for their future.
+              CielTrust is committed to helping employees plan for their future.
               We offer a retirement savings plan with a generous employer match
               to help them build a secure financial foundation for the long
               term.
@@ -197,7 +197,7 @@ function Careers() {
             </div>
             <p>
               We understand the importance of maintaining a healthy work-life
-              balance. Yourbank offers flexible work arrangements, paid time
+              balance. CielTrust offers flexible work arrangements, paid time
               off, parental leave, and other programs that support employees in
               managing their personal and professional commitments.
             </p>

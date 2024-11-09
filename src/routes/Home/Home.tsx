@@ -37,12 +37,12 @@ export default function Home() {
 
             <div className="flex max-w-prose flex-col gap-2 lg:items-start lg:gap-4 lg:text-left">
               <h1 className="text-3xl font-medium lg:text-5xl">
-                Welcome to <span className="text-brand">Yourbank</span>
+                Welcome to <span className="text-brand">CielTrust</span>
                 <br />
                 Empowering Your Financial Journey
               </h1>
               <p>
-                At Yourbank, our mission is to provide comprehensive banking
+                At CielTrust, our mission is to provide comprehensive banking
                 solutions that empower individuals and businesses to achieve
                 their financial goals. We are committed to delivering
                 personalized and innovative services that prioritize our
@@ -63,8 +63,8 @@ export default function Home() {
             </h2>
             <p>
               Discover a range of comprehensive and customizable banking
-              products at Yourbank, designed to suit your unique financial needs
-              and aspirations
+              products at CielTrust, designed to suit your unique financial
+              needs and aspirations
             </p>
           </TabSectionTitle>
         </TabSection>
@@ -74,7 +74,7 @@ export default function Home() {
         <div className="flex max-w-prose flex-col gap-4 lg:text-left">
           <h2 className="text-2xl font-semibold text-brand">Use Cases</h2>
           <p>
-            At Yourbank, we cater to the diverse needs of individuals and
+            At CielTrust, we cater to the diverse needs of individuals and
             businesses alike, offering a wide range of financial solutions
           </p>
         </div>
@@ -186,7 +186,7 @@ export default function Home() {
                   For businesses, we empower growth with working capital
                   solutions that optimize cash flow, and our tailored financing
                   options fuel business expansion. Whatever your financial
-                  aspirations, Yourbank is committed to providing the right
+                  aspirations, CielTrust is committed to providing the right
                   tools and support to achieve them.
                 </p>
               </div>
@@ -225,7 +225,7 @@ export default function Home() {
               Our <span className="text-brand">Features</span>
             </h2>
             <p>
-              Experience a host of powerful features at Yourbank, including
+              Experience a host of powerful features at CielTrust, including
               seamless online banking, secure transactions, and personalized
               financial insights, all designed to enhance your banking
               experience
