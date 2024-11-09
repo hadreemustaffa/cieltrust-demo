@@ -3,9 +3,9 @@ import { SubmitHandler, useForm } from "react-hook-form";
 // icons import
 
 // components import
-import Testimonials from "../../../components/Testimonials";
-import { ButtonPrimary } from "../../../components/Button";
-import ErrorMessage from "../../../components/ErrorMessage";
+import Testimonials from "../../components/Testimonials";
+import { ButtonPrimary } from "../../components/Button";
+import ErrorMessage from "../../components/ErrorMessage";
 
 type Inputs = {
   firstName: string;

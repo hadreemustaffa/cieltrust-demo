@@ -1,5 +1,5 @@
-import { products } from "../../../data/products";
-import { features } from "../../../data/features";
+import { products } from "../../data/products";
+import { features } from "../../data/features";
 
 // icons import
 import CheckCircleIcon from "../../images/icons/check-circle.svg?react";
@@ -16,13 +16,13 @@ import CreditCardIcon from "../../images/icons/credit-card.svg?react";
 import {
   LinkButtonPrimary,
   LinkButtonSecondary,
-} from "../../../components/Button";
-import Testimonials from "../../../components/Testimonials";
-import OpenAccountBanner from "../../../components/OpenAccountBanner";
-import FaqSection from "../../../components/FaqSection";
-import TabSection from "../../../components/TabSection/TabSection";
-import { TabSectionTitle } from "../../../components/TabSection/TabSectionTitle";
-import Icon from "../../../components/Icon";
+} from "../../components/Button";
+import Testimonials from "../../components/Testimonials";
+import OpenAccountBanner from "../../components/OpenAccountBanner";
+import FaqSection from "../../components/FaqSection";
+import TabSection from "../../components/TabSection/TabSection";
+import { TabSectionTitle } from "../../components/TabSection/TabSectionTitle";
+import Icon from "../../components/Icon";
 
 export default function Home() {
   return (

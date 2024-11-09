@@ -1,9 +1,9 @@
 import { Fragment } from "react/jsx-runtime";
-import { security } from "../../../data/security";
+import { security } from "../../data/security";
 
 // components import
-import FaqSection from "../../../components/FaqSection";
-import Icon from "../../../components/Icon";
+import FaqSection from "../../components/FaqSection";
+import Icon from "../../components/Icon";
 
 function Security() {
   return (

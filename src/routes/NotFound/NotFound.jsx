@@ -1,4 +1,4 @@
-import { LinkButtonPrimary } from "../../../components/Button";
+import { LinkButtonPrimary } from "../../components/Button";
 
 function NotFound() {
   return (

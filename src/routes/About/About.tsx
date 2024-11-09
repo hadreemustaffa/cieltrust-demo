@@ -1,5 +1,5 @@
-import Card, { CardImage, CardText } from "../../../components/Card";
-import PressReleases from "../../../components/PressReleases";
+import Card, { CardImage, CardText } from "../../components/Card";
+import PressReleases from "../../components/PressReleases";
 
 function About() {
   return (
