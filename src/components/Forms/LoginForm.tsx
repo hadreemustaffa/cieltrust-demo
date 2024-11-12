@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { Link } from "react-router-dom";
 
 import { LoginFormProps } from "../../types/forms";
 import { ERROR_MSG } from "../../data/errorMessages";
@@ -11,7 +12,7 @@ import EyeOffIcon from "../../images/icons/eye-off.svg?react";
 
 // components import
 import ErrorMessage from "../ErrorMessage";
-import { ButtonPrimary } from "../Button";
+import { ButtonPrimary, LinkButtonTertiary } from "../Button";
 
 function LoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
@@ -58,6 +59,7 @@ function LoginForm() {
           <input
             id="email"
             className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            autoComplete="email"
             aria-invalid={errors.email ? "true" : "false"}
             {...register("email", {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
@@ -80,9 +82,17 @@ function LoginForm() {
 
         <div className="flex w-full flex-col gap-2">
           <div className="flex w-full flex-col gap-2 text-left">
-            <label className="text-sm" htmlFor="password">
-              Password:
-            </label>
+            <div className="flex flex-row justify-between">
+              <label className="text-sm" htmlFor="password">
+                Password:
+              </label>
+              <Link
+                to="/forgot-password/"
+                className="text-sm text-link transition-colors duration-300 hover:text-link-hover"
+              >
+                Forgot password?
+              </Link>
+            </div>
             <div className="relative">
               <input
                 type={isPasswordVisible ? "text" : "password"}
@@ -127,7 +137,10 @@ function LoginForm() {
         </div>
       </div>
 
-      <div className="flex w-full justify-end">
+      <div className="flex w-full justify-end gap-8">
+        <LinkButtonTertiary to="/signup/" isPaddingless>
+          Create account
+        </LinkButtonTertiary>
         <ButtonPrimary type="submit">Log In</ButtonPrimary>
       </div>
     </form>

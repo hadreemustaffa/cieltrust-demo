@@ -49,6 +49,7 @@ function SignUpForm() {
           <input
             id="firstName"
             className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            autoComplete="given-name"
             aria-invalid={errors.firstName ? "true" : "false"}
             {...register("firstName", {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
@@ -70,6 +71,7 @@ function SignUpForm() {
           <input
             id="lastName"
             className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            autoComplete="family-name"
             aria-invalid={errors.lastName ? "true" : "false"}
             {...register("lastName", {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
@@ -93,6 +95,7 @@ function SignUpForm() {
           <input
             id="email"
             className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            autoComplete="email"
             aria-invalid={errors.email ? "true" : "false"}
             {...register("email", {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
@@ -122,6 +125,7 @@ function SignUpForm() {
                 type={isPasswordVisible ? "text" : "password"}
                 id="password"
                 className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+                autoComplete="new-password"
                 aria-invalid={errors.password ? "true" : "false"}
                 {...register("password", {
                   required: {
