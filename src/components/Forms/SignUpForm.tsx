@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import { useNavigate } from "react-router-dom";
 
 import { SignUpFormProps } from "../../types/forms";
 import { ERROR_MSG } from "../../data/errorMessages";
@@ -16,6 +17,8 @@ import { ButtonPrimary } from "../Button";
 function SignUpForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
+  const navigate = useNavigate();
+
   const {
     register,
     handleSubmit,
@@ -27,6 +30,8 @@ function SignUpForm() {
   const onSubmit: SubmitHandler<SignUpFormProps> = (data) => {
     users.push(data);
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(users));
+
+    navigate("/dashboard/");
   };
 
   const isNewEmail = (value: string) => {
@@ -37,7 +42,7 @@ function SignUpForm() {
 
   return (
     <form
-      className="flex w-full max-w-4xl flex-col items-center gap-4"
+      className="flex w-full max-w-4xl flex-col items-center gap-4 lg:items-start"
       autoComplete="off"
       onSubmit={handleSubmit(onSubmit)}
     >
@@ -48,7 +53,8 @@ function SignUpForm() {
           </label>
           <input
             id="firstName"
-            className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            type="text"
+            className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
             autoComplete="given-name"
             aria-invalid={errors.firstName ? "true" : "false"}
             {...register("firstName", {
@@ -56,10 +62,7 @@ function SignUpForm() {
               maxLength: { value: 30, message: ERROR_MSG.MAX_LENGTH_EXCEEDED },
             })}
           />
-          {errors.firstName && errors.firstName.type === "required" && (
-            <ErrorMessage error={errors.firstName.message} />
-          )}
-          {errors.firstName && errors.firstName.type === "maxLength" && (
+          {errors.firstName && (
             <ErrorMessage error={errors.firstName.message} />
           )}
         </div>
@@ -70,7 +73,8 @@ function SignUpForm() {
           </label>
           <input
             id="lastName"
-            className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            type="text"
+            className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
             autoComplete="family-name"
             aria-invalid={errors.lastName ? "true" : "false"}
             {...register("lastName", {
@@ -78,12 +82,7 @@ function SignUpForm() {
               maxLength: { value: 30, message: ERROR_MSG.MAX_LENGTH_EXCEEDED },
             })}
           />
-          {errors.lastName && errors.lastName.type === "required" && (
-            <ErrorMessage error={errors.lastName.message} />
-          )}
-          {errors.lastName && errors.lastName.type === "maxLength" && (
-            <ErrorMessage error={errors.lastName.message} />
-          )}
+          {errors.lastName && <ErrorMessage error={errors.lastName.message} />}
         </div>
       </div>
 
@@ -94,7 +93,7 @@ function SignUpForm() {
           </label>
           <input
             id="email"
-            className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
             autoComplete="email"
             aria-invalid={errors.email ? "true" : "false"}
             {...register("email", {
@@ -105,16 +104,9 @@ function SignUpForm() {
               },
             })}
           />
-          {errors.email && errors.email.type === "required" && (
-            <ErrorMessage error={errors.email.message} />
-          )}
-          {errors.email && errors.email.type === "pattern" && (
-            <ErrorMessage error={errors.email.message} />
-          )}
-          {errors.email && errors.email.type === "validate" && (
-            <ErrorMessage error={errors.email.message} />
-          )}
+          {errors.email && <ErrorMessage error={errors.email.message} />}
         </div>
+
         <div className="flex w-full flex-col gap-2">
           <div className="flex w-full flex-col gap-2 text-left">
             <label className="text-sm" htmlFor="password">
@@ -124,7 +116,7 @@ function SignUpForm() {
               <input
                 type={isPasswordVisible ? "text" : "password"}
                 id="password"
-                className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+                className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
                 autoComplete="new-password"
                 aria-invalid={errors.password ? "true" : "false"}
                 {...register("password", {
@@ -142,15 +134,13 @@ function SignUpForm() {
                 type="button"
                 className="absolute right-4 top-1/2 -translate-y-1/2 rounded-md text-sm text-accent/20 transition-colors duration-300 hover:text-accent-hover"
                 aria-controls="password"
+                aria-label="toggle password visibility"
                 onClick={() => setIsPasswordVisible(!isPasswordVisible)}
               >
                 {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
               </button>
             </div>
-            {errors.password && errors.password.type === "required" && (
-              <ErrorMessage error={errors.password.message} />
-            )}
-            {errors.password && errors.password.type === "minLength" && (
+            {errors.password && (
               <ErrorMessage error={errors.password.message} />
             )}
           </div>
