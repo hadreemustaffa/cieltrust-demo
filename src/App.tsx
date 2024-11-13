@@ -15,6 +15,7 @@ import Security from "./routes/Security/Security";
 import SignUp from "./routes/SignUp/SignUp";
 import Login from "./routes/Login/Login";
 import NotFound from "./routes/NotFound/NotFound";
+import Dashboard from "./routes/Dashboard/Dashboard";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -25,6 +26,7 @@ const router = createBrowserRouter(
       <Route path="/security/" element={<Security />} />
       <Route path="/signup/" element={<SignUp />} />
       <Route path="/login/" element={<Login />} />
+      <Route path="/dashboard/" element={<Dashboard />} />
 
       <Route path="/404/" element={<NotFound />} />
 
