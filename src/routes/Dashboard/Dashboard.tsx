@@ -1,4 +1,5 @@
 import AccountOverview from "../../components/Dashboard/AccountOverview/AccountOverview";
+import { useAuth } from "../../context/AuthProvider";
 
 function Dashboard() {
   return (

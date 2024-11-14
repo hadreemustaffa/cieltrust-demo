@@ -12,22 +12,11 @@ export default function Layout() {
 
   return (
     <>
-      {isDashboard ? (
-        <>
-          <DashboardHeader />
-          <main className="col-span-1 col-start-2 flex flex-col gap-16 text-center">
-            <Outlet />
-          </main>
-        </>
-      ) : (
-        <>
-          <Header />
-          <main className="col-span-1 col-start-2 flex flex-col gap-16 text-center">
-            <Outlet />
-          </main>
-          <Footer />
-        </>
-      )}
+      {isDashboard ? <DashboardHeader /> : <Header />}
+      <main className="col-span-1 col-start-2 flex flex-col gap-16 text-center">
+        <Outlet />
+      </main>
+      {!isDashboard && <Footer />}
     </>
   );
 }

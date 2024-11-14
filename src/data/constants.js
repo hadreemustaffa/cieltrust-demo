@@ -1,8 +1,15 @@
 export const LOCAL_STORAGE_KEY = "cieltrust-users";
 
-export const DEMO_CREDENTIALS = {
+export const DEMO_ACCOUNT = {
+  id: 0,
   email: "demo@account.com",
   password: "demoaccount",
+  firstName: "Demo",
+  lastName: "Account",
+  balanceSummary: {
+    checking: 0,
+    savings: 0,
+  },
 };
 
 export const EMAIL_REGEX =

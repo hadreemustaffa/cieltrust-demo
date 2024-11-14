@@ -5,7 +5,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { LoginFormProps } from "../../types/forms";
 import { ERROR_MSG } from "../../data/errorMessages";
 import {
-  DEMO_CREDENTIALS,
+  DEMO_ACCOUNT,
   EMAIL_REGEX,
   LOCAL_STORAGE_KEY,
 } from "../../data/constants";
@@ -17,45 +17,42 @@ import EyeOffIcon from "../../images/icons/eye-off.svg?react";
 // components import
 import ErrorMessage from "../ErrorMessage";
 import { ButtonPrimary, LinkButtonTertiary } from "../Button";
+import { useAuth } from "../../context/AuthProvider";
 
 function LoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isDemoAccountChecked, setIsDemoAccountChecked] = useState(false);
-  const [isInvalidCredentials, setIsInvalidCredentials] = useState(false);
-
-  const navigate = useNavigate();
+  const auth = useAuth();
 
   const {
     register,
     handleSubmit,
-    getValues,
     setValue,
+    getValues,
     clearErrors,
     formState: { errors },
   } = useForm<LoginFormProps>();
 
-  const users = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "[]");
+  // const isAuthenticatedUser = (email: string, password: string) => {
+  //   if (
+  //     email === DEMO_ACCOUNT.email &&
+  //     password === DEMO_ACCOUNT.password
+  //   ) {
+  //     return true;
+  //   }
 
-  const isAuthenticatedUser = (email: string, password: string) => {
-    if (
-      email === DEMO_CREDENTIALS.email &&
-      password === DEMO_CREDENTIALS.password
-    ) {
-      return true;
-    }
-
-    // Check if user exists and password matches for registered users
-    const user = users.find((user: LoginFormProps) => user.email === email);
-    return user ? user.password === password : false;
-  };
+  //   // Check if user exists and password matches for registered users
+  //   const user = users.find((user: LoginFormProps) => user.email === email);
+  //   return user ? user.password === password : false;
+  // };
 
   const handleDemoAccount = () => {
     setIsDemoAccountChecked(!isDemoAccountChecked);
 
     if (!isDemoAccountChecked) {
-      setValue("email", DEMO_CREDENTIALS.email);
+      setValue("email", DEMO_ACCOUNT.email);
       clearErrors("email");
-      setValue("password", DEMO_CREDENTIALS.password);
+      setValue("password", DEMO_ACCOUNT.password);
       clearErrors("password");
     } else {
       setValue("email", "");
@@ -64,14 +61,10 @@ function LoginForm() {
   };
 
   const onSubmit: SubmitHandler<LoginFormProps> = () => {
-    const email = getValues("email");
-    const password = getValues("password");
-
-    if (isAuthenticatedUser(email, password)) {
-      navigate("/dashboard/");
-    } else {
-      setIsInvalidCredentials(true);
-    }
+    auth.login({
+      email: getValues("email"),
+      password: getValues("password"),
+    });
   };
 
   return (
@@ -107,7 +100,11 @@ function LoginForm() {
               pattern: { value: EMAIL_REGEX, message: ERROR_MSG.INVALID_EMAIL },
               validate: {
                 isRegisteredUser: (value) => {
-                  if (value === DEMO_CREDENTIALS.email) {
+                  const users = JSON.parse(
+                    localStorage.getItem(LOCAL_STORAGE_KEY) ?? "[]",
+                  );
+
+                  if (value === DEMO_ACCOUNT.email) {
                     return true;
                   }
 
@@ -169,7 +166,7 @@ function LoginForm() {
         </div>
       </div>
 
-      {isInvalidCredentials && (
+      {auth.errorMessage && (
         <ErrorMessage error={ERROR_MSG.INVALID_CREDENTIALS} />
       )}
 
