@@ -16,16 +16,16 @@ import SignUp from "./routes/SignUp/SignUp";
 import Login from "./routes/Login/Login";
 import NotFound from "./routes/NotFound/NotFound";
 import Dashboard from "./routes/Dashboard/Dashboard";
-import ProtectedRoute from "./utils/ProtectedRoute";
-import AuthProvider from "./context/AuthProvider";
+import Protected from "./routes/Protected/Protected";
+import { SessionProvider } from "./context/SessionContext";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route
       element={
-        <AuthProvider>
+        <SessionProvider>
           <Layout />
-        </AuthProvider>
+        </SessionProvider>
       }
     >
       <Route path="/" element={<Home />} />
@@ -34,7 +34,7 @@ const router = createBrowserRouter(
       <Route path="/security/" element={<Security />} />
       <Route path="/signup/" element={<SignUp />} />
       <Route path="/login/" element={<Login />} />
-      <Route element={<ProtectedRoute />}>
+      <Route element={<Protected />}>
         <Route path="/dashboard/" element={<Dashboard />} />
       </Route>
 
