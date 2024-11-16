@@ -1,10 +1,9 @@
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { useNavigate } from "react-router-dom";
+import { Navigate, useNavigate } from "react-router-dom";
 
-import { SignUpFormProps } from "../../types/forms";
 import { ERROR_MSG } from "../../data/errorMessages";
-import { EMAIL_REGEX, LOCAL_STORAGE_KEY } from "../../data/constants";
+import { EMAIL_REGEX } from "../../data/constants";
 
 // icons import
 import EyeIcon from "../../images/icons/eye.svg?react";
@@ -13,32 +12,43 @@ import EyeOffIcon from "../../images/icons/eye-off.svg?react";
 // components import
 import ErrorMessage from "../ErrorMessage";
 import { ButtonPrimary } from "../Button";
+import { signup } from "../../actions/signup";
+import { useSession } from "../../context/SessionContext";
+
+interface SignUpFormData {
+  id: string;
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
+}
 
 function SignUpForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
-  const navigate = useNavigate();
+  const { session } = useSession();
 
   const {
     register,
     handleSubmit,
+    getValues,
     formState: { errors },
-  } = useForm<SignUpFormProps>();
+  } = useForm<SignUpFormData>();
 
-  let users = JSON.parse(localStorage.getItem(LOCAL_STORAGE_KEY) ?? "[]");
-
-  const onSubmit: SubmitHandler<SignUpFormProps> = (data) => {
-    users.push(data);
-    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(users));
-
-    navigate("/dashboard/");
-  };
-
-  const isNewEmail = (value: string) => {
-    return users.every((user: SignUpFormProps) => {
-      return user.email !== value;
+  const onSubmit: SubmitHandler<SignUpFormData> = async () => {
+    signup({
+      firstName: getValues("firstName"),
+      lastName: getValues("lastName"),
+      email: getValues("email"),
+      password: getValues("password"),
+    }).then((data) => {
+      if (data?.error) {
+        console.log(data.error);
+      }
     });
   };
+
+  if (session) return <Navigate to="/dashboard/" />;
 
   return (
     <form
@@ -99,9 +109,6 @@ function SignUpForm() {
             {...register("email", {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
               pattern: { value: EMAIL_REGEX, message: ERROR_MSG.INVALID_EMAIL },
-              validate: (value) => {
-                return isNewEmail(value) || ERROR_MSG.EMAIL_ALREADY_EXISTS;
-              },
             })}
           />
           {errors.email && <ErrorMessage error={errors.email.message} />}
