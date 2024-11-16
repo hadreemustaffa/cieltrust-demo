@@ -2,6 +2,8 @@ import { ReactElement } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
+import LogoutIcon from "../images/icons/log-out.svg?react";
+
 // components import
 import {
   ButtonMenuToggle,
@@ -10,9 +12,13 @@ import {
 } from "./Button";
 import NavLinks from "./NavLinks";
 import ThemeToggle from "./ThemeToggle";
+import { useSession } from "../context/SessionContext";
+import { logout } from "../actions/logout";
+import Icon from "./Icon";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
+  const { session } = useSession();
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -62,9 +68,19 @@ export default function Header() {
             <LinkButtonSecondary to="/signup/" isFullWidth>
               Sign Up
             </LinkButtonSecondary>
-            <LinkButtonPrimary to="/login/" isFullWidth>
-              Login
-            </LinkButtonPrimary>
+            {session ? (
+              <>
+                <LinkButtonPrimary to="/dashboard/">
+                  Dashboard
+                </LinkButtonPrimary>
+              </>
+            ) : (
+              <>
+                <LinkButtonPrimary to="/login/" isFullWidth>
+                  Login
+                </LinkButtonPrimary>
+              </>
+            )}
           </HeaderNavButtons>
         </HeaderNavMenu>
       </nav>
