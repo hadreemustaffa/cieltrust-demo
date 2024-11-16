@@ -9,14 +9,11 @@ export const useLocalStorage = () => {
   };
 
   const getItem = (key: string) => {
-    const value = localStorage.getItem(key);
-    setValue(value);
-    return value;
+    return localStorage.getItem(key);
   };
 
   const removeItem = (key: string) => {
     localStorage.removeItem(key);
-    setValue(null);
   };
 
   return { value, setItem, getItem, removeItem };
