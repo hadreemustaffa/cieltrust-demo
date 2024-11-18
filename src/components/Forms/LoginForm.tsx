@@ -40,7 +40,6 @@ function LoginForm() {
     }).then((data) => {
       if (data?.error) {
         setIsError(true);
-        console.log(data.error);
       }
     });
   };

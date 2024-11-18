@@ -21,13 +21,7 @@ import { SessionProvider } from "./context/SessionContext";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
-    <Route
-      element={
-        <SessionProvider>
-          <Layout />
-        </SessionProvider>
-      }
-    >
+    <Route element={<Layout />}>
       <Route path="/" element={<Home />} />
       <Route path="/careers/" element={<Careers />} />
       <Route path="/about/" element={<About />} />
@@ -46,7 +40,11 @@ const router = createBrowserRouter(
 );
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <SessionProvider>
+      <RouterProvider router={router} />
+    </SessionProvider>
+  );
 }
 
 export default App;

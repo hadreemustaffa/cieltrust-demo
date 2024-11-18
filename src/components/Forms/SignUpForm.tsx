@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Navigate, useNavigate } from "react-router-dom";
+import { Navigate } from "react-router-dom";
 
 import { ERROR_MSG } from "../../data/errorMessages";
 import { EMAIL_REGEX } from "../../data/constants";
@@ -36,15 +36,11 @@ function SignUpForm() {
   } = useForm<SignUpFormData>();
 
   const onSubmit: SubmitHandler<SignUpFormData> = async () => {
-    signup({
+    await signup({
       firstName: getValues("firstName"),
       lastName: getValues("lastName"),
       email: getValues("email"),
       password: getValues("password"),
-    }).then((data) => {
-      if (data?.error) {
-        console.log(data.error);
-      }
     });
   };
 

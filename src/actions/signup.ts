@@ -1,4 +1,3 @@
-import { redirect } from "react-router";
 import supabase from "../utils/supabase";
 
 interface FormData {
@@ -21,8 +20,6 @@ export async function signup(data: FormData) {
   });
 
   if (error) {
-    return { error: true };
+    console.log(error);
   }
-
-  redirect("/dashboard/");
 }

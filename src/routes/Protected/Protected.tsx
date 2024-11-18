@@ -2,9 +2,7 @@ import { Navigate, Outlet } from "react-router-dom";
 import { useSession } from "../../context/SessionContext";
 
 function Protected() {
-  const { session, isLoading } = useSession();
-
-  if (isLoading) return <div>Loading...</div>;
+  const { session } = useSession();
 
   if (!session) {
     return <Navigate to="/login/" />;

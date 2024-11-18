@@ -2,8 +2,6 @@ import { ReactElement } from "react";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-import LogoutIcon from "../images/icons/log-out.svg?react";
-
 // components import
 import {
   ButtonMenuToggle,
@@ -13,8 +11,6 @@ import {
 import NavLinks from "./NavLinks";
 import ThemeToggle from "./ThemeToggle";
 import { useSession } from "../context/SessionContext";
-import { logout } from "../actions/logout";
-import Icon from "./Icon";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
@@ -65,9 +61,7 @@ export default function Header() {
 
           <HeaderNavButtons>
             <ThemeToggle />
-            <LinkButtonSecondary to="/signup/" isFullWidth>
-              Sign Up
-            </LinkButtonSecondary>
+
             {session ? (
               <>
                 <LinkButtonPrimary to="/dashboard/">
@@ -76,6 +70,9 @@ export default function Header() {
               </>
             ) : (
               <>
+                <LinkButtonSecondary to="/signup/" isFullWidth>
+                  Sign Up
+                </LinkButtonSecondary>
                 <LinkButtonPrimary to="/login/" isFullWidth>
                   Login
                 </LinkButtonPrimary>

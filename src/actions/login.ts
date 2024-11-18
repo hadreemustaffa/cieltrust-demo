@@ -7,8 +7,10 @@ interface FormData {
 
 export async function login(data: FormData) {
   const { error } = await supabase.auth.signInWithPassword(data);
+
   if (error) {
-    return { error: true };
+    console.log(error.message);
+    return { error };
   }
 }
 
@@ -16,6 +18,6 @@ export async function loginAnonymously() {
   const { error } = await supabase.auth.signInAnonymously();
 
   if (error) {
-    return { error: true };
+    console.log(error.message);
   }
 }
