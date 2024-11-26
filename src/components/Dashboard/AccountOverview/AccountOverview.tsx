@@ -1,9 +1,7 @@
-import BalanceSummary from "./BalanceSummary";
-
-function AccountOverview() {
+function AccountOverview({ children }: { children: React.ReactNode }) {
   return (
-    <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
-      <BalanceSummary />
+    <div className="grid grid-cols-auto-fit-sm gap-4 rounded-md border border-accent/10 p-4 text-left">
+      {children}
     </div>
   );
 }
