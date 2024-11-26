@@ -40,7 +40,7 @@ export default {
         "auto-fit-lg": "repeat(auto-fit, minmax(400px, 1fr))",
       },
       gridTemplateRows: {
-        base: "auto auto auto",
+        base: "auto 1fr auto",
       },
     },
   },
