@@ -1,7 +1,7 @@
 // components import
 import Testimonials from "../../components/Testimonials";
 import SignUpForm from "../../components/Forms/SignUpForm";
-import FormDisclaimerBanner from "../../components/Forms/FormDisclaimerBanner";
+import FormDisclaimerBanner from "../../components/FormDisclaimerBanner";
 
 function SignUp() {
   return (
