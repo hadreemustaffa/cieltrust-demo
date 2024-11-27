@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import supabase from "../../../utils/supabase";
 
@@ -12,15 +12,22 @@ import { ButtonSecondary } from "../../Button";
 import { ERROR_MSG } from "../../../data/errorMessages";
 import Modal from "../../Modal";
 
-type SavingGoal = {
+interface SavingGoalItemProps {
   name: string;
   amount: number;
-};
+  onDelete: () => void;
+}
+
+interface SavingGoalProps {
+  name: string;
+  amount: number;
+}
 
 function SavingGoals() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [savingGoalList, setSavingGoalList] = useState<SavingGoal[]>([]);
+  const [savingGoalList, setSavingGoalList] = useState<SavingGoalProps[] | []>(
+    [],
+  );
   const [error, setError] = useState(false);
 
   const {
@@ -29,22 +36,24 @@ function SavingGoals() {
     getValues,
     reset,
     formState: { errors, isSubmitSuccessful },
-  } = useForm<SavingGoal>();
+  } = useForm<SavingGoalProps>();
 
-  const onSubmit: SubmitHandler<SavingGoal> = async () => {
+  const onSubmit: SubmitHandler<SavingGoalProps> = async () => {
     if (savingGoalList.length >= 5) {
       setError(true);
       return;
+    } else {
+      setSavingGoalList((prevSavingGoalList) => [
+        ...prevSavingGoalList,
+        { name: getValues("name"), amount: getValues("amount") },
+      ]);
+      setIsModalOpen(!isModalOpen);
     }
-
-    setSavingGoalList((prevSavingGoalList) => [
-      ...prevSavingGoalList,
-      { name: getValues("name"), amount: getValues("amount") },
-    ]);
-    setIsModalOpen(!isModalOpen);
   };
 
-  const updateSavingGoalList = async () => {
+  const updateSavingGoalList = async (
+    updatedSavingGoalList: SavingGoalProps[],
+  ) => {
     const { data: dashboard, error: dashboardError } = await supabase
       .from("dashboard")
       .select("id")
@@ -58,7 +67,7 @@ function SavingGoals() {
 
     const { error: savingGoalError } = await supabase
       .from("dashboard")
-      .update({ saving_goals: savingGoalList })
+      .update({ saving_goals: updatedSavingGoalList })
       .eq("id", dashboardId);
 
     if (savingGoalError) {
@@ -66,13 +75,17 @@ function SavingGoals() {
     }
   };
 
-  const deleteSavingGoal = useCallback((name: string) => {
-    setSavingGoalList((prevSavingGoalList) =>
-      prevSavingGoalList.filter(
-        (savingGoal) => savingGoal.name.toLowerCase() !== name.toLowerCase(),
-      ),
+  const deleteSavingGoal = async (name: string) => {
+    const updatedSavingGoalList = savingGoalList.filter(
+      (savingGoal) => savingGoal.name.toLowerCase() !== name.toLowerCase(),
     );
-  }, []);
+
+    setSavingGoalList(updatedSavingGoalList);
+
+    await updateSavingGoalList(updatedSavingGoalList);
+
+    setIsModalOpen(false);
+  };
 
   useEffect(() => {
     const fetchSavingGoalList = async () => {
@@ -93,14 +106,10 @@ function SavingGoals() {
     fetchSavingGoalList();
   }, []);
 
-  // sync database with local state
-  useEffect(() => {
-    updateSavingGoalList();
-  }, [savingGoalList]);
-
   // https://react-hook-form.com/docs/useform/reset
   useEffect(() => {
     if (isSubmitSuccessful) {
+      updateSavingGoalList(savingGoalList);
       reset();
     }
   }, [isSubmitSuccessful, reset]);
@@ -130,9 +139,13 @@ function SavingGoals() {
           <Modal
             title="Add Saving Goal"
             isOpen={isModalOpen}
-            onClose={() => setIsModalOpen(false)}
+            isFormModal={true}
+            formId="addSavingGoalForm"
+            submitButtonText="Add Goal"
+            closeModalFn={() => setIsModalOpen(!isModalOpen)}
           >
             <form
+              id="addSavingGoalForm"
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-4"
             >
@@ -191,22 +204,6 @@ function SavingGoals() {
                   You can only add up to 5 goals
                 </p>
               )}
-
-              <div className="flex flex-row items-center justify-end gap-2">
-                <button
-                  type="button"
-                  className="w-fit rounded-md border border-accent/10 p-2"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="w-fit rounded-md bg-brand px-4 py-2 text-white"
-                >
-                  Add Goal
-                </button>
-              </div>
             </form>
           </Modal>
         )}
@@ -214,49 +211,12 @@ function SavingGoals() {
         {savingGoalList && savingGoalList.length > 0 && (
           <ul className="flex flex-col gap-4">
             {savingGoalList.map((goal, idx) => (
-              <li
+              <SavingGoalItem
                 key={idx}
-                className="relative flex flex-row justify-between gap-2"
-              >
-                <p className="pl-4 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-md before:bg-brand before:content-['']">
-                  {goal.name}
-                </p>
-                <div className="flex flex-row items-center gap-2">
-                  <p>{goal.amount}</p>
-                  <button
-                    type="button"
-                    onClick={() => setIsDeleteModalOpen(true)}
-                  >
-                    <Icon SvgIcon={XIcon} width={16} height={16} isBorderless />
-                  </button>
-                </div>
-
-                <Modal
-                  title="Delete this goal?"
-                  isOpen={isDeleteModalOpen}
-                  onClose={() => setIsDeleteModalOpen(false)}
-                >
-                  <div className="flex flex-col gap-4">
-                    <p>Are you sure you want to delete this goal?</p>
-                    <div className="flex flex-row items-center justify-end gap-2">
-                      <button
-                        type="button"
-                        className="w-fit rounded-md border border-accent/10 p-2"
-                        onClick={() => setIsDeleteModalOpen(false)}
-                      >
-                        Cancel
-                      </button>
-                      <button
-                        type="button"
-                        className="w-fit rounded-md bg-red-700 px-4 py-2 text-white hover:bg-red-500"
-                        onClick={() => deleteSavingGoal(goal.name)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  </div>
-                </Modal>
-              </li>
+                name={goal.name}
+                amount={goal.amount}
+                onDelete={() => deleteSavingGoal(goal.name)}
+              />
             ))}
           </ul>
         )}
@@ -264,5 +224,40 @@ function SavingGoals() {
     </div>
   );
 }
+
+const SavingGoalItem = ({
+  name,
+  amount,
+  onDelete,
+  ...props
+}: SavingGoalItemProps) => {
+  const [isOpen, setIsOpen] = useState(false);
+
+  return (
+    <li {...props} className="relative flex flex-row justify-between gap-2">
+      <p className="pl-4 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-md before:bg-brand before:content-['']">
+        {name}
+      </p>
+      <div className="flex flex-row items-center gap-2">
+        <p>{amount}</p>
+        <button type="button" onClick={() => setIsOpen(true)}>
+          <Icon SvgIcon={XIcon} width={16} height={16} isBorderless />
+        </button>
+      </div>
+
+      <Modal
+        title="Delete this goal?"
+        isOpen={isOpen}
+        onDelete={onDelete}
+        closeModalFn={() => setIsOpen(false)}
+        isFormModal={false}
+      >
+        <div className="flex flex-col gap-4">
+          <p>Are you sure you want to delete this goal?</p>
+        </div>
+      </Modal>
+    </li>
+  );
+};
 
 export default SavingGoals;
