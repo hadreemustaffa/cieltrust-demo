@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import React, { useEffect } from "react";
 
 // icons import
 import XIcon from "../images/icons/x.svg?react";
@@ -9,36 +9,43 @@ import Icon from "./Icon";
 
 type ModalProps =
   | {
+      id: string;
       title: string;
       isOpen: boolean;
       children: React.ReactNode;
-      closeModalFn: () => void;
-      isFormModal?: true;
+      isFormModal: true;
       formId: string;
       submitButtonText: string;
-      onDelete?: never;
+      handleClose: () => void;
+      handleClick?: never;
+      buttonText?: never;
     }
   | {
+      id: string;
       title: string;
       isOpen: boolean;
       children: React.ReactNode;
-      closeModalFn: () => void;
-      isFormModal: false;
+      isFormModal?: false;
       formId?: never;
       submitButtonText?: never;
-      onDelete: () => void;
+      handleClick: () => void;
+      handleClose: () => void;
+      buttonText: string;
     };
 
 function Modal({
   title,
   isOpen,
   children,
-  closeModalFn,
+  handleClose,
   isFormModal,
   formId,
   submitButtonText,
-  onDelete,
+  handleClick,
+  buttonText,
 }: ModalProps) {
+  const modalRef = React.useRef<HTMLDivElement>(null);
+
   useEffect(() => {
     if (isOpen) {
       document.getElementById("goalName")?.focus();
@@ -46,7 +53,29 @@ function Modal({
     } else {
       document.body.removeAttribute("style");
     }
-  }, [isOpen]);
+  }, [isOpen, handleClose]);
+
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      if (event.key === "Escape") {
+        handleClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener("keydown", handleKeyDown);
+    }
+
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [isOpen, handleClose]);
+
+  const handleOutsideClick = (event: React.MouseEvent) => {
+    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
+      handleClose();
+    }
+  };
 
   if (!isOpen) return null;
 
@@ -54,14 +83,18 @@ function Modal({
     <div
       aria-labelledby="modal-title"
       className="fixed inset-0 z-50 flex h-full w-full items-center justify-center bg-background/90 p-4"
+      onClick={handleOutsideClick}
     >
-      <div className="flex w-full max-w-lg flex-col gap-6 rounded-md border border-accent/10 bg-card p-4">
+      <div
+        ref={modalRef}
+        className="flex w-full max-w-lg flex-col gap-6 rounded-md border border-accent/10 bg-card p-4"
+      >
         <div className="flex flex-row items-center justify-between gap-2">
           <h2 id="modal-title" className="text-lg font-semibold">
             {title}
           </h2>
 
-          <ButtonSecondary type="button" onClick={closeModalFn}>
+          <ButtonSecondary type="button" onClick={handleClose}>
             <Icon SvgIcon={XIcon} isBorderless />
           </ButtonSecondary>
         </div>
@@ -69,7 +102,7 @@ function Modal({
         {children}
 
         <div className="flex flex-row items-center justify-end gap-2">
-          <ButtonSecondary type="button" onClick={closeModalFn}>
+          <ButtonSecondary type="button" onClick={handleClose}>
             Cancel
           </ButtonSecondary>
 
@@ -81,9 +114,9 @@ function Modal({
             <button
               type="button"
               className="w-fit rounded-md bg-red-700 px-6 py-3 text-white hover:bg-red-500"
-              onClick={onDelete}
+              onClick={handleClick}
             >
-              Delete
+              {buttonText}
             </button>
           )}
         </div>

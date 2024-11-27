@@ -15,6 +15,7 @@ import Modal from "../../Modal";
 interface SavingGoalItemProps {
   name: string;
   amount: number;
+  modalId: string;
   onDelete: () => void;
 }
 
@@ -25,9 +26,7 @@ interface SavingGoalProps {
 
 function SavingGoals() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [savingGoalList, setSavingGoalList] = useState<SavingGoalProps[] | []>(
-    [],
-  );
+  const [savingGoalList, setSavingGoalList] = useState<SavingGoalProps[]>([]);
   const [error, setError] = useState(false);
 
   const {
@@ -116,11 +115,8 @@ function SavingGoals() {
 
   useEffect(() => {
     if (isModalOpen) {
-      document.getElementById("goalName")?.focus();
-      document.body.style.overflow = "hidden";
       setError(false);
     } else {
-      document.body.removeAttribute("style");
       reset();
     }
   }, [isModalOpen]);
@@ -137,12 +133,13 @@ function SavingGoals() {
 
         {isModalOpen && (
           <Modal
+            id="addSavingGoalModal"
             title="Add Saving Goal"
             isOpen={isModalOpen}
             isFormModal={true}
             formId="addSavingGoalForm"
             submitButtonText="Add Goal"
-            closeModalFn={() => setIsModalOpen(!isModalOpen)}
+            handleClose={() => setIsModalOpen(!isModalOpen)}
           >
             <form
               id="addSavingGoalForm"
@@ -213,6 +210,7 @@ function SavingGoals() {
             {savingGoalList.map((goal, idx) => (
               <SavingGoalItem
                 key={idx}
+                modalId={`saving-goal-item-modal-${idx}`}
                 name={goal.name}
                 amount={goal.amount}
                 onDelete={() => deleteSavingGoal(goal.name)}
@@ -228,10 +226,17 @@ function SavingGoals() {
 const SavingGoalItem = ({
   name,
   amount,
+  modalId,
   onDelete,
   ...props
 }: SavingGoalItemProps) => {
   const [isOpen, setIsOpen] = useState(false);
+
+  const handleDelete = () => {
+    onDelete();
+
+    setIsOpen(false);
+  };
 
   return (
     <li {...props} className="relative flex flex-row justify-between gap-2">
@@ -246,15 +251,14 @@ const SavingGoalItem = ({
       </div>
 
       <Modal
+        id={modalId}
         title="Delete this goal?"
         isOpen={isOpen}
-        onDelete={onDelete}
-        closeModalFn={() => setIsOpen(false)}
-        isFormModal={false}
+        handleClick={handleDelete}
+        handleClose={() => setIsOpen(false)}
+        buttonText="Delete"
       >
-        <div className="flex flex-col gap-4">
-          <p>Are you sure you want to delete this goal?</p>
-        </div>
+        <p>Are you sure you want to delete this goal?</p>
       </Modal>
     </li>
   );
