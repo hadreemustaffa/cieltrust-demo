@@ -48,7 +48,6 @@ function Modal({
 
   useEffect(() => {
     if (isOpen) {
-      document.getElementById("goalName")?.focus();
       document.body.style.overflow = "hidden";
     } else {
       document.body.removeAttribute("style");
