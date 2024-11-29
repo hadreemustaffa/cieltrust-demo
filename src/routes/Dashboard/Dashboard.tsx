@@ -71,7 +71,9 @@ function Dashboard() {
         />
       </AccountOverview>
 
-      <SavingGoals />
+      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
+        <SavingGoals />
+      </div>
     </div>
   );
 }

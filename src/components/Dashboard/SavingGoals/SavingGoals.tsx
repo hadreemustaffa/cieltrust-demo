@@ -42,7 +42,7 @@ function SavingGoals() {
 
   const onSubmit: SubmitHandler<SavingGoalProps> = async () => {};
 
-  const updateSavingGoalList = async () => {
+  const insertSavingGoalList = async () => {
     const { data: dashboard, error: dashboardError } = await supabase
       .from("dashboard")
       .select("id")
@@ -81,9 +81,9 @@ function SavingGoals() {
       (savingGoal) => savingGoal.id !== id,
     );
 
-    const response = await supabase.from("saving_goals").delete().eq("id", id);
-
     setSavingGoalList(updatedSavingGoalList);
+
+    const response = await supabase.from("saving_goals").delete().eq("id", id);
 
     setIsModalOpen(false);
     return response;
@@ -123,7 +123,7 @@ function SavingGoals() {
   useEffect(() => {
     const updateList = async () => {
       if (isSubmitSuccessful) {
-        await updateSavingGoalList();
+        await insertSavingGoalList();
         reset();
       }
     };
@@ -141,7 +141,7 @@ function SavingGoals() {
   }, [isModalOpen]);
 
   return (
-    <div className="rounded-md border border-accent/10 p-4">
+    <div className="rounded-md border border-accent/10 p-4 md:col-span-2">
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-semibold">Saving Goals</h2>
