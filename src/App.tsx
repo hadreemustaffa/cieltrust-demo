@@ -37,12 +37,21 @@ const router = createBrowserRouter(
       <Route path="*" element={<Navigate to="/404/" replace />} />
     </Route>,
   ),
+  {
+    future: {
+      v7_relativeSplatPath: true,
+      v7_fetcherPersist: true,
+      v7_normalizeFormMethod: true,
+      v7_skipActionErrorRevalidation: true,
+      v7_partialHydration: true,
+    },
+  },
 );
 
 function App() {
   return (
     <SessionProvider>
-      <RouterProvider router={router} />
+      <RouterProvider router={router} future={{ v7_startTransition: true }} />
     </SessionProvider>
   );
 }
