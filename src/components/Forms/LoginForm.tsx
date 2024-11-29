@@ -1,6 +1,6 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Link, Navigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 import { ERROR_MSG } from "../../data/errorMessages";
 import { EMAIL_REGEX } from "../../data/constants";
@@ -25,6 +25,7 @@ function LoginForm() {
   const [isError, setIsError] = useState(false);
 
   const { session } = useSession();
+  const navigate = useNavigate();
 
   const {
     register,
@@ -44,7 +45,11 @@ function LoginForm() {
     });
   };
 
-  if (session) return <Navigate to="/dashboard/" />;
+  useEffect(() => {
+    if (session) {
+      navigate("/dashboard/");
+    }
+  }, [session]);
 
   return (
     <>
