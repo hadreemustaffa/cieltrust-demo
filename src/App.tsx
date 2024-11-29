@@ -15,21 +15,47 @@ import Security from "./routes/Security/Security";
 import SignUp from "./routes/SignUp/SignUp";
 import Login from "./routes/Login/Login";
 import NotFound from "./routes/NotFound/NotFound";
-import Dashboard from "./routes/Dashboard/Dashboard";
+import Dashboard, { dashboardLoader } from "./routes/Dashboard/Dashboard";
 import Protected from "./routes/Protected/Protected";
 import { SessionProvider } from "./context/SessionContext";
+import ErrorBoundary from "./components/ErrorBoundary";
 
 const router = createBrowserRouter(
   createRoutesFromElements(
     <Route element={<Layout />}>
-      <Route path="/" element={<Home />} />
-      <Route path="/careers/" element={<Careers />} />
-      <Route path="/about/" element={<About />} />
-      <Route path="/security/" element={<Security />} />
-      <Route path="/signup/" element={<SignUp />} />
-      <Route path="/login/" element={<Login />} />
+      <Route path="/" element={<Home />} errorElement={<ErrorBoundary />} />
+      <Route
+        path="/careers/"
+        element={<Careers />}
+        errorElement={<ErrorBoundary />}
+      />
+      <Route
+        path="/about/"
+        element={<About />}
+        errorElement={<ErrorBoundary />}
+      />
+      <Route
+        path="/security/"
+        element={<Security />}
+        errorElement={<ErrorBoundary />}
+      />
+      <Route
+        path="/signup/"
+        element={<SignUp />}
+        errorElement={<ErrorBoundary />}
+      />
+      <Route
+        path="/login/"
+        element={<Login />}
+        errorElement={<ErrorBoundary />}
+      />
       <Route element={<Protected />}>
-        <Route path="/dashboard/" element={<Dashboard />} />
+        <Route
+          path="/dashboard/"
+          element={<Dashboard />}
+          loader={dashboardLoader}
+          errorElement={<ErrorBoundary />}
+        />
       </Route>
 
       <Route path="/404/" element={<NotFound />} />
