@@ -1,4 +1,4 @@
-import { redirect } from "react-router";
+import { useLoaderData } from "react-router";
 import AccountOverview from "../../components/Dashboard/AccountOverview/AccountOverview";
 import { useSession } from "../../context/SessionContext";
 import supabase from "../../utils/supabase";
@@ -18,7 +18,24 @@ type DashboardProps = {
   overview: Overview[];
 };
 
+export async function dashboardLoader() {
+  const { data, error } = await supabase
+    .from("dashboard")
+    .select("id")
+    .single();
+
+  if (error) {
+    console.log(error);
+  }
+
+  if (data) {
+    return data;
+  }
+}
+
 function Dashboard() {
+  let loaderData = useLoaderData() as { id: number };
+
   const { session } = useSession();
   const [data, setData] = useState<DashboardProps>({
     overview: [
@@ -30,17 +47,6 @@ function Dashboard() {
       },
     ],
   });
-
-  const handleDeleteUser = async () => {
-    deleteUser()
-      .then(() => {
-        alert("Account deleted successfully!");
-      })
-      .finally(async () => {
-        await supabase.auth.signOut();
-        redirect("/");
-      });
-  };
 
   return (
     <div className="flex flex-col gap-4 text-left">
@@ -72,7 +78,7 @@ function Dashboard() {
       </AccountOverview>
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2 2xl:grid-cols-3">
-        <SavingGoals />
+        <SavingGoals dashboardId={loaderData.id} />
       </div>
     </div>
   );

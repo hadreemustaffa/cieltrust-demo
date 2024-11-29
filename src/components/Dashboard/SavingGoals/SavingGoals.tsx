@@ -20,16 +20,22 @@ interface SavingGoalItemProps {
   onDelete: () => void;
 }
 
-interface SavingGoalProps {
+interface SavingGoalFormProps {
   id: number;
   name: string;
   target_amount: number;
   saved_amount: number;
 }
 
-function SavingGoals() {
+interface SavingGoalsProps {
+  dashboardId: number;
+}
+
+function SavingGoals({ dashboardId }: SavingGoalsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const [savingGoalList, setSavingGoalList] = useState<SavingGoalProps[]>([]);
+  const [savingGoalList, setSavingGoalList] = useState<SavingGoalFormProps[]>(
+    [],
+  );
   const [error, setError] = useState(false);
 
   const {
@@ -38,22 +44,11 @@ function SavingGoals() {
     getValues,
     reset,
     formState: { errors, isSubmitSuccessful },
-  } = useForm<SavingGoalProps>();
+  } = useForm<SavingGoalFormProps>();
 
-  const onSubmit: SubmitHandler<SavingGoalProps> = async () => {};
+  const onSubmit: SubmitHandler<SavingGoalFormProps> = async () => {};
 
   const insertSavingGoalList = async () => {
-    const { data: dashboard, error: dashboardError } = await supabase
-      .from("dashboard")
-      .select("id")
-      .single();
-
-    if (dashboardError) {
-      console.log(dashboardError);
-    }
-
-    const dashboardId = dashboard.id;
-
     const { data, error } = await supabase
       .from("saving_goals")
       .insert({
@@ -90,17 +85,6 @@ function SavingGoals() {
   };
 
   const fetchSavingGoalList = async () => {
-    const { data: dashboard, error: dashboardError } = await supabase
-      .from("dashboard")
-      .select("id")
-      .single();
-
-    if (dashboardError) {
-      console.log(dashboardError);
-    }
-
-    const dashboardId = dashboard.id;
-
     const { data, error } = await supabase
       .from("saving_goals")
       .select()
