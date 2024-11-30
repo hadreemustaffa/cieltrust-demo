@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 
@@ -13,7 +13,6 @@ import EyeOffIcon from "../../images/icons/eye-off.svg?react";
 import ErrorMessage from "../ErrorMessage";
 import { ButtonPrimary } from "../Button";
 import { signup } from "../../actions/signup";
-import { useSession } from "../../context/SessionContext";
 
 interface SignUpFormData {
   id: string;
@@ -25,8 +24,10 @@ interface SignUpFormData {
 
 function SignUpForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
+  const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const { session } = useSession();
   const navigate = useNavigate();
 
   const {
@@ -37,19 +38,32 @@ function SignUpForm() {
   } = useForm<SignUpFormData>();
 
   const onSubmit: SubmitHandler<SignUpFormData> = async () => {
-    await signup({
-      firstName: getValues("firstName"),
-      lastName: getValues("lastName"),
-      email: getValues("email"),
-      password: getValues("password"),
-    });
-  };
+    setIsLoading(true);
+    setIsError(false);
+    setErrorMessage("");
 
-  useEffect(() => {
-    if (session) {
-      navigate("/dashboard/");
+    try {
+      const result = await signup({
+        firstName: getValues("firstName"),
+        lastName: getValues("lastName"),
+        email: getValues("email"),
+        password: getValues("password"),
+      });
+
+      setIsLoading(false);
+
+      if (result?.error) {
+        setIsError(true);
+        setErrorMessage(result.error.message);
+      } else {
+        navigate("/dashboard/");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
+      setErrorMessage("An unexpected error occurred");
     }
-  }, [session]);
+  };
 
   return (
     <form
@@ -68,6 +82,7 @@ function SignUpForm() {
             className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
             autoComplete="given-name"
             aria-invalid={errors.firstName ? "true" : "false"}
+            disabled={isLoading}
             {...register("firstName", {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
               maxLength: { value: 30, message: ERROR_MSG.MAX_LENGTH_EXCEEDED },
@@ -88,6 +103,7 @@ function SignUpForm() {
             className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
             autoComplete="family-name"
             aria-invalid={errors.lastName ? "true" : "false"}
+            disabled={isLoading}
             {...register("lastName", {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
               maxLength: { value: 30, message: ERROR_MSG.MAX_LENGTH_EXCEEDED },
@@ -107,6 +123,7 @@ function SignUpForm() {
             className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
             autoComplete="email"
             aria-invalid={errors.email ? "true" : "false"}
+            disabled={isLoading}
             {...register("email", {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
               pattern: { value: EMAIL_REGEX, message: ERROR_MSG.INVALID_EMAIL },
@@ -127,6 +144,7 @@ function SignUpForm() {
                 className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
                 autoComplete="new-password"
                 aria-invalid={errors.password ? "true" : "false"}
+                disabled={isLoading}
                 {...register("password", {
                   required: {
                     value: true,
@@ -144,6 +162,7 @@ function SignUpForm() {
                 aria-controls="password"
                 aria-label="toggle password visibility"
                 onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                disabled={isLoading}
               >
                 {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
               </button>
@@ -155,8 +174,14 @@ function SignUpForm() {
         </div>
       </div>
 
+      {isError && (
+        <ErrorMessage error={errorMessage || ERROR_MSG.INVALID_CREDENTIALS} />
+      )}
+
       <div className="flex w-full justify-end">
-        <ButtonPrimary type="submit">Sign Up</ButtonPrimary>
+        <ButtonPrimary type="submit" disabled={isLoading}>
+          {isLoading ? "Signing up..." : "Sign up"}
+        </ButtonPrimary>
       </div>
     </form>
   );

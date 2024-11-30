@@ -6,5 +6,6 @@ export async function deleteUser() {
 
   if (error) {
     console.log(error);
+    return { error };
   }
 }

@@ -19,5 +19,6 @@ export async function loginAnonymously() {
 
   if (error) {
     console.log(error.message);
+    return { error };
   }
 }

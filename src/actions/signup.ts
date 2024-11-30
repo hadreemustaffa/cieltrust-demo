@@ -21,5 +21,6 @@ export async function signup(data: FormData) {
 
   if (error) {
     console.log(error);
+    return { error };
   }
 }

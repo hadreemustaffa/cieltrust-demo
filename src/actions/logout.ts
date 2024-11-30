@@ -5,5 +5,6 @@ export async function logout() {
 
   if (error) {
     console.log(error);
+    return { error };
   }
 }

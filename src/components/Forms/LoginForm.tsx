@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Link, useNavigate } from "react-router-dom";
 
@@ -13,7 +13,6 @@ import EyeOffIcon from "../../images/icons/eye-off.svg?react";
 import ErrorMessage from "../ErrorMessage";
 import { ButtonPrimary, LinkButtonTertiary } from "../Button";
 import { login, loginAnonymously } from "../../actions/login";
-import { useSession } from "../../context/SessionContext";
 
 interface LoginFormData {
   email: string;
@@ -23,8 +22,9 @@ interface LoginFormData {
 function LoginForm() {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
 
-  const { session } = useSession();
   const navigate = useNavigate();
 
   const {
@@ -34,26 +34,57 @@ function LoginForm() {
     formState: { errors },
   } = useForm<LoginFormData>();
 
-  const onSubmit: SubmitHandler<LoginFormData> = async () => {
-    login({
-      email: getValues("email"),
-      password: getValues("password"),
-    }).then((data) => {
-      if (data?.error) {
+  const handleAnonymousLogin = async () => {
+    setIsLoading(true);
+    setIsError(false);
+
+    try {
+      const result = await loginAnonymously();
+
+      setIsLoading(false);
+
+      if (result?.error) {
         setIsError(true);
+        setErrorMessage(result.error.message);
+      } else {
+        navigate("/dashboard/");
       }
-    });
+    } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
+      setErrorMessage("An unexpected error occurred");
+    }
   };
 
-  useEffect(() => {
-    if (session) {
-      navigate("/dashboard/");
+  const onSubmit: SubmitHandler<LoginFormData> = async () => {
+    setIsLoading(true);
+    setIsError(false);
+    setErrorMessage("");
+
+    try {
+      const result = await login({
+        email: getValues("email"),
+        password: getValues("password"),
+      });
+
+      setIsLoading(false);
+
+      if (result?.error) {
+        setIsError(true);
+        setErrorMessage(result.error.message || ERROR_MSG.INVALID_CREDENTIALS);
+      } else {
+        navigate("/dashboard/");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      setIsError(true);
+      setErrorMessage("An unexpected error occurred");
     }
-  }, [session]);
+  };
 
   return (
     <>
-      <ButtonPrimary onClick={loginAnonymously}>
+      <ButtonPrimary onClick={handleAnonymousLogin} disabled={isLoading}>
         Continue as guest
       </ButtonPrimary>
 
@@ -81,6 +112,7 @@ function LoginForm() {
               className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
               autoComplete="email"
               aria-invalid={errors.email ? "true" : "false"}
+              disabled={isLoading}
               {...register("email", {
                 required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
                 pattern: {
@@ -111,6 +143,7 @@ function LoginForm() {
                   type={isPasswordVisible ? "text" : "password"}
                   className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
                   aria-invalid={errors.password ? "true" : "false"}
+                  disabled={isLoading}
                   {...register("password", {
                     required: {
                       value: true,
@@ -128,6 +161,7 @@ function LoginForm() {
                   aria-controls="password"
                   aria-label="toggle password visibility"
                   onClick={() => setIsPasswordVisible(!isPasswordVisible)}
+                  disabled={isLoading}
                 >
                   {isPasswordVisible ? <EyeIcon /> : <EyeOffIcon />}
                 </button>
@@ -139,13 +173,17 @@ function LoginForm() {
           </div>
         </div>
 
-        {isError && <ErrorMessage error={ERROR_MSG.INVALID_CREDENTIALS} />}
+        {isError && (
+          <ErrorMessage error={errorMessage || ERROR_MSG.INVALID_CREDENTIALS} />
+        )}
 
         <div className="flex w-full justify-end gap-8">
           <LinkButtonTertiary to="/signup/" isPaddingless>
             Create account
           </LinkButtonTertiary>
-          <ButtonPrimary type="submit">Log In</ButtonPrimary>
+          <ButtonPrimary type="submit" disabled={isLoading}>
+            {isLoading ? "Logging in..." : "Log In"}
+          </ButtonPrimary>
         </div>
       </form>
     </>
