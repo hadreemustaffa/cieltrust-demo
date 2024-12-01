@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import {
   createBrowserRouter,
   createRoutesFromElements,
@@ -6,19 +7,23 @@ import {
   RouterProvider,
 } from "react-router-dom";
 
+import { SessionProvider } from "./context/SessionContext";
+
 // components import
 import Layout from "./components/Layout";
 import Home from "./routes/Home/Home";
-import Careers from "./routes/Careers/Careers";
-import About from "./routes/About/About";
-import Security from "./routes/Security/Security";
 import SignUp from "./routes/SignUp/SignUp";
 import Login from "./routes/Login/Login";
-import NotFound from "./routes/NotFound/NotFound";
-import Dashboard, { dashboardLoader } from "./routes/Dashboard/Dashboard";
-import Protected from "./routes/Protected/Protected";
-import { SessionProvider } from "./context/SessionContext";
+import { dashboardLoader } from "./routes/Dashboard/Dashboard";
 import ErrorBoundary from "./components/ErrorBoundary";
+import Loading from "./components/Loading";
+
+const LazyCareers = lazy(() => import("./routes/Careers/Careers"));
+const LazyAbout = lazy(() => import("./routes/About/About"));
+const LazySecurity = lazy(() => import("./routes/Security/Security"));
+const LazyNotFound = lazy(() => import("./routes/NotFound/NotFound"));
+const LazyProtected = lazy(() => import("./routes/Protected/Protected"));
+const LazyDashboard = lazy(() => import("./routes/Dashboard/Dashboard"));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -26,17 +31,29 @@ const router = createBrowserRouter(
       <Route path="/" element={<Home />} errorElement={<ErrorBoundary />} />
       <Route
         path="/careers/"
-        element={<Careers />}
+        element={
+          <Suspense fallback={<Loading />}>
+            <LazyCareers />
+          </Suspense>
+        }
         errorElement={<ErrorBoundary />}
       />
       <Route
         path="/about/"
-        element={<About />}
+        element={
+          <Suspense fallback={<Loading />}>
+            <LazyAbout />
+          </Suspense>
+        }
         errorElement={<ErrorBoundary />}
       />
       <Route
         path="/security/"
-        element={<Security />}
+        element={
+          <Suspense fallback={<Loading />}>
+            <LazySecurity />
+          </Suspense>
+        }
         errorElement={<ErrorBoundary />}
       />
       <Route
@@ -49,16 +66,33 @@ const router = createBrowserRouter(
         element={<Login />}
         errorElement={<ErrorBoundary />}
       />
-      <Route element={<Protected />}>
+      <Route
+        element={
+          <Suspense fallback={<Loading />}>
+            <LazyProtected />
+          </Suspense>
+        }
+      >
         <Route
           path="/dashboard/"
-          element={<Dashboard />}
+          element={
+            <Suspense fallback={<Loading />}>
+              <LazyDashboard />
+            </Suspense>
+          }
           loader={dashboardLoader}
           errorElement={<ErrorBoundary />}
         />
       </Route>
 
-      <Route path="/404/" element={<NotFound />} />
+      <Route
+        path="/404/"
+        element={
+          <Suspense fallback={<Loading />}>
+            <LazyNotFound />
+          </Suspense>
+        }
+      />
 
       <Route path="*" element={<Navigate to="/404/" replace />} />
     </Route>,
