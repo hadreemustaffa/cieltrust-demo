@@ -6,6 +6,7 @@ import XIcon from "../images/icons/x.svg?react";
 // components import
 import { ButtonPrimary, ButtonSecondary } from "./Button";
 import Icon from "./Icon";
+import useOutsideClick from "../hooks/useOutsideClick";
 
 type ModalProps =
   | {
@@ -44,7 +45,7 @@ function Modal({
   handleClick,
   buttonText,
 }: ModalProps) {
-  const modalRef = React.useRef<HTMLDivElement>(null);
+  const ref = useOutsideClick(handleClose);
 
   useEffect(() => {
     if (isOpen) {
@@ -70,22 +71,15 @@ function Modal({
     };
   }, [isOpen, handleClose]);
 
-  const handleOutsideClick = (event: React.MouseEvent) => {
-    if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
-      handleClose();
-    }
-  };
-
   if (!isOpen) return null;
 
   return (
     <div
       aria-labelledby="modal-title"
       className="fixed inset-0 z-50 flex h-full w-full items-center justify-center bg-background/90 p-4"
-      onClick={handleOutsideClick}
     >
       <div
-        ref={modalRef}
+        ref={ref}
         className="flex w-full max-w-lg flex-col gap-6 rounded-md border border-accent/10 bg-card p-4"
       >
         <div className="flex flex-row items-center justify-between gap-2">
