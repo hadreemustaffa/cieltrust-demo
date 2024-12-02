@@ -2,25 +2,18 @@ import { useEffect, useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import supabase from "../../../utils/supabase";
 
+import { ERROR_MSG } from "../../../data/errorMessages";
+
 // icons import
 import PlusIcon from "../../../images/icons/plus.svg?react";
-import XIcon from "../../../images/icons/x.svg?react";
 
 // components import
 import Icon from "../../Icon";
 import { ButtonSecondary } from "../../Button";
-import { ERROR_MSG } from "../../../data/errorMessages";
 import Modal from "../../Modal";
+import SavingGoalItem from "./SavingGoalItem";
 
-interface SavingGoalItemProps {
-  name: string;
-  targetAmount: number;
-  savedAmount: number;
-  modalId: string;
-  onDelete: () => void;
-}
-
-interface SavingGoalFormProps {
+export interface SavingGoalFormProps {
   id: number;
   name: string;
   target_amount: number;
@@ -36,17 +29,15 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
   const [savingGoalList, setSavingGoalList] = useState<SavingGoalFormProps[]>(
     [],
   );
-  const [error, setError] = useState(false);
 
   const {
     register,
     handleSubmit,
     getValues,
     reset,
+    setFocus,
     formState: { errors, isSubmitSuccessful },
   } = useForm<SavingGoalFormProps>();
-
-  const onSubmit: SubmitHandler<SavingGoalFormProps> = async () => {};
 
   const insertSavingGoalList = async () => {
     const { data, error } = await supabase
@@ -99,6 +90,16 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
     }
   };
 
+  const onEditSuccess = (updatedGoal: SavingGoalFormProps) => {
+    setSavingGoalList((prevData) =>
+      prevData.map((goal) => (goal.id === updatedGoal.id ? updatedGoal : goal)),
+    );
+  };
+
+  const onSubmit: SubmitHandler<SavingGoalFormProps> = async () => {
+    await insertSavingGoalList();
+  };
+
   useEffect(() => {
     fetchSavingGoalList();
   }, []);
@@ -107,7 +108,6 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
   useEffect(() => {
     const updateList = async () => {
       if (isSubmitSuccessful) {
-        await insertSavingGoalList();
         reset();
       }
     };
@@ -117,8 +117,7 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
 
   useEffect(() => {
     if (isModalOpen) {
-      document.getElementById("goalName")?.focus();
-      setError(false);
+      setFocus("name");
     } else {
       reset();
     }
@@ -224,12 +223,6 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
                   })}
                 />
               </div>
-
-              {error && (
-                <p className="text-sm text-red-500">
-                  You can only add up to 5 goals
-                </p>
-              )}
             </form>
           </Modal>
         )}
@@ -239,11 +232,12 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
             {savingGoalList.map((goal, idx) => (
               <SavingGoalItem
                 key={idx}
-                modalId={`saving-goal-item-modal-${idx}`}
+                id={goal.id}
                 name={goal.name}
                 targetAmount={goal.target_amount}
                 savedAmount={goal.saved_amount}
                 onDelete={() => deleteSavingGoal(goal.id)}
+                onEditSuccess={onEditSuccess}
               />
             ))}
           </ul>
@@ -252,52 +246,5 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
     </div>
   );
 }
-
-const SavingGoalItem = ({
-  name,
-  targetAmount,
-  savedAmount,
-  modalId,
-  onDelete,
-  ...props
-}: SavingGoalItemProps) => {
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleDelete = () => {
-    onDelete();
-
-    setIsOpen(false);
-  };
-
-  return (
-    <li
-      {...props}
-      className="relative flex flex-row items-center justify-between gap-2"
-    >
-      <p className="pl-4 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-md before:bg-brand before:content-['']">
-        {name}
-      </p>
-      <div className="flex flex-row items-center gap-4">
-        <p className="font-semibold">
-          {Math.round((savedAmount / targetAmount) * 100)}%
-        </p>
-        <button type="button" onClick={() => setIsOpen(true)}>
-          <Icon SvgIcon={XIcon} width={16} height={16} />
-        </button>
-      </div>
-
-      <Modal
-        id={modalId}
-        title="Delete this goal?"
-        isOpen={isOpen}
-        handleClick={handleDelete}
-        handleClose={() => setIsOpen(false)}
-        buttonText="Delete"
-      >
-        <p>Are you sure you want to delete this goal?</p>
-      </Modal>
-    </li>
-  );
-};
 
 export default SavingGoals;
