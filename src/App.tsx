@@ -17,6 +17,7 @@ import Login from "./routes/Login/Login";
 import { dashboardLoader } from "./routes/Dashboard/Dashboard";
 import ErrorBoundary from "./components/ErrorBoundary";
 import Loading from "./components/Loading";
+import { SkeletonTheme } from "react-loading-skeleton";
 
 const LazyCareers = lazy(() => import("./routes/Careers/Careers"));
 const LazyAbout = lazy(() => import("./routes/About/About"));
@@ -111,7 +112,12 @@ const router = createBrowserRouter(
 function App() {
   return (
     <SessionProvider>
-      <RouterProvider router={router} future={{ v7_startTransition: true }} />
+      <SkeletonTheme
+        baseColor="hsl(220, 13%, 15%)"
+        highlightColor="hsl(220, 13%, 18%)"
+      >
+        <RouterProvider router={router} future={{ v7_startTransition: true }} />
+      </SkeletonTheme>
     </SessionProvider>
   );
 }
