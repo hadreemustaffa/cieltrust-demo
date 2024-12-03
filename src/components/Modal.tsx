@@ -34,7 +34,7 @@ type ModalProps =
       buttonText: string;
     };
 
-function Modal({
+export default function Modal({
   title,
   isOpen,
   children,
@@ -45,15 +45,16 @@ function Modal({
   handleClick,
   buttonText,
 }: ModalProps) {
-  const ref = useOutsideClick(handleClose);
+  const ref = useOutsideClick<HTMLDivElement>(handleClose);
 
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = "hidden";
-    } else {
-      document.body.removeAttribute("style");
+      return () => {
+        document.body.removeAttribute("style");
+      };
     }
-  }, [isOpen, handleClose]);
+  }, [isOpen]);
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -117,5 +118,3 @@ function Modal({
     </div>
   );
 }
-
-export default Modal;

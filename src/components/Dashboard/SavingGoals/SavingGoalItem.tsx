@@ -48,6 +48,7 @@ export default function SavingGoalItem({
     handleSubmit,
     reset,
     getValues,
+    setFocus,
     formState: { errors, isSubmitSuccessful },
   } = useForm<EditGoalFormProps>();
 
@@ -89,6 +90,12 @@ export default function SavingGoalItem({
   const onSubmit: SubmitHandler<EditGoalFormProps> = async () => {
     await editSavingGoal();
   };
+
+  useEffect(() => {
+    if (isEditModalOpen) {
+      setFocus("name");
+    }
+  }, [isEditModalOpen]);
 
   // https://react-hook-form.com/docs/useform/reset
   useEffect(() => {
@@ -140,7 +147,7 @@ export default function SavingGoalItem({
         isFormModal={true}
         formId="editSavingGoalForm"
         submitButtonText="Save"
-        handleClose={() => setIsEditModalOpen(!isEditModalOpen)}
+        handleClose={() => setIsEditModalOpen(false)}
       >
         <form
           id="editSavingGoalForm"

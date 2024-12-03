@@ -24,7 +24,7 @@ interface SavingGoalsProps {
   dashboardId: number;
 }
 
-function SavingGoals({ dashboardId }: SavingGoalsProps) {
+export default function SavingGoals({ dashboardId }: SavingGoalsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [savingGoalList, setSavingGoalList] = useState<SavingGoalFormProps[]>(
     [],
@@ -118,8 +118,9 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
   useEffect(() => {
     if (isModalOpen) {
       setFocus("name");
-    } else {
-      reset();
+      return () => {
+        reset();
+      };
     }
   }, [isModalOpen]);
 
@@ -128,7 +129,7 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-semibold">Saving Goals</h2>
-          <ButtonSecondary onClick={() => setIsModalOpen(!isModalOpen)}>
+          <ButtonSecondary onClick={() => setIsModalOpen(true)}>
             <Icon SvgIcon={PlusIcon} isBorderless />
             <span className="hidden pl-2 md:block">Add Goal</span>
           </ButtonSecondary>
@@ -142,7 +143,7 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
             isFormModal={true}
             formId="addSavingGoalForm"
             submitButtonText="Add"
-            handleClose={() => setIsModalOpen(!isModalOpen)}
+            handleClose={() => setIsModalOpen(false)}
           >
             <form
               id="addSavingGoalForm"
@@ -246,5 +247,3 @@ function SavingGoals({ dashboardId }: SavingGoalsProps) {
     </div>
   );
 }
-
-export default SavingGoals;

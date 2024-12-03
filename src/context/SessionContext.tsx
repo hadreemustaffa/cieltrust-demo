@@ -1,4 +1,10 @@
-import { createContext, useContext, useEffect, useState } from "react";
+import {
+  createContext,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { Session } from "@supabase/supabase-js";
 import supabase from "../utils/supabase";
 
@@ -23,7 +29,7 @@ export const SessionProvider = ({ children }: Props) => {
 
   useEffect(() => {
     const authStateListener = supabase.auth.onAuthStateChange(
-      async (_, session) => {
+      async (_: string, session: SetStateAction<Session | null>) => {
         setSession(session);
       },
     );
