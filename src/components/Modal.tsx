@@ -4,46 +4,23 @@ import React, { useEffect } from "react";
 import XIcon from "../images/icons/x.svg?react";
 
 // components import
-import { ButtonPrimary, ButtonSecondary } from "./Button";
+import { ButtonSecondary } from "./Button";
 import Icon from "./Icon";
 import useOutsideClick from "../hooks/useOutsideClick";
 
-type ModalProps =
-  | {
-      id: string;
-      title: string;
-      isOpen: boolean;
-      children: React.ReactNode;
-      isFormModal: true;
-      formId: string;
-      submitButtonText: string;
-      handleClose: () => void;
-      handleClick?: never;
-      buttonText?: never;
-    }
-  | {
-      id: string;
-      title: string;
-      isOpen: boolean;
-      children: React.ReactNode;
-      isFormModal?: false;
-      formId?: never;
-      submitButtonText?: never;
-      handleClick: () => void;
-      handleClose: () => void;
-      buttonText: string;
-    };
+interface ModalProps {
+  id: string;
+  title: string;
+  isOpen: boolean;
+  children: React.ReactNode;
+  handleClose: () => void;
+}
 
 export default function Modal({
   title,
   isOpen,
   children,
   handleClose,
-  isFormModal,
-  formId,
-  submitButtonText,
-  handleClick,
-  buttonText,
 }: ModalProps) {
   const ref = useOutsideClick<HTMLDivElement>(handleClose);
 
@@ -94,26 +71,6 @@ export default function Modal({
         </div>
 
         {children}
-
-        <div className="flex flex-row items-center justify-end gap-2">
-          <ButtonSecondary type="button" onClick={handleClose}>
-            Cancel
-          </ButtonSecondary>
-
-          {isFormModal ? (
-            <ButtonPrimary type="submit" form={formId}>
-              {submitButtonText}
-            </ButtonPrimary>
-          ) : (
-            <button
-              type="button"
-              className="w-fit rounded-md bg-red-700 px-6 py-3 text-white hover:bg-red-500"
-              onClick={handleClick}
-            >
-              {buttonText}
-            </button>
-          )}
-        </div>
       </div>
     </div>
   );

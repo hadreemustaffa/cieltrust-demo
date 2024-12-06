@@ -12,6 +12,7 @@ import MoreMenu from "../../MoreMenu";
 import Modal from "../../Modal";
 import { SavingGoalFormProps } from "./SavingGoals";
 import Icon from "../../Icon";
+import { ButtonPrimary, ButtonSecondary } from "../../Button";
 
 interface SavingGoalItemProps {
   id: number;
@@ -144,9 +145,6 @@ export default function SavingGoalItem({
         id={`goal-edit-modal-${id}`}
         title="Edit this goal?"
         isOpen={isEditModalOpen}
-        isFormModal={true}
-        formId="editSavingGoalForm"
-        submitButtonText="Save"
         handleClose={() => setIsEditModalOpen(false)}
       >
         <form
@@ -229,6 +227,17 @@ export default function SavingGoalItem({
               })}
             />
           </div>
+
+          <div className="flex flex-row items-center justify-end gap-2">
+            <ButtonSecondary
+              type="button"
+              onClick={() => setIsEditModalOpen(false)}
+            >
+              Cancel
+            </ButtonSecondary>
+
+            <ButtonPrimary type="submit">Save</ButtonPrimary>
+          </div>
         </form>
       </Modal>
 
@@ -236,11 +245,26 @@ export default function SavingGoalItem({
         id={`goal-delete-modal-${id}`}
         title="Delete this goal?"
         isOpen={isDeleteModalOpen}
-        handleClick={handleDelete}
         handleClose={() => setIsDeleteModalOpen(false)}
-        buttonText="Delete"
       >
         <p>Are you sure you want to delete this goal?</p>
+
+        <div className="flex flex-row items-center justify-end gap-2">
+          <ButtonSecondary
+            type="button"
+            onClick={() => setIsEditModalOpen(false)}
+          >
+            Cancel
+          </ButtonSecondary>
+
+          <button
+            type="button"
+            className="w-fit rounded-md bg-red-700 px-6 py-3 text-white hover:bg-red-500"
+            onClick={() => handleDelete()}
+          >
+            Delete
+          </button>
+        </div>
       </Modal>
     </li>
   );

@@ -9,7 +9,7 @@ import PlusIcon from "../../../images/icons/plus.svg?react";
 
 // components import
 import Icon from "../../Icon";
-import { ButtonSecondary } from "../../Button";
+import { ButtonPrimary, ButtonSecondary } from "../../Button";
 import Modal from "../../Modal";
 import SavingGoalItem from "./SavingGoalItem";
 
@@ -48,7 +48,6 @@ export default function SavingGoals({ dashboardId }: SavingGoalsProps) {
         target_amount: getValues("target_amount"),
         saved_amount: getValues("saved_amount"),
       })
-      .eq("id", dashboardId)
       .select();
 
     if (error) {
@@ -125,13 +124,15 @@ export default function SavingGoals({ dashboardId }: SavingGoalsProps) {
   }, [isModalOpen]);
 
   return (
-    <div className="rounded-md border border-accent/10 p-4 md:col-span-2">
+    <div className="rounded-md border border-accent/10 p-4">
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-semibold">Saving Goals</h2>
-          <ButtonSecondary onClick={() => setIsModalOpen(true)}>
+          <ButtonSecondary
+            aria-label="Add goal"
+            onClick={() => setIsModalOpen(true)}
+          >
             <Icon SvgIcon={PlusIcon} isBorderless />
-            <span className="hidden pl-2 md:block">Add Goal</span>
           </ButtonSecondary>
         </div>
 
@@ -140,9 +141,6 @@ export default function SavingGoals({ dashboardId }: SavingGoalsProps) {
             id="addSavingGoalModal"
             title="Add Saving Goal"
             isOpen={isModalOpen}
-            isFormModal={true}
-            formId="addSavingGoalForm"
-            submitButtonText="Add"
             handleClose={() => setIsModalOpen(false)}
           >
             <form
@@ -225,6 +223,19 @@ export default function SavingGoals({ dashboardId }: SavingGoalsProps) {
                 />
               </div>
             </form>
+
+            <div className="flex flex-row items-center justify-end gap-2">
+              <ButtonSecondary
+                type="button"
+                onClick={() => setIsModalOpen(false)}
+              >
+                Cancel
+              </ButtonSecondary>
+
+              <ButtonPrimary type="submit" form="addSavingGoalForm">
+                Add
+              </ButtonPrimary>
+            </div>
           </Modal>
         )}
 
