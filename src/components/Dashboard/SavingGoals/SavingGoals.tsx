@@ -22,9 +22,10 @@ export interface SavingGoalFormProps {
 
 interface SavingGoalsProps {
   dashboardId: number;
+  data: SavingGoalFormProps[];
 }
 
-export default function SavingGoals({ dashboardId }: SavingGoalsProps) {
+export default function SavingGoals({ dashboardId, data }: SavingGoalsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [savingGoalList, setSavingGoalList] = useState<SavingGoalFormProps[]>(
     [],
@@ -75,18 +76,7 @@ export default function SavingGoals({ dashboardId }: SavingGoalsProps) {
   };
 
   const fetchSavingGoalList = async () => {
-    const { data, error } = await supabase
-      .from("saving_goals")
-      .select()
-      .eq("dashboard_id", dashboardId);
-
-    if (error) {
-      console.log(error);
-    }
-
-    if (data) {
-      setSavingGoalList(data);
-    }
+    setSavingGoalList(data);
   };
 
   const onEditSuccess = (updatedGoal: SavingGoalFormProps) => {

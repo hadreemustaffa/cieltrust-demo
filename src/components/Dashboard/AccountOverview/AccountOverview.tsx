@@ -6,31 +6,23 @@ import supabase from "../../../utils/supabase";
 // components import
 import OverviewCard from "./OverviewCard";
 
-type Overview = {
+export interface Overview {
   balance: number;
   income: number;
   expenses: number;
   savings: number;
-};
+}
 
 interface AccountOverviewProps {
   dashboardId: number;
+  data: Overview[];
 }
 
-function AccountOverview({ dashboardId }: AccountOverviewProps) {
+function AccountOverview({ dashboardId, data }: AccountOverviewProps) {
   const [overview, setOverview] = useState<Overview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
 
   const fetchOverview = async () => {
-    const { data, error } = await supabase
-      .from("overview")
-      .select("balance, income, expenses, savings")
-      .eq("dashboard_id", dashboardId);
-
-    if (error) {
-      console.log(error);
-    }
-
     if (data) {
       setOverview(data);
       setIsLoading(false);
@@ -59,7 +51,11 @@ function AccountOverview({ dashboardId }: AccountOverviewProps) {
           <OverviewCard
             dashboardId={dashboardId}
             columnTitle="balance"
-            amount={overview[0].balance}
+            amount={
+              overview[0].income -
+              overview[0].expenses -
+              overview[0].income * 0.2
+            }
           />
           <OverviewCard
             dashboardId={dashboardId}
@@ -74,7 +70,7 @@ function AccountOverview({ dashboardId }: AccountOverviewProps) {
           <OverviewCard
             dashboardId={dashboardId}
             columnTitle="savings"
-            amount={overview[0].savings}
+            amount={overview[0].income * 0.2}
           />
         </>
       )}
