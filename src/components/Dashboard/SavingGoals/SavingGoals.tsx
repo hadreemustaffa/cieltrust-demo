@@ -114,7 +114,7 @@ export default function SavingGoals({ dashboardId, data }: SavingGoalsProps) {
   }, [isModalOpen]);
 
   return (
-    <div className="rounded-md border border-accent/10 p-4">
+    <div className="col-span-1 row-start-2 rounded-md border border-accent/10 p-4 md:col-span-2 md:row-start-1">
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-semibold">Saving Goals</h2>

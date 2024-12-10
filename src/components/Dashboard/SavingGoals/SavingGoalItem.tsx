@@ -252,7 +252,7 @@ export default function SavingGoalItem({
         <div className="flex flex-row items-center justify-end gap-2">
           <ButtonSecondary
             type="button"
-            onClick={() => setIsEditModalOpen(false)}
+            onClick={() => setIsDeleteModalOpen(false)}
           >
             Cancel
           </ButtonSecondary>

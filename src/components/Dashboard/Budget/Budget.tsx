@@ -11,17 +11,15 @@ import Modal from "../../Modal";
 import { ERROR_MSG } from "../../../data/errorMessages";
 import Categories from "../../Categories";
 import supabase from "../../../utils/supabase";
-import MoreMenu from "../../MoreMenu";
-
-type LocalCategory = {
-  name: string;
-  amount: number;
-  spent: number;
-};
+import BudgetTable from "./BudgetTable";
+import BudgetTableCategory from "./BudgetTableCategory";
 
 type Category = {
   id: number;
   name: string;
+};
+
+export type CategoryWithAmount = Category & {
   amount: number;
   spent: number;
 };
@@ -29,39 +27,48 @@ type Category = {
 interface BudgetFormProps {
   name: string;
   amount: number;
-  budgetCategories: Category[];
+  budgetCategories: CategoryWithAmount[];
   recurrence: string;
   start_date: Date;
   new_category: string;
 }
 
-export interface BudgetTable {
+export interface BudgetTableProps {
   id: number;
   name: string;
-  budget_categories: Category[];
+  budget_categories: CategoryWithAmount[];
   amount: number;
   remaining: number;
 }
 
 interface BudgetProps {
   dashboardId: number;
-  data: BudgetTable[];
+  data: BudgetTableProps[];
+  catogeries: {
+    id: number;
+    name: string;
+  }[];
 }
 
-export default function Budget({ dashboardId, data }: BudgetProps) {
-  const [isOpen, setIsOpen] = useState(false);
-  const [categories, setCategories] = useState<LocalCategory[]>([]);
-  const [isAddingCategory, setIsAddingCategory] = useState(false);
-  const [budgetTable, setBudgetTable] = useState<BudgetTable[]>([]);
+type ActiveModal = "addBudgetTable" | "addNewCategory";
+
+export default function Budget({ dashboardId, data, catogeries }: BudgetProps) {
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [budgetTable, setBudgetTable] = useState<BudgetTableProps[]>([]);
+  const [activeModal, setActiveModal] = useState<ActiveModal | null>(null);
+
+  const openModal = (modal: ActiveModal) => setActiveModal(modal);
+  const closeModal = () => setActiveModal(null);
 
   const {
     register,
     handleSubmit,
     getValues,
     reset,
+    watch,
     setFocus,
     control,
-    formState: { errors },
+    formState: { errors, isSubmitSuccessful },
   } = useForm<BudgetFormProps>({
     defaultValues: {
       budgetCategories: categories,
@@ -74,14 +81,34 @@ export default function Budget({ dashboardId, data }: BudgetProps) {
   });
 
   useEffect(() => {
+    if (activeModal === "addBudgetTable") {
+      setFocus("name");
+
+      return () => {
+        reset();
+      };
+    }
+  }, [activeModal]);
+
+  const fetchBudgetTable = () => {
+    setBudgetTable(data);
+    setCategories(catogeries);
+  };
+
+  useEffect(() => {
+    fetchBudgetTable();
+  }, []);
+
+  // update fields array default values on each category change
+  useEffect(() => {
     reset({
       budgetCategories: categories,
     });
   }, [categories, reset]);
 
-  const insertBudget = async () => {
+  const insertBudgetTable = async () => {
     try {
-      const { data, error } = await supabase
+      const { data: budgetData, error: budgetError } = await supabase
         .from("budget")
         .insert({
           dashboard_id: dashboardId,
@@ -93,18 +120,24 @@ export default function Budget({ dashboardId, data }: BudgetProps) {
         .select()
         .single();
 
-      if (error) {
-        console.log("Error inserting budget:", error);
-        throw error;
+      if (budgetError) {
+        console.log("Error inserting budget:", budgetError);
+        throw budgetError;
       }
+
+      const selectedCategories = getValues("budgetCategories")
+        .filter((category) => category.name)
+        .map((category) => category.name);
 
       const { data: categoryData, error: categoryError } = await supabase
         .from("budget_categories")
         .insert(
-          fields.map((category) => ({
-            budget_id: data.id,
-            name: category.name,
-          })),
+          fields
+            .filter((category) => selectedCategories.includes(category.name))
+            .map((category) => ({
+              budget_id: budgetData.id,
+              name: category.name,
+            })),
         )
         .select();
 
@@ -113,55 +146,78 @@ export default function Budget({ dashboardId, data }: BudgetProps) {
         throw categoryError;
       }
 
-      console.log({ budget: data, categories: categoryData });
-      return { budget: data, categories: categoryData };
+      setBudgetTable((prevData) => [
+        ...prevData,
+        {
+          id: budgetData.id,
+          name: getValues("name"),
+          budget_categories: categoryData,
+          amount: getValues("amount"),
+          remaining: getValues("amount"),
+        },
+      ]);
+      console.log(budgetTable);
     } catch (error) {
       console.error("Error inserting budget and categories:", error);
 
       // Optionally, show user-friendly error toast?
-      return null;
     }
   };
 
-  const fetchBudget = () => {
-    setBudgetTable(data);
+  const deleteBudgetTable = async (id: number) => {
+    try {
+      await supabase.from("budget").delete().eq("id", id);
+      setBudgetTable((prevData) => prevData.filter((item) => item.id !== id));
+    } catch (error) {
+      console.error("Error deleting budget:", error);
+    }
   };
 
   const onSubmit: SubmitHandler<BudgetFormProps> = async () => {
-    await insertBudget();
+    await insertBudgetTable();
   };
 
-  const handleNewCategorySubmit = () => {
-    const newCategory = {
-      name: getValues("new_category"),
-      amount: 0,
-      spent: 0,
-    };
-    setCategories((prevCategories) => [...prevCategories, newCategory]);
-    setIsAddingCategory(false);
-  };
+  const onNewCategorySubmit: SubmitHandler<
+    Pick<Category, "name">
+  > = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("categories")
+        .insert({
+          dashboard_id: dashboardId,
+          name: getValues("new_category"),
+        })
+        .select()
+        .single();
 
-  useEffect(() => {
-    fetchBudget();
-  }, []);
+      if (error) {
+        console.log("Error inserting categories:", error);
+        throw error;
+      }
 
-  useEffect(() => {
-    if (isOpen) {
-      setFocus("name");
-      return () => {
-        reset();
-      };
+      if (data) {
+        setCategories((prevCategories) => [...prevCategories, data]);
+      }
+    } catch (error) {
+      console.error("Error inserting categories:", error);
     }
-  }, [isOpen]);
+  };
+
+  useEffect(() => {
+    if (isSubmitSuccessful) {
+      closeModal();
+      reset();
+    }
+  }, [isSubmitSuccessful, reset]);
 
   return (
-    <div className="rounded-md border border-accent/10 p-4">
+    <div className="rounded-md border border-accent/10 p-4 md:col-span-full md:col-start-1 md:row-start-3 xl:col-span-3 xl:row-start-2">
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-semibold">Budgets</h2>
           <ButtonSecondary
             aria-label="Add goal"
-            onClick={() => setIsOpen(true)}
+            onClick={() => openModal("addBudgetTable")}
           >
             <Icon SvgIcon={PlusIcon} isBorderless />
           </ButtonSecondary>
@@ -170,82 +226,32 @@ export default function Budget({ dashboardId, data }: BudgetProps) {
         <div className="flex flex-col gap-4">
           {budgetTable.length > 0 ? (
             budgetTable.map((budget) => (
-              <div
+              <BudgetTable
                 key={budget.id}
-                className="flex flex-col items-start gap-4 rounded-md border border-accent/10 p-4 text-left"
+                name={budget.name}
+                amount={budget.amount}
+                onEdit={() => {}}
+                onDelete={() => deleteBudgetTable(budget.id)}
               >
-                <table className="flex w-full flex-col items-center justify-between gap-4">
-                  <caption className="flex w-full flex-row items-center justify-between gap-2 border-b border-b-accent/10 pb-4">
-                    <h3 className="font-bold">{budget.name}</h3>
-                    <div className="flex gap-2">
-                      <p className="text-sm font-semibold">${budget.amount}</p>
-                      <MoreMenu
-                        onEdit={() => console.log("Edit")}
-                        isDeletable
-                        onDelete={() => console.log("Delete")}
-                      />
-                    </div>
-                  </caption>
-
-                  <tbody className="flex w-full flex-col gap-4 overflow-x-scroll md:overflow-auto">
-                    <tr className="grid w-screen grid-cols-4 justify-between gap-2 md:w-full">
-                      <th scope="col">Category</th>
-                      <th scope="col" className="text-right">
-                        Budget
-                      </th>
-                      <th scope="col" className="text-right">
-                        Spent
-                      </th>
-                      <th scope="col" className="text-right">
-                        Remaining
-                      </th>
-                    </tr>
-                    {budget.budget_categories.map((category) => (
-                      <tr
-                        key={category.id}
-                        className="grid w-screen grid-cols-4 items-center justify-between gap-2 md:w-full"
-                      >
-                        <th scope="row" className="font-normal">
-                          {category.name}
-                        </th>
-
-                        <td className="text-right">
-                          <input
-                            type="number"
-                            min={0}
-                            defaultValue={category.amount}
-                            className="w-20 rounded-md border border-accent/10 bg-transparent p-1 text-right [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-                            placeholder="0"
-                            {...register(
-                              `budgetCategories.${category.id}.amount`,
-                            )}
-                          />
-                        </td>
-
-                        <td className="text-right">${category.spent}</td>
-                        <td className="text-right">
-                          ${category.amount - category.spent}
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
-              </div>
+                {budget.budget_categories.map((category) => (
+                  <BudgetTableCategory key={category.id} category={category} />
+                ))}
+              </BudgetTable>
             ))
           ) : (
             <p>No budgets found</p>
           )}
         </div>
 
-        {isOpen && (
+        {activeModal === "addBudgetTable" && (
           <Modal
-            id="addSavingGoalModal"
+            id="addBudgetTableModal"
             title="Add a budget"
-            isOpen={isOpen}
-            handleClose={() => setIsOpen(false)}
+            isOpen={activeModal === "addBudgetTable"}
+            handleClose={() => closeModal()}
           >
             <form
-              id="addSavingGoalForm"
+              id="addBudgetTableForm"
               onSubmit={handleSubmit(onSubmit)}
               className="flex flex-col gap-4"
             >
@@ -267,6 +273,12 @@ export default function Budget({ dashboardId, data }: BudgetProps) {
                       value: true,
                       message: ERROR_MSG.FIELD_IS_REQUIRED,
                     },
+                    validate: (value) => {
+                      return (
+                        budgetTable.find((budget) => budget.name === value) &&
+                        "Table name already exists"
+                      );
+                    },
                   })}
                 />
                 {errors.name && (
@@ -274,12 +286,20 @@ export default function Budget({ dashboardId, data }: BudgetProps) {
                 )}
               </div>
 
-              <Categories>
+              <Categories
+                categoriesSelectedAmount={
+                  watch("budgetCategories").filter((category) => category.name)
+                    .length
+                }
+                selectedCategoriesName={watch("budgetCategories").map(
+                  (category) => category.name,
+                )}
+              >
                 {fields.map((field, index) => (
                   <li key={field.id}>
                     <label
                       htmlFor={field.id}
-                      className="flex flex-row items-center justify-between rounded-sm text-sm hover:cursor-pointer hover:bg-accent/10"
+                      className="flex flex-row items-center justify-between rounded-sm px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10"
                     >
                       {field.name}
                       <input
@@ -292,30 +312,13 @@ export default function Budget({ dashboardId, data }: BudgetProps) {
                     </label>
                   </li>
                 ))}
-                {isAddingCategory && (
-                  <div className="flex flex-row items-center justify-between gap-2">
-                    <input
-                      id="newCategory"
-                      type="text"
-                      placeholder="Enter category name"
-                      className="w-full rounded-sm border border-accent/10 bg-transparent p-2"
-                      {...register("new_category")}
-                    />
-                    <button
-                      type="button"
-                      className="rounded-sm border border-accent/10 bg-transparent p-2"
-                      onClick={handleNewCategorySubmit}
-                    >
-                      Add
-                    </button>
-                  </div>
-                )}
-                <div className="flex flex-wrap gap-2 text-xs">
+
+                <div className="flex flex-wrap gap-2 rounded-md border border-accent/10 p-2 text-xs">
                   <p>Can't find the category you're looking for?</p>
                   <button
                     type="button"
-                    className="underline"
-                    onClick={() => setIsAddingCategory(true)}
+                    className="underline hover:text-copy-secondary"
+                    onClick={() => openModal("addNewCategory")}
                   >
                     Create a new one
                   </button>
@@ -380,6 +383,48 @@ export default function Budget({ dashboardId, data }: BudgetProps) {
 
               <div className="flex flex-row items-center justify-end gap-2">
                 <ButtonPrimary type="submit">Create budget table</ButtonPrimary>
+              </div>
+            </form>
+          </Modal>
+        )}
+
+        {activeModal === "addNewCategory" && (
+          <Modal
+            id="addNewCategoryModal"
+            title="Add New Category"
+            isOpen={activeModal === "addNewCategory"}
+            handleClose={() => closeModal()}
+          >
+            <form
+              id="addNewCategoryForm"
+              onSubmit={handleSubmit(onNewCategorySubmit)}
+              className="flex flex-col gap-4"
+            >
+              <div className="flex flex-col gap-4">
+                <label htmlFor="name" className="text-sm">
+                  Name
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  placeholder="Enter category name"
+                  className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+                  {...register("new_category", {
+                    required: {
+                      value: true,
+                      message: ERROR_MSG.FIELD_IS_REQUIRED,
+                    },
+                  })}
+                />
+                {errors.new_category && (
+                  <p className="text-sm text-red-500">
+                    {errors.new_category.message}
+                  </p>
+                )}
+
+                <div className="flex flex-row items-center justify-end gap-2">
+                  <ButtonPrimary type="submit">Add Category</ButtonPrimary>
+                </div>
               </div>
             </form>
           </Modal>

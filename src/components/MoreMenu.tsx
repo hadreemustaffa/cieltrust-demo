@@ -3,6 +3,8 @@ import useOutsideClick from "../hooks/useOutsideClick";
 
 // icons import
 import MoreHorizontalIcon from "../images/icons/more-horizontal.svg?react";
+import EditIcon from "../images/icons/edit.svg?react";
+import TrashIcon from "../images/icons/trash.svg?react";
 
 // components import
 import Icon from "./Icon";
@@ -70,7 +72,7 @@ export default function MoreMenu({
       {isOpen && (
         <div
           ref={ref}
-          className="absolute -right-2 top-6 z-50 flex flex-col gap-2 rounded-md border border-accent/10 bg-card py-4 shadow-md after:absolute after:-top-[10px] after:right-[10px] after:h-0 after:w-0 after:border-b-[10px] after:border-l-[6px] after:border-r-[6px] after:border-b-copy after:border-l-transparent after:border-r-transparent after:content-['']"
+          className="absolute -right-2 top-6 z-50 flex flex-col gap-2 rounded-md border border-accent/10 bg-card p-2 shadow-md"
           onBlur={(event: React.FocusEvent) => {
             if (
               !event.relatedTarget ||
@@ -83,24 +85,26 @@ export default function MoreMenu({
         >
           <button
             type="button"
-            className="px-6 text-left hover:bg-accent/10"
+            className="flex items-center gap-2 rounded-sm p-2 text-left hover:bg-accent/10"
             onClick={() => {
               setIsOpen(false);
               onEdit();
             }}
           >
+            <Icon SvgIcon={EditIcon} width={16} height={16} isBorderless />
             Edit
           </button>
 
           {isDeletable && (
             <button
               type="button"
-              className="px-6 text-left hover:bg-accent/10"
+              className="flex items-center gap-2 rounded-sm p-2 text-left text-red-500 hover:bg-accent/10 hover:bg-red-500 hover:text-white"
               onClick={() => {
                 setIsOpen(false);
                 onDelete();
               }}
             >
+              <Icon SvgIcon={TrashIcon} width={16} height={16} isBorderless />
               Delete
             </button>
           )}
