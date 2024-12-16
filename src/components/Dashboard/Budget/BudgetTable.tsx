@@ -1,30 +1,35 @@
-import React, { useState } from "react";
+import React from "react";
 import MoreMenu from "../../MoreMenu";
 import Modal from "../../Modal";
 import { ButtonSecondary } from "../../Button";
+import useModal from "../../../hooks/useModal";
+import BudgetTableCategory, { CategoryWithAmount } from "./BudgetTableCategory";
+
+export type Table = {
+  id: number;
+  name: string;
+  budget_categories: CategoryWithAmount[];
+  amount: number;
+  remaining: number;
+  recurrence: string;
+  start_date: string;
+};
 
 interface BudgetTableProps {
-  name: string;
-  amount: number;
-  onDelete: () => void;
+  table: Table;
   onEdit: () => void;
+  onDelete: () => void;
   children: React.ReactNode;
 }
 
-type ActiveModal = "editBudgetTable" | "deleteBudgetTable";
-
 export default function BudgetTable({
-  name,
-  amount,
-  onDelete,
+  table,
   onEdit,
+  onDelete,
   children,
   ...props
 }: BudgetTableProps) {
-  const [activeModal, setActiveModal] = useState<ActiveModal | null>(null);
-
-  const openModal = (modal: ActiveModal) => setActiveModal(modal);
-  const closeModal = () => setActiveModal(null);
+  const { activeModal, openModal, closeModal } = useModal();
 
   return (
     <div
@@ -33,13 +38,13 @@ export default function BudgetTable({
     >
       <table className="flex w-full flex-col items-center justify-between gap-4">
         <caption className="flex w-full flex-row items-center justify-between gap-2 rounded-md border border-accent/10 bg-accent/5 p-2">
-          <h3 className="font-bold">{name}</h3>
+          <h3 className="font-bold">{table.name}</h3>
           <div className="flex gap-2">
-            <p className="text-sm font-bold">${amount}</p>
+            <p className="text-sm font-bold">${table.amount}</p>
             <MoreMenu
               isDeletable
-              onEdit={() => openModal("editBudgetTable")}
-              onDelete={() => openModal("deleteBudgetTable")}
+              onEdit={onEdit}
+              onDelete={() => openModal("delete")}
             />
           </div>
         </caption>
@@ -71,15 +76,24 @@ export default function BudgetTable({
               Remaining
             </th>
           </tr>
-          {children}
+
+          {table.budget_categories.map((category: CategoryWithAmount) => (
+            <BudgetTableCategory
+              key={category.id}
+              category={category}
+              totalBudgetAmount={table.amount}
+            />
+          ))}
         </tbody>
       </table>
 
-      {activeModal === "deleteBudgetTable" && (
+      {children}
+
+      {activeModal === "delete" && (
         <Modal
           id="deleteBudgetModal"
           title="Delete budget"
-          isOpen={activeModal === "deleteBudgetTable"}
+          isOpen={activeModal === "delete"}
           handleClose={() => closeModal()}
         >
           <p>Are you sure you want to delete this budget?</p>

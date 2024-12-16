@@ -1,5 +1,15 @@
-import { useEffect, useState } from "react";
-import { SubmitHandler, useFieldArray, useForm } from "react-hook-form";
+import { useCallback, useEffect, useState } from "react";
+import {
+  FormProvider,
+  SubmitHandler,
+  useFieldArray,
+  useForm,
+} from "react-hook-form";
+
+import supabase from "../../../utils/supabase";
+import useModal from "../../../hooks/useModal";
+import { useDashboard } from "../../../context/DashboardContext";
+import { ERROR_MSG } from "../../../data/errorMessages";
 
 // icons import
 import PlusIcon from "../../../images/icons/plus.svg?react";
@@ -8,114 +18,74 @@ import PlusIcon from "../../../images/icons/plus.svg?react";
 import { ButtonPrimary, ButtonSecondary } from "../../Button";
 import Icon from "../../Icon";
 import Modal from "../../Modal";
-import { ERROR_MSG } from "../../../data/errorMessages";
 import Categories from "../../Categories";
-import supabase from "../../../utils/supabase";
-import BudgetTable from "./BudgetTable";
-import BudgetTableCategory from "./BudgetTableCategory";
+import BudgetTable, { Table } from "./BudgetTable";
+import { Category } from "./BudgetTableCategory";
+import BudgetTableForm from "../../Forms/BudgetTableForm";
 
-type Category = {
+export interface BudgetFormProps {
   id: number;
   name: string;
-};
-
-export type CategoryWithAmount = Category & {
   amount: number;
-  spent: number;
-};
-
-interface BudgetFormProps {
-  name: string;
-  amount: number;
-  budgetCategories: CategoryWithAmount[];
+  addCategories?: Category[];
+  editCategories?: Category[];
   recurrence: string;
   start_date: Date;
   new_category: string;
 }
 
-export interface BudgetTableProps {
-  id: number;
-  name: string;
-  budget_categories: CategoryWithAmount[];
-  amount: number;
-  remaining: number;
-}
-
-interface BudgetProps {
-  dashboardId: number;
-  data: BudgetTableProps[];
-  catogeries: {
+export interface BudgetProps {
+  data: Table[];
+  fetchedCategories: {
     id: number;
     name: string;
+    selected?: boolean;
   }[];
 }
 
-type ActiveModal = "addBudgetTable" | "addNewCategory";
+export default function Budget({ data, fetchedCategories }: BudgetProps) {
+  const [budgetTables, setBudgetTables] = useState<Table[]>(data);
+  const [categories, setCategories] = useState<Category[]>(
+    fetchedCategories.map((category: Category) => ({
+      ...category,
+      selected: false,
+    })),
+  );
 
-export default function Budget({ dashboardId, data, catogeries }: BudgetProps) {
-  const [categories, setCategories] = useState<Category[]>([]);
-  const [budgetTable, setBudgetTable] = useState<BudgetTableProps[]>([]);
-  const [activeModal, setActiveModal] = useState<ActiveModal | null>(null);
+  const { dashboardId } = useDashboard();
 
-  const openModal = (modal: ActiveModal) => setActiveModal(modal);
-  const closeModal = () => setActiveModal(null);
+  const { activeModal, openModal, closeModal } = useModal();
 
-  const {
-    register,
-    handleSubmit,
-    getValues,
-    reset,
-    watch,
-    setFocus,
-    control,
-    formState: { errors, isSubmitSuccessful },
-  } = useForm<BudgetFormProps>({
+  const methods = useForm<BudgetFormProps>({
     defaultValues: {
-      budgetCategories: categories,
+      addCategories: categories,
+      editCategories: categories,
     },
   });
 
-  const { fields } = useFieldArray({
-    control,
-    name: "budgetCategories",
+  const addCategoriesArr = useFieldArray({
+    control: methods.control,
+    name: "addCategories",
   });
 
-  useEffect(() => {
-    if (activeModal === "addBudgetTable") {
-      setFocus("name");
+  const editCategoriesArr = useFieldArray({
+    control: methods.control,
+    name: "editCategories",
+  });
 
-      return () => {
-        reset();
-      };
-    }
-  }, [activeModal]);
-
-  const fetchBudgetTable = () => {
-    setBudgetTable(data);
-    setCategories(catogeries);
-  };
-
-  useEffect(() => {
-    fetchBudgetTable();
-  }, []);
-
-  // update fields array default values on each category change
-  useEffect(() => {
-    reset({
-      budgetCategories: categories,
-    });
-  }, [categories, reset]);
-
-  const insertBudgetTable = async () => {
+  const addBudgetTableWithCategories = async () => {
     try {
       const { data: budgetData, error: budgetError } = await supabase
         .from("budget")
         .insert({
           dashboard_id: dashboardId,
-          name: getValues("name"),
-          amount: getValues("amount"),
-          recurrence: getValues("recurrence"),
-          start_date: getValues("start_date"),
+          name: methods.getValues("name"),
+          amount: methods.getValues("amount"),
+          recurrence: methods.getValues("recurrence"),
+          start_date: methods
+            .getValues("start_date")
+            .toISOString()
+            .split("T")[0],
         })
         .select()
         .single();
@@ -125,14 +95,14 @@ export default function Budget({ dashboardId, data, catogeries }: BudgetProps) {
         throw budgetError;
       }
 
-      const selectedCategories = getValues("budgetCategories")
-        .filter((category) => category.name)
+      const selectedCategories = (methods.getValues("addCategories") ?? [])
+        .filter((category) => category.selected)
         .map((category) => category.name);
 
       const { data: categoryData, error: categoryError } = await supabase
         .from("budget_categories")
         .insert(
-          fields
+          addCategoriesArr.fields
             .filter((category) => selectedCategories.includes(category.name))
             .map((category) => ({
               budget_id: budgetData.id,
@@ -146,17 +116,21 @@ export default function Budget({ dashboardId, data, catogeries }: BudgetProps) {
         throw categoryError;
       }
 
-      setBudgetTable((prevData) => [
+      setBudgetTables((prevData) => [
         ...prevData,
         {
           id: budgetData.id,
-          name: getValues("name"),
+          name: methods.getValues("name"),
           budget_categories: categoryData,
-          amount: getValues("amount"),
-          remaining: getValues("amount"),
+          amount: methods.getValues("amount"),
+          remaining: methods.getValues("amount"),
+          recurrence: methods.getValues("recurrence"),
+          start_date: methods
+            .getValues("start_date")
+            .toISOString()
+            .split("T")[0],
         },
       ]);
-      console.log(budgetTable);
     } catch (error) {
       console.error("Error inserting budget and categories:", error);
 
@@ -164,18 +138,112 @@ export default function Budget({ dashboardId, data, catogeries }: BudgetProps) {
     }
   };
 
+  const editBudgetTable = async (id: number) => {
+    try {
+      const { data: budgetData, error: budgetError } = await supabase
+        .from("budget")
+        .update({
+          name: methods.getValues("name"),
+          amount: methods.getValues("amount"),
+          recurrence: methods.getValues("recurrence"),
+          start_date: methods
+            .getValues("start_date")
+            .toISOString()
+            .split("T")[0],
+        })
+        .select()
+        .eq("id", id);
+
+      if (budgetError) {
+        console.log("Error updating budget:", budgetError);
+        throw budgetError;
+      }
+
+      const selectedCategories = (methods.getValues("editCategories") ?? [])
+        .filter((category) => category.selected)
+        .map((category) => category.name);
+
+      const tableCategories = budgetTables
+        .filter((table) => table.id === id)
+        .flatMap((table) =>
+          table.budget_categories.map((category) => category.name),
+        );
+
+      const newCategories = selectedCategories.filter(
+        (category) => !tableCategories?.includes(category),
+      );
+
+      const { data: categoryData, error: categoryError } = await supabase
+        .from("budget_categories")
+        .insert(
+          newCategories.map((category) => ({
+            budget_id: id,
+            name: category,
+            amount: 0,
+            spent: 0,
+          })),
+        )
+        .select()
+        .single();
+
+      if (categoryError) {
+        console.log("Error updating categories:", categoryError);
+        throw categoryError;
+      }
+
+      setBudgetTables(
+        budgetTables.map((table) =>
+          table.id === id
+            ? {
+                ...table,
+                name: methods.getValues("name"),
+                amount: methods.getValues("amount"),
+                remaining: methods.getValues("amount"),
+                recurrence: methods.getValues("recurrence"),
+                start_date: methods
+                  .getValues("start_date")
+                  .toISOString()
+                  .split("T")[0],
+                budget_categories: [
+                  ...table.budget_categories,
+                  {
+                    id: categoryData.id,
+                    budget_id: budgetData.id,
+                    name: categoryData.name,
+                    amount: categoryData.amount,
+                    spent: categoryData.spent,
+                  },
+                ],
+              }
+            : table,
+        ),
+      );
+    } catch (error) {
+      console.error("Error updating budget:", error);
+    }
+  };
+
   const deleteBudgetTable = async (id: number) => {
     try {
       await supabase.from("budget").delete().eq("id", id);
-      setBudgetTable((prevData) => prevData.filter((item) => item.id !== id));
+      setBudgetTables((prevData) => prevData.filter((item) => item.id !== id));
     } catch (error) {
       console.error("Error deleting budget:", error);
     }
   };
 
-  const onSubmit: SubmitHandler<BudgetFormProps> = async () => {
-    await insertBudgetTable();
+  const onAddSubmit: SubmitHandler<BudgetFormProps> = async () => {
+    await addBudgetTableWithCategories();
   };
+
+  const onEditSubmit = useCallback(
+    (budgetId: number): SubmitHandler<BudgetFormProps> => {
+      return async () => {
+        await editBudgetTable(budgetId);
+      };
+    },
+    [],
+  );
 
   const onNewCategorySubmit: SubmitHandler<
     Pick<Category, "name">
@@ -185,7 +253,7 @@ export default function Budget({ dashboardId, data, catogeries }: BudgetProps) {
         .from("categories")
         .insert({
           dashboard_id: dashboardId,
-          name: getValues("new_category"),
+          name: methods.getValues("new_category"),
         })
         .select()
         .single();
@@ -203,39 +271,138 @@ export default function Budget({ dashboardId, data, catogeries }: BudgetProps) {
     }
   };
 
+  // update fields array default values on each category change
   useEffect(() => {
-    if (isSubmitSuccessful) {
-      closeModal();
-      reset();
+    methods.reset({
+      addCategories: categories,
+      editCategories: categories,
+    });
+  }, [categories, methods.reset]);
+
+  useEffect(() => {
+    if (activeModal === "add") {
+      methods.setFocus("name");
+
+      return () => {
+        methods.reset();
+      };
     }
-  }, [isSubmitSuccessful, reset]);
+  }, [activeModal]);
+
+  useEffect(() => {
+    if (methods.formState.isSubmitSuccessful) {
+      methods.reset();
+      closeModal();
+    }
+  }, [methods.formState.isSubmitSuccessful, methods.reset]);
 
   return (
-    <div className="rounded-md border border-accent/10 p-4 md:col-span-full md:col-start-1 md:row-start-3 xl:col-span-3 xl:row-start-2">
+    <div
+      data-testid="budget"
+      className="rounded-md border border-accent/10 p-4 md:col-span-full md:col-start-1 md:row-start-3 xl:col-span-3 xl:row-start-2"
+    >
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-semibold">Budgets</h2>
           <ButtonSecondary
             aria-label="Add goal"
-            onClick={() => openModal("addBudgetTable")}
+            onClick={() => openModal("add")}
           >
             <Icon SvgIcon={PlusIcon} isBorderless />
           </ButtonSecondary>
         </div>
 
         <div className="flex flex-col gap-4">
-          {budgetTable.length > 0 ? (
-            budgetTable.map((budget) => (
+          {budgetTables.length > 0 ? (
+            budgetTables.map((budget) => (
               <BudgetTable
                 key={budget.id}
-                name={budget.name}
-                amount={budget.amount}
-                onEdit={() => {}}
+                table={budget}
+                onEdit={() => openModal("edit")}
                 onDelete={() => deleteBudgetTable(budget.id)}
               >
-                {budget.budget_categories.map((category) => (
-                  <BudgetTableCategory key={category.id} category={category} />
-                ))}
+                {activeModal === "edit" && (
+                  <Modal
+                    id="editBudgetTableModal"
+                    title="Edit this budget?"
+                    isOpen={activeModal === "edit"}
+                    handleClose={() => closeModal()}
+                  >
+                    <FormProvider {...methods}>
+                      <BudgetTableForm
+                        variant="edit"
+                        table={budget}
+                        tables={budgetTables}
+                        onSubmit={onEditSubmit(budget.id)}
+                      >
+                        <Categories
+                          handleNewCategoryModal={() =>
+                            openModal("addNewCategory")
+                          }
+                          selectedCategories={[
+                            ...budget.budget_categories.map(
+                              (category) => category.name,
+                            ),
+                            ...(methods
+                              .watch("editCategories")
+                              ?.filter(
+                                // filter out categories that are already in the budget
+                                (category) =>
+                                  category.selected &&
+                                  !budget.budget_categories.some(
+                                    (budget_category) =>
+                                      budget_category.name === category.name,
+                                  ),
+                              )
+                              .map((category) => category.name) ?? []),
+                          ]}
+                        >
+                          {editCategoriesArr.fields.map((field, index) => {
+                            const isChecked = budget.budget_categories.some(
+                              (category) => category.name === field.name,
+                            );
+
+                            return (
+                              <li key={field.id}>
+                                <label
+                                  htmlFor={field.id}
+                                  className={`flex flex-row items-center justify-between rounded-sm px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10 ${isChecked ? "pointer-events-none cursor-not-allowed opacity-50" : ""}`}
+                                >
+                                  {field.name}
+
+                                  {isChecked ? (
+                                    <input
+                                      id={field.id}
+                                      type="checkbox"
+                                      className="rounded-md border border-accent/10 bg-transparent"
+                                      defaultChecked={isChecked}
+                                      onClick={(e) => {
+                                        // disable clicking on checkbox
+                                        e.preventDefault();
+                                      }}
+                                      {...methods.register(
+                                        `editCategories.${index}.selected` as const,
+                                      )}
+                                    />
+                                  ) : (
+                                    <input
+                                      id={field.id}
+                                      type="checkbox"
+                                      className="rounded-md border border-accent/10 bg-transparent"
+                                      {...methods.register(
+                                        `editCategories.${index}.selected` as const,
+                                      )}
+                                    />
+                                  )}
+                                </label>
+                              </li>
+                            );
+                          })}
+                        </Categories>
+                      </BudgetTableForm>
+                    </FormProvider>
+                  </Modal>
+                )}
               </BudgetTable>
             ))
           ) : (
@@ -243,148 +410,46 @@ export default function Budget({ dashboardId, data, catogeries }: BudgetProps) {
           )}
         </div>
 
-        {activeModal === "addBudgetTable" && (
+        {activeModal === "add" && (
           <Modal
             id="addBudgetTableModal"
             title="Add a budget"
-            isOpen={activeModal === "addBudgetTable"}
+            isOpen={activeModal === "add"}
             handleClose={() => closeModal()}
           >
-            <form
-              id="addBudgetTableForm"
-              onSubmit={handleSubmit(onSubmit)}
-              className="flex flex-col gap-4"
-            >
-              <div className="flex flex-col gap-2">
-                <label htmlFor="goalName" className="text-sm">
-                  Name
-                </label>
-
-                <input
-                  id="goalName"
-                  type="text"
-                  placeholder="Enter budget name"
-                  className="w-full rounded-md border border-accent/10 bg-transparent p-2"
-                  defaultValue={""}
-                  autoComplete="off"
-                  aria-invalid={errors.name ? "true" : "false"}
-                  {...register("name", {
-                    required: {
-                      value: true,
-                      message: ERROR_MSG.FIELD_IS_REQUIRED,
-                    },
-                    validate: (value) => {
-                      return (
-                        budgetTable.find((budget) => budget.name === value) &&
-                        "Table name already exists"
-                      );
-                    },
-                  })}
-                />
-                {errors.name && (
-                  <p className="text-sm text-red-500">{errors.name.message}</p>
-                )}
-              </div>
-
-              <Categories
-                categoriesSelectedAmount={
-                  watch("budgetCategories").filter((category) => category.name)
-                    .length
-                }
-                selectedCategoriesName={watch("budgetCategories").map(
-                  (category) => category.name,
-                )}
+            <FormProvider {...methods}>
+              <BudgetTableForm
+                variant="add"
+                tables={budgetTables}
+                onSubmit={onAddSubmit}
               >
-                {fields.map((field, index) => (
-                  <li key={field.id}>
-                    <label
-                      htmlFor={field.id}
-                      className="flex flex-row items-center justify-between rounded-sm px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10"
-                    >
-                      {field.name}
-                      <input
-                        id={field.id}
-                        type="checkbox"
-                        defaultValue={field.name}
-                        className="rounded-md border border-accent/10 bg-transparent"
-                        {...register(`budgetCategories.${index}.name` as const)}
-                      />
-                    </label>
-                  </li>
-                ))}
-
-                <div className="flex flex-wrap gap-2 rounded-md border border-accent/10 p-2 text-xs">
-                  <p>Can't find the category you're looking for?</p>
-                  <button
-                    type="button"
-                    className="underline hover:text-copy-secondary"
-                    onClick={() => openModal("addNewCategory")}
-                  >
-                    Create a new one
-                  </button>
-                </div>
-              </Categories>
-
-              <div className="flex flex-col gap-2">
-                <label htmlFor="startDate" className="text-sm">
-                  Start Date
-                </label>
-                <input
-                  id="startDate"
-                  type="date"
-                  className="w-full rounded-md border border-accent/10 bg-transparent p-2"
-                  defaultValue={""}
-                  min={new Date().toISOString().split("T")[0]}
-                  {...register("start_date", {
-                    required: {
-                      value: true,
-                      message: ERROR_MSG.FIELD_IS_REQUIRED,
-                    },
-                    valueAsDate: true,
-                  })}
-                />
-                {errors.start_date && (
-                  <p className="text-sm text-red-500">
-                    {errors.start_date.message}
-                  </p>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-4">
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="budgetAmount" className="text-sm">
-                    Amount
-                  </label>
-                  <input
-                    id="budgetAmount"
-                    type="number"
-                    min={0}
-                    className="w-full rounded-md border border-accent/10 bg-transparent p-2"
-                    placeholder="$ 0"
-                    {...register("amount")}
-                  />
-                </div>
-
-                <div className="flex flex-col gap-2">
-                  <label htmlFor="budgetRecurrence" className="text-sm">
-                    Recurrence
-                  </label>
-
-                  <select
-                    id="budgetRecurrence"
-                    className="rounded-md border border-accent/10 bg-transparent p-2"
-                    {...register("recurrence")}
-                  >
-                    <option>Monthly</option>
-                    <option>Weekly</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="flex flex-row items-center justify-end gap-2">
-                <ButtonPrimary type="submit">Create budget table</ButtonPrimary>
-              </div>
-            </form>
+                <Categories
+                  handleNewCategoryModal={() => openModal("addNewCategory")}
+                  selectedCategories={(methods.watch("addCategories") ?? [])
+                    .filter((category) => category.selected)
+                    .map((category) => category.name)}
+                >
+                  {addCategoriesArr.fields.map((field, index) => (
+                    <li key={field.id}>
+                      <label
+                        htmlFor={field.id}
+                        className="flex flex-row items-center justify-between rounded-sm px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10"
+                      >
+                        {field.name}
+                        <input
+                          id={field.id}
+                          type="checkbox"
+                          className="rounded-md border border-accent/10 bg-transparent"
+                          {...methods.register(
+                            `addCategories.${index}.selected` as const,
+                          )}
+                        />
+                      </label>
+                    </li>
+                  ))}
+                </Categories>
+              </BudgetTableForm>
+            </FormProvider>
           </Modal>
         )}
 
@@ -397,7 +462,7 @@ export default function Budget({ dashboardId, data, catogeries }: BudgetProps) {
           >
             <form
               id="addNewCategoryForm"
-              onSubmit={handleSubmit(onNewCategorySubmit)}
+              onSubmit={methods.handleSubmit(onNewCategorySubmit)}
               className="flex flex-col gap-4"
             >
               <div className="flex flex-col gap-4">
@@ -407,18 +472,19 @@ export default function Budget({ dashboardId, data, catogeries }: BudgetProps) {
                 <input
                   id="name"
                   type="text"
+                  autoComplete="off"
                   placeholder="Enter category name"
                   className="w-full rounded-md border border-accent/10 bg-transparent p-2"
-                  {...register("new_category", {
+                  {...methods.register("new_category", {
                     required: {
                       value: true,
                       message: ERROR_MSG.FIELD_IS_REQUIRED,
                     },
                   })}
                 />
-                {errors.new_category && (
+                {methods.formState.errors.new_category && (
                   <p className="text-sm text-red-500">
-                    {errors.new_category.message}
+                    {methods.formState.errors.new_category.message}
                   </p>
                 )}
 

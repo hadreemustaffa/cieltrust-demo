@@ -1,15 +1,29 @@
-import { useForm } from "react-hook-form";
-import { CategoryWithAmount } from "./Budget";
-import { useState } from "react";
+import { SubmitHandler, useForm } from "react-hook-form";
+import { useEffect, useState } from "react";
+import supabase from "../../../utils/supabase";
+
+export type Category = {
+  id?: number;
+  name: string;
+  selected?: boolean;
+};
+
+export type CategoryWithAmount = Category & {
+  amount: number;
+  spent: number;
+};
 
 interface BudgetTableCategoryProps {
   category: CategoryWithAmount;
+  totalBudgetAmount: number;
 }
 
 export default function BudgetTableCategory({
   category,
+  totalBudgetAmount,
 }: BudgetTableCategoryProps) {
-  const [isLimit, setIsLimit] = useState(false);
+  const [amountLimit, setAmountLimit] = useState(totalBudgetAmount);
+  const [budgetAmount, setBudgetAmount] = useState(category.amount);
 
   const {
     register,
@@ -24,8 +38,35 @@ export default function BudgetTableCategory({
     },
   });
 
-  const remaining = category.amount - category.spent;
-  const spent = category.spent;
+  const spent = category.spent + 100;
+  const remaining = budgetAmount - spent;
+
+  const onSubmit: SubmitHandler<BudgetTableCategoryProps> = async () => {
+    try {
+      const { data, error } = await supabase
+        .from("budget_categories")
+        .update({
+          amount: getValues("category.amount"),
+        })
+        .eq("id", category.id)
+        .select();
+
+      if (error) {
+        console.log("Error updating category amount:", error);
+        throw error;
+      }
+
+      if (data) {
+        setBudgetAmount(getValues("category.amount"));
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    setAmountLimit(totalBudgetAmount);
+  }, []);
 
   return (
     <tr
@@ -37,11 +78,7 @@ export default function BudgetTableCategory({
       </th>
 
       <td className="text-right">
-        <form
-          onSubmit={handleSubmit(() =>
-            console.log(getValues("category.amount")),
-          )}
-        >
+        <form onSubmit={handleSubmit(onSubmit)}>
           <input
             type="number"
             min={0}
@@ -53,7 +90,17 @@ export default function BudgetTableCategory({
       </td>
 
       <td className="text-right">${spent}</td>
-      <td className="text-right">${remaining}</td>
+      <td className="text-right font-semibold">
+        {spent > budgetAmount ? (
+          <span className="rounded-md bg-accent/10 px-2 py-1 text-red-500">
+            -${Math.abs(remaining)}
+          </span>
+        ) : (
+          <span className="rounded-md bg-accent/10 px-2 py-1 text-green-500">
+            ${remaining}
+          </span>
+        )}
+      </td>
     </tr>
   );
 }
