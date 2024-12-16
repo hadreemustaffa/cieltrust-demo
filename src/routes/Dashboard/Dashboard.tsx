@@ -5,16 +5,17 @@ import supabase from "../../utils/supabase";
 import SavingGoals, {
   SavingGoalFormProps,
 } from "../../components/Dashboard/SavingGoals/SavingGoals";
-import Budget, {
-  BudgetTableProps,
-} from "../../components/Dashboard/Budget/Budget";
+import Budget from "../../components/Dashboard/Budget/Budget";
 import AccountOverview, {
   Overview,
 } from "../../components/Dashboard/AccountOverview/AccountOverview";
+import { Table } from "../../components/Dashboard/Budget/BudgetTable";
+import { useDashboard } from "../../context/DashboardContext";
+import { useEffect } from "react";
 
 interface DashboardProps {
   id: number;
-  budget: BudgetTableProps[];
+  budget: Table[];
   saving_goals: SavingGoalFormProps[];
   overview: Overview[];
   categories: {
@@ -24,7 +25,8 @@ interface DashboardProps {
 }
 
 const saving_goals = "saving_goals:saving_goals(*)";
-const budget = "budget:budget(*, budget_categories:budget_categories(*))";
+const budget =
+  "budget:budget(*, budget_categories(id, budget_id, name, spent, amount))";
 const overview = "overview:overview(*)";
 const categories = "categories:categories(*)";
 
@@ -44,14 +46,19 @@ export async function dashboardLoader() {
 }
 
 export default function Dashboard() {
+  const { setDashboardId } = useDashboard();
   let data = useLoaderData() as DashboardProps;
+
+  useEffect(() => {
+    setDashboardId(data.id);
+  }, []);
 
   return (
     <div className="flex flex-col gap-4 text-left">
-      <AccountOverview dashboardId={data.id} data={data.overview} />
+      <AccountOverview data={data.overview} />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <SavingGoals dashboardId={data.id} data={data.saving_goals} />
+        <SavingGoals data={data.saving_goals} />
 
         <div className="col-span-1 flex items-center justify-center rounded-md border border-accent/10 p-4 md:col-span-2">
           <p>VISUAL CHART</p>
@@ -61,11 +68,7 @@ export default function Dashboard() {
           <p>UPCOMING PAYMENT</p>
         </div>
 
-        <Budget
-          dashboardId={data.id}
-          data={data.budget}
-          catogeries={data.categories}
-        />
+        <Budget data={data.budget} fetchedCategories={data.categories} />
       </div>
     </div>
   );

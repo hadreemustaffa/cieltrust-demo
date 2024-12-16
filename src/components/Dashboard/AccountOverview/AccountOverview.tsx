@@ -5,6 +5,7 @@ import supabase from "../../../utils/supabase";
 
 // components import
 import OverviewCard from "./OverviewCard";
+import { useDashboard } from "../../../context/DashboardContext";
 
 export interface Overview {
   balance: number;
@@ -14,13 +15,14 @@ export interface Overview {
 }
 
 interface AccountOverviewProps {
-  dashboardId: number;
   data: Overview[];
 }
 
-function AccountOverview({ dashboardId, data }: AccountOverviewProps) {
+function AccountOverview({ data }: AccountOverviewProps) {
   const [overview, setOverview] = useState<Overview[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+
+  const { dashboardId } = useDashboard();
 
   const fetchOverview = async () => {
     if (data) {
@@ -49,7 +51,6 @@ function AccountOverview({ dashboardId, data }: AccountOverviewProps) {
       {overview && overview.length > 0 && (
         <>
           <OverviewCard
-            dashboardId={dashboardId}
             columnTitle="balance"
             amount={
               overview[0].income -
@@ -57,18 +58,9 @@ function AccountOverview({ dashboardId, data }: AccountOverviewProps) {
               overview[0].income * 0.2
             }
           />
+          <OverviewCard columnTitle="income" amount={overview[0].income} />
+          <OverviewCard columnTitle="expenses" amount={overview[0].expenses} />
           <OverviewCard
-            dashboardId={dashboardId}
-            columnTitle="income"
-            amount={overview[0].income}
-          />
-          <OverviewCard
-            dashboardId={dashboardId}
-            columnTitle="expenses"
-            amount={overview[0].expenses}
-          />
-          <OverviewCard
-            dashboardId={dashboardId}
             columnTitle="savings"
             amount={overview[0].income * 0.2}
           />

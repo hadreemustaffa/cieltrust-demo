@@ -12,6 +12,7 @@ import Icon from "../../Icon";
 import { ButtonPrimary, ButtonSecondary } from "../../Button";
 import Modal from "../../Modal";
 import SavingGoalItem from "./SavingGoalItem";
+import { useDashboard } from "../../../context/DashboardContext";
 
 export interface SavingGoalFormProps {
   id: number;
@@ -21,15 +22,16 @@ export interface SavingGoalFormProps {
 }
 
 interface SavingGoalsProps {
-  dashboardId: number;
   data: SavingGoalFormProps[];
 }
 
-export default function SavingGoals({ dashboardId, data }: SavingGoalsProps) {
+export default function SavingGoals({ data }: SavingGoalsProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [savingGoalList, setSavingGoalList] = useState<SavingGoalFormProps[]>(
     [],
   );
+
+  const { dashboardId } = useDashboard();
 
   const {
     register,

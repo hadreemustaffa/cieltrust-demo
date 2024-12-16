@@ -11,9 +11,9 @@ import TrendingUpIcon from "../../../images/icons/trending-up.svg?react";
 // components import
 import Icon from "../../Icon";
 import MoreMenu from "../../MoreMenu";
+import { useDashboard } from "../../../context/DashboardContext";
 
 interface OverviewCardProps {
-  dashboardId: number;
   amount: number;
   columnTitle: string;
 }
@@ -22,13 +22,11 @@ interface OverviewCardFormProps {
   amount: number;
 }
 
-const OverviewCard: React.FC<OverviewCardProps> = ({
-  dashboardId,
-  amount,
-  columnTitle,
-}) => {
+const OverviewCard: React.FC<OverviewCardProps> = ({ amount, columnTitle }) => {
   const [isEditting, setIsEditting] = useState(false);
   const [currentAmount, setCurrentAmount] = useState(amount);
+
+  const { dashboardId } = useDashboard();
 
   const {
     register,
@@ -54,7 +52,7 @@ const OverviewCard: React.FC<OverviewCardProps> = ({
 
   const updatePayload = { [columnTitle]: watch("amount") };
 
-  const updateAmount = async (id: number) => {
+  const updateAmount = async (id: number | null) => {
     const { error } = await supabase
       .from("overview")
       .update(updatePayload)
