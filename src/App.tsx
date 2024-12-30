@@ -1,31 +1,24 @@
-import { lazy, Suspense } from "react";
-import {
-  createBrowserRouter,
-  createRoutesFromElements,
-  Navigate,
-  Route,
-  RouterProvider,
-} from "react-router-dom";
+import { Suspense, lazy } from 'react';
+import { SkeletonTheme } from 'react-loading-skeleton';
+import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 
-import { SessionProvider } from "./context/SessionContext";
+import ErrorBoundary from '@/components/error-boundary';
+import Layout from '@/components/layout';
+import Loading from '@/components/loading';
+import { DashboardProvider } from '@/context/dashboard-context';
+import { ModalProvider } from '@/context/modal-context';
+import { SessionProvider } from '@/context/session-context';
+import Dashboard from '@/routes/dashboard/dashboard';
+import Home from '@/routes/home/home';
+import Login from '@/routes/login/login';
+import SignUp from '@/routes/sign-up/sign-up';
 
-// components import
-import Layout from "./components/Layout";
-import Home from "./routes/Home/Home";
-import SignUp from "./routes/SignUp/SignUp";
-import Login from "./routes/Login/Login";
-import { dashboardLoader } from "./routes/Dashboard/Dashboard";
-import ErrorBoundary from "./components/ErrorBoundary";
-import Loading from "./components/Loading";
-import { SkeletonTheme } from "react-loading-skeleton";
-import { DashboardProvider } from "./context/DashboardContext";
-
-const LazyCareers = lazy(() => import("./routes/Careers/Careers"));
-const LazyAbout = lazy(() => import("./routes/About/About"));
-const LazySecurity = lazy(() => import("./routes/Security/Security"));
-const LazyNotFound = lazy(() => import("./routes/NotFound/NotFound"));
-const LazyProtected = lazy(() => import("./routes/Protected/Protected"));
-const LazyDashboard = lazy(() => import("./routes/Dashboard/Dashboard"));
+const LazyCareers = lazy(() => import('@/routes/careers/careers'));
+const LazyAbout = lazy(() => import('@/routes/about/about'));
+const LazySecurity = lazy(() => import('@/routes/security/security'));
+const LazyNotFound = lazy(() => import('@/routes/not-found/not-found'));
+const LazyProtected = lazy(() => import('@/routes/protected/protected'));
+const LazyDashboard = lazy(() => import('@/routes/dashboard/dashboard'));
 
 const router = createBrowserRouter(
   createRoutesFromElements(
@@ -58,16 +51,8 @@ const router = createBrowserRouter(
         }
         errorElement={<ErrorBoundary />}
       />
-      <Route
-        path="/signup/"
-        element={<SignUp />}
-        errorElement={<ErrorBoundary />}
-      />
-      <Route
-        path="/login/"
-        element={<Login />}
-        errorElement={<ErrorBoundary />}
-      />
+      <Route path="/signup/" element={<SignUp />} errorElement={<ErrorBoundary />} />
+      <Route path="/login/" element={<Login />} errorElement={<ErrorBoundary />} />
       <Route
         element={
           <Suspense fallback={<Loading />}>
@@ -82,7 +67,7 @@ const router = createBrowserRouter(
               <LazyDashboard />
             </Suspense>
           }
-          loader={dashboardLoader}
+          loader={Dashboard.loader}
           errorElement={<ErrorBoundary />}
         />
       </Route>
@@ -114,15 +99,11 @@ function App() {
   return (
     <SessionProvider>
       <DashboardProvider>
-        <SkeletonTheme
-          baseColor="hsl(220, 13%, 15%)"
-          highlightColor="hsl(220, 13%, 18%)"
-        >
-          <RouterProvider
-            router={router}
-            future={{ v7_startTransition: true }}
-          />
-        </SkeletonTheme>
+        <ModalProvider>
+          <SkeletonTheme baseColor="hsl(220, 13%, 15%)" highlightColor="hsl(220, 13%, 18%)">
+            <RouterProvider router={router} future={{ v7_startTransition: true }} />
+          </SkeletonTheme>
+        </ModalProvider>
       </DashboardProvider>
     </SessionProvider>
   );
