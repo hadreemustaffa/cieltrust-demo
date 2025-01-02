@@ -1,4 +1,9 @@
-import { BudgetFormProps, DeleteBudgetTableProps, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
+import {
+  BudgetFormProps,
+  Category,
+  DeleteBudgetTableProps,
+  EditBudgetFormProps,
+} from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
 export const addBudgetTable = async ({
@@ -98,6 +103,22 @@ export const editBudgetTable = async ({
       throw budgetError;
     }
 
+    if (budgetData) {
+      setState(
+        state.map((table) =>
+          table.id === id
+            ? {
+                ...table,
+                name: name,
+                amount: amount,
+                recurrence: recurrence,
+                start_date: start_date,
+              }
+            : table,
+        ),
+      );
+    }
+
     const selectedCategories = (editCategories ?? [])
       .filter((category) => category.selected)
       .map((category) => category.name);
@@ -125,21 +146,16 @@ export const editBudgetTable = async ({
       throw categoryError;
     }
 
-    if (budgetData) {
+    if (categoryData) {
       setState(
         state.map((table) =>
           table.id === id
             ? {
                 ...table,
-                name: name,
-                amount: amount,
-                recurrence: recurrence,
-                start_date: start_date,
                 budget_categories: [
                   ...table.budget_categories,
-                  ...newCategoriesMap.map((category) => ({
-                    ...category,
-                    id: categoryData.id,
+                  ...categoryData.map((newCategory: Category) => ({
+                    ...newCategory,
                   })),
                 ],
               }
@@ -147,8 +163,6 @@ export const editBudgetTable = async ({
         ),
       );
     }
-
-    console.log(categoryData);
   } catch (error) {
     console.error('Error updating budget:', error);
   }
