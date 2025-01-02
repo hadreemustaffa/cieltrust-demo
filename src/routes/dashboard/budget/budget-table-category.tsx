@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { BudgetTableCategoryProps } from '@/routes/tmp-dashboard/budget/budget.types';
+import { BudgetTableCategoryProps } from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
 export default function BudgetTableCategory({ category, totalBudgetAmount }: BudgetTableCategoryProps) {

@@ -5,7 +5,7 @@ import Skeleton from 'react-loading-skeleton';
 
 import OverviewCard from './account-overview-card';
 
-import { AccountOverviewProps } from '@/routes/tmp-dashboard/account-overview/account-overview.types';
+import { AccountOverviewProps } from '@/routes/dashboard/account-overview/account-overview.types';
 
 export default function AccountOverview(data: AccountOverviewProps) {
   const [overview, setOverview] = useState(data);

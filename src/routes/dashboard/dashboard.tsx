@@ -2,12 +2,12 @@ import { useEffect } from 'react';
 import { useLoaderData } from 'react-router';
 
 import { useDashboard } from '@/hooks/use-dashboard';
-import AccountOverview from '@/routes/tmp-dashboard/account-overview/account-overview';
-import { Overview } from '@/routes/tmp-dashboard/account-overview/account-overview.types';
-import Budget from '@/routes/tmp-dashboard/budget/budget';
-import { Table } from '@/routes/tmp-dashboard/budget/budget.types';
-import SavingGoals from '@/routes/tmp-dashboard/saving-goals/saving-goals';
-import { SavingGoalsFormProps } from '@/routes/tmp-dashboard/saving-goals/saving-goals.types';
+import AccountOverview from '@/routes/dashboard/account-overview/account-overview';
+import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
+import Budget from '@/routes/dashboard/budget/budget';
+import { Table } from '@/routes/dashboard/budget/budget.types';
+import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
+import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 import supabase from '@/utils/supabase';
 
 interface DashboardProps {

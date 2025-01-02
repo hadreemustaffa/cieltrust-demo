@@ -8,17 +8,17 @@ import Loading from '@/components/loading';
 import { DashboardProvider } from '@/context/dashboard-context';
 import { ModalProvider } from '@/context/modal-context';
 import { SessionProvider } from '@/context/session-context';
+import Dashboard from '@/routes/dashboard/dashboard';
 import Home from '@/routes/home/home';
 import Login from '@/routes/login/login';
 import SignUp from '@/routes/sign-up/sign-up';
-import Dashboard from '@/routes/tmp-dashboard/dashboard';
 
 const LazyCareers = lazy(() => import('@/routes/careers/careers'));
 const LazyAbout = lazy(() => import('@/routes/about/about'));
 const LazySecurity = lazy(() => import('@/routes/security/security'));
 const LazyNotFound = lazy(() => import('@/routes/not-found/not-found'));
 const LazyProtected = lazy(() => import('@/routes/protected/protected'));
-const LazyDashboard = lazy(() => import('@/routes/tmp-dashboard/dashboard'));
+const LazyDashboard = lazy(() => import('@/routes/dashboard/dashboard'));
 
 const router = createBrowserRouter(
   createRoutesFromElements(

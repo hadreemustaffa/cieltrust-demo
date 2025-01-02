@@ -3,7 +3,7 @@ import {
   Category,
   DeleteBudgetTableProps,
   EditBudgetFormProps,
-} from '@/routes/tmp-dashboard/budget/budget.types';
+} from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
 export const addBudgetTable = async ({

@@ -10,7 +10,7 @@ import { ERROR_MSG } from '@/data/errorMessages';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
 import PlusIcon from '@/images/icons/plus.svg?react';
-import { SavingGoalsFormProps, SavingGoalsProps } from '@/routes/tmp-dashboard/saving-goals/saving-goals.types';
+import { SavingGoalsFormProps, SavingGoalsProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 import supabase from '@/utils/supabase';
 
 export default function SavingGoals(data: SavingGoalsProps) {

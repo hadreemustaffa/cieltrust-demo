@@ -2,8 +2,8 @@ import { ButtonSecondary } from '@/components/button';
 import Modal from '@/components/modal';
 import MoreMenu from '@/components/more-menu';
 import { useModal } from '@/hooks/use-modal';
-import BudgetTableCategory from '@/routes/tmp-dashboard/budget/budget-table-category';
-import { BudgetTableProps, CategoryWithAmount } from '@/routes/tmp-dashboard/budget/budget.types';
+import BudgetTableCategory from '@/routes/dashboard/budget/budget-table-category';
+import { BudgetTableProps, CategoryWithAmount } from '@/routes/dashboard/budget/budget.types';
 
 export default function BudgetTable({ table, onEdit, onDelete, children, ...props }: BudgetTableProps) {
   const { activeModal, openModal, closeModal } = useModal();
