@@ -10,7 +10,7 @@ import TrendingUpIcon from '@/images/icons/trending-up.svg?react';
 import {
   AccountOverviewCardFormProps,
   AccountOverviewCardProps,
-} from '@/routes/dashboard/account-overview/account-overview.types';
+} from '@/routes/tmp-dashboard/account-overview/account-overview.types';
 import supabase from '@/utils/supabase';
 
 export default function AccountOverviewCard({ amount, columnTitle }: AccountOverviewCardProps) {

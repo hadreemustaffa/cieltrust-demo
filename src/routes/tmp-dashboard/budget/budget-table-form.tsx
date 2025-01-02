@@ -5,7 +5,7 @@ import { Input, Select } from '@/components/forms/custom_form';
 import Icon from '@/components/icon';
 import { ERROR_MSG } from '@/data/errorMessages';
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
-import { BudgetFormProps, BudgetTableFormProps, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
+import { BudgetFormProps, BudgetTableFormProps, EditBudgetFormProps } from '@/routes/tmp-dashboard/budget/budget.types';
 
 export default function BudgetTableForm({ table, tables, onSubmit, children, variant }: BudgetTableFormProps) {
   const {

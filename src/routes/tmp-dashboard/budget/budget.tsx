@@ -11,15 +11,15 @@ import { ERROR_MSG } from '@/data/errorMessages';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
 import PlusIcon from '@/images/icons/plus.svg?react';
-import BudgetTableForm from '@/routes/dashboard/budget/budget-table-form';
-import { addBudgetTable, deleteBudgetTable, editBudgetTable } from '@/routes/dashboard/budget/budget.api';
+import BudgetTableForm from '@/routes/tmp-dashboard/budget/budget-table-form';
+import { addBudgetTable, deleteBudgetTable, editBudgetTable } from '@/routes/tmp-dashboard/budget/budget.api';
 import {
   BudgetFormProps,
   BudgetProps,
   Category,
   EditBudgetFormProps,
   Table,
-} from '@/routes/dashboard/budget/budget.types';
+} from '@/routes/tmp-dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
 export default function Budget({ data, fetchedCategories }: BudgetProps) {

@@ -2,7 +2,7 @@ import { Outlet, useLocation } from 'react-router';
 
 import Footer from '@/components/footer';
 import Header from '@/components/header';
-import DashboardHeader from '@/routes/dashboard/dashboard-header';
+import DashboardHeader from '@/routes/tmp-dashboard/dashboard-header';
 
 export default function Layout() {
   const location = useLocation();

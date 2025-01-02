@@ -8,7 +8,7 @@ import MoreMenu from '@/components/more-menu';
 import { ERROR_MSG } from '@/data/errorMessages';
 import { useModal } from '@/hooks/use-modal';
 import XIcon from '@/images/icons/x.svg?react';
-import { EditGoalFormProps, SavingGoalsItemProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
+import { EditGoalFormProps, SavingGoalsItemProps } from '@/routes/tmp-dashboard/saving-goals/saving-goals.types';
 import supabase from '@/utils/supabase';
 
 export default function SavingGoalsItem({
