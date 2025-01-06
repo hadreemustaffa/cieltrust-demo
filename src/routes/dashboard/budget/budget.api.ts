@@ -103,22 +103,6 @@ export const editBudgetTable = async ({
       throw budgetError;
     }
 
-    if (budgetData) {
-      setState(
-        state.map((table) =>
-          table.id === id
-            ? {
-                ...table,
-                name: name,
-                amount: amount,
-                recurrence: recurrence,
-                start_date: start_date,
-              }
-            : table,
-        ),
-      );
-    }
-
     const selectedCategories = (editCategories ?? [])
       .filter((category) => category.selected)
       .map((category) => category.name);
@@ -146,12 +130,16 @@ export const editBudgetTable = async ({
       throw categoryError;
     }
 
-    if (categoryData) {
+    if (budgetData) {
       setState(
         state.map((table) =>
           table.id === id
             ? {
                 ...table,
+                name: name,
+                amount: amount,
+                recurrence: recurrence,
+                start_date: start_date,
                 budget_categories: [
                   ...table.budget_categories,
                   ...categoryData.map((newCategory: Category) => ({
