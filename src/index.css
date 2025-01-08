@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-html[style="color-scheme: dark"] {
+html[style='color-scheme: dark'] {
   --background: 210, 33%, 9%;
   --brand: 210, 96%, 40%;
   --brand-hover: 211, 86%, 36%;
@@ -23,7 +23,7 @@ html[style="color-scheme: dark"] {
   --link-secondary: 211, 100%, 73%;
 }
 
-html[style="color-scheme: light"] {
+html[style='color-scheme: light'] {
   --background: 55, 31%, 93%;
   --brand: 210, 96%, 40%;
   --brand-hover: 211, 86%, 36%;
