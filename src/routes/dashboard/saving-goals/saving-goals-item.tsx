@@ -41,6 +41,7 @@ export default function SavingGoalsItem({
       .from('saving_goals')
       .update({
         name: getValues('name'),
+        target_amount: getValues('target_amount'),
         saved_amount: savedAmount + getValues('saved_amount'),
       })
       .eq('id', id)
