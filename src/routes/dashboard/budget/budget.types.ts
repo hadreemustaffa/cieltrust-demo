@@ -38,7 +38,7 @@ export type Table = {
   name: string;
   budget_categories: CategoryWithAmount[];
   amount: number;
-  remaining: number;
+  remaining?: number;
   recurrence: string;
   start_date: string;
 };

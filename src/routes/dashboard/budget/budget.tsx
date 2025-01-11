@@ -10,6 +10,7 @@ import Modal from '@/components/modal';
 import { ERROR_MSG } from '@/data/errorMessages';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
+import { useUpcomingPayment } from '@/hooks/use-upcoming-payment';
 import PlusIcon from '@/images/icons/plus.svg?react';
 import BudgetTableForm from '@/routes/dashboard/budget/budget-table-form';
 import { addBudgetTable, deleteBudgetTable, editBudgetTable } from '@/routes/dashboard/budget/budget.api';
@@ -30,6 +31,8 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
       selected: false,
     })),
   );
+
+  const { setBudgetTables: setBudgetTablesProvider } = useUpcomingPayment();
 
   const { activeModal, openModal, closeModal } = useModal();
 
@@ -67,6 +70,7 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
       addCategories: methods.getValues('addCategories'),
       fields: addCategoriesArr.fields,
       setState: setBudgetTables,
+      setUpcomingPaymentProvider: setBudgetTablesProvider,
     });
   };
 
@@ -82,10 +86,11 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
           editCategories: editMethods.getValues('editCategories'),
           state: budgetTables,
           setState: setBudgetTables,
+          setUpcomingPaymentProvider: setBudgetTablesProvider,
         });
       };
     },
-    [budgetTables, editMethods],
+    [budgetTables, editMethods, setBudgetTablesProvider],
   );
 
   const onNewCategorySubmit: SubmitHandler<Pick<Category, 'name'>> = async () => {
@@ -116,6 +121,7 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
     await deleteBudgetTable({
       id,
       setState: setBudgetTables,
+      setUpcomingPaymentProvider: setBudgetTablesProvider,
     });
 
     closeModal();
@@ -160,7 +166,7 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
   return (
     <div
       data-testid="budget"
-      className="rounded-md border border-accent/10 p-4 md:col-span-full md:col-start-1 md:row-start-3 xl:col-span-3 xl:row-start-2"
+      className="rounded-md border border-accent/10 p-4 md:col-span-full md:col-start-1 md:row-start-3 xl:col-span-2 xl:row-start-2"
     >
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row items-center justify-between">

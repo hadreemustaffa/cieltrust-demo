@@ -1,6 +1,7 @@
 import { useEffect } from 'react';
 import { useLoaderData } from 'react-router';
 
+import { UpcomingPaymentProvider } from '@/context/upcoming-payment-context';
 import { useDashboard } from '@/hooks/use-dashboard';
 import AccountOverview from '@/routes/dashboard/account-overview/account-overview';
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
@@ -8,6 +9,7 @@ import Budget from '@/routes/dashboard/budget/budget';
 import { Table } from '@/routes/dashboard/budget/budget.types';
 import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
 import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
+import UpcomingPayment from '@/routes/dashboard/upcoming-payment/upcoming-payment';
 import supabase from '@/utils/supabase';
 
 interface DashboardProps {
@@ -60,11 +62,11 @@ export default function Dashboard() {
           <p>VISUAL CHART</p>
         </div>
 
-        <div className="col-span-full flex items-center justify-center rounded-md border border-accent/10 p-4 xl:col-span-1">
-          <p>UPCOMING PAYMENT</p>
-        </div>
+        <UpcomingPaymentProvider initialBudgetTables={data.budget}>
+          {data.budget.length > 0 && <UpcomingPayment />}
 
-        <Budget data={data.budget} fetchedCategories={data.categories} />
+          <Budget data={data.budget} fetchedCategories={data.categories} />
+        </UpcomingPaymentProvider>
       </div>
     </div>
   );
