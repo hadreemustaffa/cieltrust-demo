@@ -63,7 +63,7 @@ export default function Dashboard() {
         </div>
 
         <UpcomingPaymentProvider initialBudgetTables={data.budget}>
-          {data.budget.length > 0 && <UpcomingPayment />}
+          <UpcomingPayment />
 
           <Budget data={data.budget} fetchedCategories={data.categories} />
         </UpcomingPaymentProvider>
