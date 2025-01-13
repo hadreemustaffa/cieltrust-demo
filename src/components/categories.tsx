@@ -50,7 +50,7 @@ export default function Categories({ children, selectedCategories, handleNewCate
       </button>
 
       <ul
-        className={`absolute -bottom-[129px] left-0 z-50 flex max-h-32 w-full flex-col gap-2 overflow-y-scroll rounded-md border border-accent/10 bg-card p-4 text-sm shadow-md ${
+        className={`absolute left-0 top-full z-50 flex max-h-32 w-full flex-col gap-2 overflow-y-auto rounded-md border border-accent/10 bg-card p-4 text-sm shadow-md ${
           isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
         }`}
       >
