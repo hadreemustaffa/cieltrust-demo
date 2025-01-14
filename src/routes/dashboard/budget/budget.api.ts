@@ -1,8 +1,11 @@
+import React from 'react';
+
 import {
   BudgetFormProps,
   Category,
   DeleteBudgetTableProps,
   EditBudgetFormProps,
+  Table,
 } from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
@@ -14,8 +17,8 @@ export const addBudgetTable = async ({
   start_date,
   addCategories,
   fields,
-  setState,
-}: BudgetFormProps) => {
+  setBudgetTablesProvider,
+}: BudgetFormProps & { setBudgetTablesProvider: React.Dispatch<React.SetStateAction<Table[]>> }) => {
   try {
     const { data: budgetData, error: budgetError } = await supabase
       .from('budget')
@@ -56,23 +59,20 @@ export const addBudgetTable = async ({
     }
 
     if (budgetData) {
-      setState((prevData) => [
-        ...prevData,
-        {
-          id: budgetData.id,
-          name: budgetData.name,
-          budget_categories: categoryData,
-          amount: budgetData.amount,
-          remaining: budgetData.amount,
-          recurrence: budgetData.recurrence,
-          start_date: budgetData.start_date,
-        },
-      ]);
+      const newBudgetTable = {
+        id: budgetData.id,
+        name: budgetData.name,
+        budget_categories: categoryData,
+        amount: budgetData.amount,
+        remaining: budgetData.amount,
+        recurrence: budgetData.recurrence,
+        start_date: budgetData.start_date,
+      };
+
+      setBudgetTablesProvider((prevTables) => [...prevTables, newBudgetTable]);
     }
   } catch (error) {
     console.error('Error inserting budget and categories:', error);
-
-    // Optionally, show user-friendly error toast?
   }
 };
 
@@ -84,8 +84,8 @@ export const editBudgetTable = async ({
   start_date,
   editCategories,
   state,
-  setState,
-}: EditBudgetFormProps) => {
+  setBudgetTablesProvider,
+}: EditBudgetFormProps & { setBudgetTablesProvider: React.Dispatch<React.SetStateAction<Table[]>> }) => {
   try {
     const { data: budgetData, error: budgetError } = await supabase
       .from('budget')
@@ -131,8 +131,8 @@ export const editBudgetTable = async ({
     }
 
     if (budgetData) {
-      setState(
-        state.map((table) =>
+      setBudgetTablesProvider((prevTables) =>
+        prevTables.map((table) =>
           table.id === id
             ? {
                 ...table,
@@ -156,10 +156,13 @@ export const editBudgetTable = async ({
   }
 };
 
-export const deleteBudgetTable = async ({ id, setState }: DeleteBudgetTableProps) => {
+export const deleteBudgetTable = async ({
+  id,
+  setBudgetTablesProvider,
+}: DeleteBudgetTableProps & { setBudgetTablesProvider: React.Dispatch<React.SetStateAction<Table[]>> }) => {
   try {
     await supabase.from('budget').delete().eq('id', id);
-    setState((prevData) => prevData.filter((item) => item.id !== id));
+    setBudgetTablesProvider((prevTables) => prevTables.filter((table) => table.id !== id));
   } catch (error) {
     console.error('Error deleting budget:', error);
   }

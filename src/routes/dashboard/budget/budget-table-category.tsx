@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { BudgetTableCategoryProps } from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
@@ -15,6 +16,8 @@ export default function BudgetTableCategory({ category, totalBudgetAmount }: Bud
       },
     },
   });
+
+  const { setBudgetTables } = useBudgetTables();
 
   const spent = category.spent + 100;
   const remaining = budgetAmount - spent;
@@ -36,6 +39,20 @@ export default function BudgetTableCategory({ category, totalBudgetAmount }: Bud
 
       if (data) {
         setBudgetAmount(getValues('category.amount'));
+
+        // Update the upcoming payments context
+        setBudgetTables((prevTables) =>
+          prevTables.map((table) =>
+            table.budget_categories.some((cat) => cat.id === category.id)
+              ? {
+                  ...table,
+                  budget_categories: table.budget_categories.map((cat) =>
+                    cat.id === category.id ? { ...cat, amount: getValues('category.amount') } : cat,
+                  ),
+                }
+              : table,
+          ),
+        );
       }
     } catch (error) {
       console.log(error);

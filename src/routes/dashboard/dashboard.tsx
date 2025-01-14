@@ -1,6 +1,8 @@
 import { useEffect } from 'react';
 import { useLoaderData } from 'react-router';
 
+import { BudgetTablesProvider } from '@/context/budget-tables-context';
+import { CategoriesProvider } from '@/context/categories-context';
 import { useDashboard } from '@/hooks/use-dashboard';
 import AccountOverview from '@/routes/dashboard/account-overview/account-overview';
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
@@ -8,6 +10,7 @@ import Budget from '@/routes/dashboard/budget/budget';
 import { Table } from '@/routes/dashboard/budget/budget.types';
 import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
 import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
+import UpcomingPayment from '@/routes/dashboard/upcoming-payment/upcoming-payment';
 import supabase from '@/utils/supabase';
 
 interface DashboardProps {
@@ -50,23 +53,25 @@ export default function Dashboard() {
   }, [data.id, setDashboardId]);
 
   return (
-    <div className="flex flex-col gap-4 text-left">
-      <AccountOverview data={data.overview[0]} />
+    <CategoriesProvider initialCategories={data.categories}>
+      <div className="flex flex-col gap-4 text-left">
+        <AccountOverview data={data.overview[0]} />
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <SavingGoals data={data.saving_goals} />
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <SavingGoals data={data.saving_goals} />
 
-        <div className="col-span-1 flex items-center justify-center rounded-md border border-accent/10 p-4 md:col-span-2">
-          <p>VISUAL CHART</p>
+          <div className="col-span-1 flex items-center justify-center rounded-md border border-accent/10 p-4 md:col-span-2">
+            <p>VISUAL CHART</p>
+          </div>
+
+          <BudgetTablesProvider initialBudgetTables={data.budget}>
+            <UpcomingPayment />
+
+            <Budget />
+          </BudgetTablesProvider>
         </div>
-
-        <div className="col-span-full flex items-center justify-center rounded-md border border-accent/10 p-4 xl:col-span-1">
-          <p>UPCOMING PAYMENT</p>
-        </div>
-
-        <Budget data={data.budget} fetchedCategories={data.categories} />
       </div>
-    </div>
+    </CategoriesProvider>
   );
 }
 
