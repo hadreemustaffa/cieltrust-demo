@@ -1,7 +1,7 @@
-import { useUpcomingPayment } from '@/hooks/use-upcoming-payment';
+import { useBudgetTables } from '@/hooks/use-budget-tables';
 
 export default function UpcomingPayment() {
-  const { budgetTables } = useUpcomingPayment();
+  const { budgetTables } = useBudgetTables();
 
   const totalExpectedPayments = budgetTables.reduce((total, table) => {
     return (

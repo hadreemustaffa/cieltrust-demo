@@ -1,9 +1,9 @@
 import { ReactNode, useState } from 'react';
 
-import { UpcomingPaymentContext } from '@/hooks/use-upcoming-payment';
+import { BudgetTablesContext } from '@/hooks/use-budget-tables';
 import { Table } from '@/routes/dashboard/budget/budget.types';
 
-export const UpcomingPaymentProvider = ({
+export const BudgetTablesProvider = ({
   children,
   initialBudgetTables,
 }: {
@@ -13,8 +13,6 @@ export const UpcomingPaymentProvider = ({
   const [budgetTables, setBudgetTables] = useState<Table[]>(initialBudgetTables);
 
   return (
-    <UpcomingPaymentContext.Provider value={{ budgetTables, setBudgetTables }}>
-      {children}
-    </UpcomingPaymentContext.Provider>
+    <BudgetTablesContext.Provider value={{ budgetTables, setBudgetTables }}>{children}</BudgetTablesContext.Provider>
   );
 };

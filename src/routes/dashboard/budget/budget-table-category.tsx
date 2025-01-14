@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { useUpcomingPayment } from '@/hooks/use-upcoming-payment';
+import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { BudgetTableCategoryProps } from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
@@ -17,7 +17,7 @@ export default function BudgetTableCategory({ category, totalBudgetAmount }: Bud
     },
   });
 
-  const { setBudgetTables } = useUpcomingPayment();
+  const { setBudgetTables } = useBudgetTables();
 
   const spent = category.spent + 100;
   const remaining = budgetAmount - spent;

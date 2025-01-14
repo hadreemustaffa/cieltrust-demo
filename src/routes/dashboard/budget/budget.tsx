@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useEffect } from 'react';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 
 import BudgetTable from './budget-table';
@@ -8,34 +8,21 @@ import Categories from '@/components/categories';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import { ERROR_MSG } from '@/data/errorMessages';
+import { useBudgetTables } from '@/hooks/use-budget-tables';
+import { useCategories } from '@/hooks/use-categories';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
-import { useUpcomingPayment } from '@/hooks/use-upcoming-payment';
 import PlusIcon from '@/images/icons/plus.svg?react';
 import BudgetTableForm from '@/routes/dashboard/budget/budget-table-form';
 import { addBudgetTable, deleteBudgetTable, editBudgetTable } from '@/routes/dashboard/budget/budget.api';
-import {
-  BudgetFormProps,
-  BudgetProps,
-  Category,
-  EditBudgetFormProps,
-  Table,
-} from '@/routes/dashboard/budget/budget.types';
+import { BudgetFormProps, Category, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
+import ManageCategories from '@/routes/dashboard/manage-categories/manage-categories';
 import supabase from '@/utils/supabase';
 
-export default function Budget({ data, fetchedCategories }: BudgetProps) {
-  const [budgetTables, setBudgetTables] = useState<Table[]>(data);
-  const [categories, setCategories] = useState<Category[]>(
-    fetchedCategories.map((category: Category) => ({
-      ...category,
-      selected: false,
-    })),
-  );
-
-  const { setBudgetTables: setBudgetTablesProvider } = useUpcomingPayment();
-
+export default function Budget() {
+  const { categories, setCategories } = useCategories();
+  const { budgetTables, setBudgetTables } = useBudgetTables();
   const { activeModal, openModal, closeModal } = useModal();
-
   const { dashboardId } = useDashboard();
 
   const methods = useForm<BudgetFormProps>({
@@ -69,8 +56,7 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
       start_date: new Date(methods.getValues('start_date')).toISOString().split('T')[0],
       addCategories: methods.getValues('addCategories'),
       fields: addCategoriesArr.fields,
-      setState: setBudgetTables,
-      setUpcomingPaymentProvider: setBudgetTablesProvider,
+      setBudgetTablesProvider: setBudgetTables,
     });
   };
 
@@ -85,12 +71,11 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
           start_date: editMethods.getValues('start_date'),
           editCategories: editMethods.getValues('editCategories'),
           state: budgetTables,
-          setState: setBudgetTables,
-          setUpcomingPaymentProvider: setBudgetTablesProvider,
+          setBudgetTablesProvider: setBudgetTables,
         });
       };
     },
-    [budgetTables, editMethods, setBudgetTablesProvider],
+    [budgetTables, editMethods, setBudgetTables],
   );
 
   const onNewCategorySubmit: SubmitHandler<Pick<Category, 'name'>> = async () => {
@@ -120,8 +105,7 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
   const handleDeleteBudgetTable = async (id: number) => {
     await deleteBudgetTable({
       id,
-      setState: setBudgetTables,
-      setUpcomingPaymentProvider: setBudgetTablesProvider,
+      setBudgetTablesProvider: setBudgetTables,
     });
 
     closeModal();
@@ -169,11 +153,15 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
       className="rounded-md border border-accent/10 p-4 md:col-span-full md:col-start-1 md:row-start-3 xl:col-span-2 xl:row-start-2"
     >
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
-        <div className="flex flex-row items-center justify-between">
+        <div className="flex flex-row flex-wrap items-center justify-between gap-4">
           <h2 className="text-lg font-semibold">Budgets</h2>
-          <ButtonSecondary aria-label="Add goal" onClick={() => openModal('addBudgetTableModal')}>
-            <Icon SvgIcon={PlusIcon} isBorderless />
-          </ButtonSecondary>
+
+          <div className="flex flex-row flex-wrap gap-4">
+            <ButtonSecondary onClick={() => openModal(`manageCategoriesModal`)}>Manage Categories</ButtonSecondary>
+            <ButtonSecondary aria-label="Add goal" onClick={() => openModal('addBudgetTableModal')}>
+              <Icon SvgIcon={PlusIcon} isBorderless />
+            </ButtonSecondary>
+          </div>
         </div>
 
         <div className="flex flex-col gap-4">
@@ -273,7 +261,7 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
             <FormProvider {...methods}>
               <BudgetTableForm variant="add" tables={budgetTables} onSubmit={onAddSubmit}>
                 <Categories
-                  handleNewCategoryModal={() => openModal('addBudgetTableModal')}
+                  handleNewCategoryModal={() => openModal('addNewCategoryModal')}
                   selectedCategories={(methods.watch('addCategories') ?? [])
                     .filter((category) => category.selected)
                     .map((category) => category.name)}
@@ -338,6 +326,17 @@ export default function Budget({ data, fetchedCategories }: BudgetProps) {
                 </div>
               </div>
             </form>
+          </Modal>
+        )}
+
+        {activeModal === 'manageCategoriesModal' && (
+          <Modal
+            id="manageCategoriesModal"
+            title="Manage Categories"
+            isOpen={activeModal === 'manageCategoriesModal'}
+            handleClose={() => closeModal()}
+          >
+            <ManageCategories tables={budgetTables} dashboardId={dashboardId} />
           </Modal>
         )}
       </div>

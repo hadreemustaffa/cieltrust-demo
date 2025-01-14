@@ -10,7 +10,6 @@ export interface BudgetFormProps {
   new_category?: string;
   addCategories?: Category[];
   state?: Table[];
-  setState: React.Dispatch<React.SetStateAction<Table[]>>;
 }
 
 export interface EditBudgetFormProps {
@@ -21,16 +20,10 @@ export interface EditBudgetFormProps {
   start_date: string;
   editCategories?: Category[];
   state: Table[];
-  setState: React.Dispatch<React.SetStateAction<Table[]>>;
 }
 
 export interface BudgetProps {
   data: Table[];
-  fetchedCategories: {
-    id: number;
-    name: string;
-    selected?: boolean;
-  }[];
 }
 
 export type Table = {
@@ -83,7 +76,6 @@ export type EditBudgetTableFormProps = {
 
 export interface DeleteBudgetTableProps {
   id: number | null;
-  setState: React.Dispatch<React.SetStateAction<Table[]>>;
 }
 
 export type Category = {

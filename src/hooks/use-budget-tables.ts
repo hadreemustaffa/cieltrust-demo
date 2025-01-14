@@ -2,17 +2,17 @@ import React, { createContext, useContext } from 'react';
 
 import { Table } from '@/routes/dashboard/budget/budget.types';
 
-export interface UpcomingPaymentContextProps {
+export interface BudgetTablesContextProps {
   budgetTables: Table[];
   setBudgetTables: React.Dispatch<React.SetStateAction<Table[]>>;
 }
 
-export const UpcomingPaymentContext = createContext<UpcomingPaymentContextProps | undefined>(undefined);
+export const BudgetTablesContext = createContext<BudgetTablesContextProps | undefined>(undefined);
 
-export const useUpcomingPayment = (): UpcomingPaymentContextProps => {
-  const context = useContext(UpcomingPaymentContext);
+export const useBudgetTables = (): BudgetTablesContextProps => {
+  const context = useContext(BudgetTablesContext);
   if (!context) {
-    throw new Error('useUpcomingPayment must be used within an UpcomingPaymentProvider');
+    throw new Error('useBudgetTables must be used within an BudgetTablesProvider');
   }
   return context;
 };
