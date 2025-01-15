@@ -81,6 +81,12 @@ export default function ManageCategories({ tables, dashboardId }: ManageCategori
                 value: true,
                 message: 'Category name is required',
               },
+              validate: (value) => {
+                if (categories.some((cat) => cat.name === value)) {
+                  return 'Category already exists';
+                }
+                return true;
+              },
             })}
           />
           {errors.name && <p className="absolute top-full pl-2 pt-1 text-xs text-red-500">{errors.name.message}</p>}
