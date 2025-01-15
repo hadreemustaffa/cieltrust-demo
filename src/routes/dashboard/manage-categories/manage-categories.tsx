@@ -18,15 +18,14 @@ import {
 import { CategoryItemProps, ManageCategoriesProps } from '@/routes/dashboard/manage-categories/manage-categories.types';
 
 export default function ManageCategories({ tables, dashboardId }: ManageCategoriesProps) {
-  const { categories: categoriesList, setCategories } = useCategories();
+  const { categories, setCategories } = useCategories();
   const { setBudgetTables } = useBudgetTables();
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
-  const paginatedCategories = categoriesList.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const totalPages = Math.ceil(categoriesList.length / itemsPerPage);
+  const paginatedCategories = categories.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+  const totalPages = Math.ceil(categories.length / itemsPerPage);
   const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(currentPage * itemsPerPage, categoriesList.length);
 
   const {
     register,
@@ -63,7 +62,7 @@ export default function ManageCategories({ tables, dashboardId }: ManageCategori
     if (paginatedCategories.length === 0 && currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
     }
-  }, [categoriesList, currentPage, paginatedCategories.length]);
+  }, [categories, currentPage, paginatedCategories.length]);
 
   return (
     <div className="flex flex-col gap-4">
@@ -92,7 +91,7 @@ export default function ManageCategories({ tables, dashboardId }: ManageCategori
         </ButtonSecondary>
       </form>
 
-      {categoriesList.length > 0 ? (
+      {categories.length > 0 ? (
         <>
           <ul className="flex flex-col gap-2">
             {paginatedCategories.map((category, index) => (
@@ -116,7 +115,7 @@ export default function ManageCategories({ tables, dashboardId }: ManageCategori
               Previous
             </button>
             <span>
-              Showing {startItem} to {endItem} of {categoriesList.length} categories
+              Showing {startItem} of {categories.length} categories
             </span>
             <button
               onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
@@ -138,6 +137,9 @@ const CategoryItem = ({ category, tables, dashboardId, onDelete }: CategoryItemP
   const [isEditting, setIsEditting] = useState(false);
   const [name, setName] = useState(category.name);
 
+  const { setCategories } = useCategories();
+  const { setBudgetTables } = useBudgetTables();
+
   const {
     register,
     handleSubmit,
@@ -146,7 +148,40 @@ const CategoryItem = ({ category, tables, dashboardId, onDelete }: CategoryItemP
   } = useForm<Category>();
 
   const onEditSubmit: SubmitHandler<Category> = async () => {
-    await updateCategory({ category, dashboardId, tables, name: getValues('name'), setState: setName });
+    try {
+      await updateCategory({ category, dashboardId, tables, name: getValues('name'), setState: setName });
+
+      updateBudgetTables();
+      updateCategories();
+    } catch (error) {
+      console.error('Failed to update category:', error);
+    }
+  };
+
+  const updateBudgetTables = () => {
+    setBudgetTables((prev) => {
+      const updatedTables = prev.map((table) => ({
+        ...table,
+        budget_categories: table.budget_categories.map((cat) => {
+          if (cat.name === category.name) {
+            return { ...cat, name: getValues('name') };
+          }
+          return cat;
+        }),
+      }));
+      return updatedTables;
+    });
+  };
+
+  const updateCategories = () => {
+    setCategories((prevCategories) => {
+      return prevCategories.map((cat) => {
+        if (cat.id === category.id) {
+          return { ...cat, name: getValues('name') };
+        }
+        return cat;
+      });
+    });
   };
 
   const handleDeleteCategory = async () => {

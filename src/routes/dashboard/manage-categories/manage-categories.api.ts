@@ -62,7 +62,7 @@ export const updateCategory = async ({ category, dashboardId, tables, name, setS
     });
 
     if (categoryData) {
-      setState(() => name);
+      setState(name);
     }
   } catch (error) {
     console.log(error);
