@@ -29,7 +29,7 @@ export default function Header() {
         className="relative col-span-full col-start-4 lg:static lg:flex lg:w-full lg:items-center lg:justify-end"
       >
         <ButtonMenuToggle
-          isMobileOnly={true}
+          className="lg:hidden"
           aria-label="navigation toggle button"
           aria-controls="HeaderNavMenu"
           aria-expanded="false"
@@ -58,10 +58,10 @@ export default function Header() {
               </>
             ) : (
               <>
-                <LinkButtonSecondary to="/signup/" isFullWidth>
+                <LinkButtonSecondary to="/signup/" className="w-full">
                   Sign Up
                 </LinkButtonSecondary>
-                <LinkButtonPrimary to="/login/" isFullWidth>
+                <LinkButtonPrimary to="/login/" className="w-full">
                   Login
                 </LinkButtonPrimary>
               </>
@@ -83,6 +83,6 @@ const HeaderNavMenu = ({ children, isOpen }: { children: ReactElement[]; isOpen:
   );
 };
 
-const HeaderNavButtons = ({ children }: { children: ReactElement[]; isMobileOnly?: boolean }) => {
+const HeaderNavButtons = ({ children }: { children: ReactElement[] }) => {
   return <div className="flex flex-col items-center gap-4 lg:flex-row">{children}</div>;
 };

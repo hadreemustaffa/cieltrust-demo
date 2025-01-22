@@ -45,9 +45,7 @@ const PressReleasesArticle: React.FC<PressReleasesArticleProps> = ({ id, title, 
         <CardImage imgPath={`about-press-article-${id}`} imgFormat="png" imgAlt="" />
         <header className="flex flex-col gap-4">
           <h3 className="text-xl font-semibold">
-            <LinkButtonTertiary to={`/press-releases/${id}`} isPaddingless>
-              {title}
-            </LinkButtonTertiary>
+            <LinkButtonTertiary to={`/press-releases/${id}`}>{title}</LinkButtonTertiary>
           </h3>
           <div className="flex flex-row flex-wrap gap-2">
             <p className="w-fit rounded-md border border-accent/10 p-2">

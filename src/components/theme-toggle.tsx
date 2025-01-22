@@ -66,7 +66,6 @@ export default function ThemeToggle() {
       title="Toggles light & dark"
       aria-label="auto"
       aria-live="polite"
-      isFullWidth
       onClick={themeHandleClick}
     >
       {theme.value === 'light' ? '🌞' : '🌙'}

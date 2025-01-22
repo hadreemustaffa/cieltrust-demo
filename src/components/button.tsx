@@ -1,25 +1,25 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
+import { cn } from '@/utils/cn';
+
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   children: React.ReactNode;
-  isMobileOnly?: boolean;
-  isFullWidth?: boolean;
 }
 
 interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
   children: React.ReactNode;
   to: string;
-  isMobileOnly?: boolean;
-  isFullWidth?: boolean;
-  isPaddingless?: boolean;
 }
 
-export const ButtonPrimary = ({ children, isMobileOnly, isFullWidth, ...props }: ButtonProps) => {
+export const ButtonPrimary = ({ children, className, ...props }: ButtonProps) => {
   return (
     <button
       type="button"
-      className={`flex items-center justify-center rounded-md bg-brand px-6 py-3 text-white hover:cursor-pointer hover:bg-brand-hover hover:text-white ${isMobileOnly ? 'md:hidden' : ''} ${isFullWidth ? 'w-full' : ''}`}
+      className={cn(
+        `flex items-center justify-center rounded-md bg-brand px-4 py-2 text-white hover:cursor-pointer hover:bg-brand-hover hover:text-white`,
+        className,
+      )}
       {...props}
     >
       {children}
@@ -27,11 +27,14 @@ export const ButtonPrimary = ({ children, isMobileOnly, isFullWidth, ...props }:
   );
 };
 
-export const LinkButtonPrimary = ({ children, isMobileOnly, isFullWidth, to, ...props }: LinkProps) => {
+export const LinkButtonPrimary = ({ children, to, className, ...props }: LinkProps) => {
   return (
     <Link
       to={to}
-      className={`flex items-center justify-center rounded-md bg-brand px-6 py-3 text-white hover:cursor-pointer hover:bg-brand-hover hover:text-white ${isMobileOnly ? 'md:hidden' : ''} ${isFullWidth ? 'w-full' : ''}`}
+      className={cn(
+        `flex items-center justify-center rounded-md bg-brand px-4 py-2 text-white hover:cursor-pointer hover:bg-brand-hover hover:text-white`,
+        className,
+      )}
       {...props}
     >
       {children}
@@ -39,10 +42,13 @@ export const LinkButtonPrimary = ({ children, isMobileOnly, isFullWidth, to, ...
   );
 };
 
-export const ButtonSecondary = ({ children, isMobileOnly, isFullWidth, ...props }: ButtonProps) => {
+export const ButtonSecondary = ({ children, className, ...props }: ButtonProps) => {
   return (
     <button
-      className={`flex h-fit items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-6 py-3 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10 ${isMobileOnly ? 'md:hidden' : ''} ${isFullWidth ? 'w-full' : ''}`}
+      className={cn(
+        `flex h-fit items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-4 py-2 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10`,
+        className,
+      )}
       {...props}
     >
       {children}
@@ -50,11 +56,14 @@ export const ButtonSecondary = ({ children, isMobileOnly, isFullWidth, ...props 
   );
 };
 
-export const LinkButtonSecondary = ({ children, isMobileOnly, isFullWidth, to, ...props }: LinkProps) => {
+export const LinkButtonSecondary = ({ children, to, className, ...props }: LinkProps) => {
   return (
     <Link
       to={to}
-      className={`flex items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-6 py-3 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10 ${isMobileOnly ? 'md:hidden' : ''} ${isFullWidth ? 'w-full' : ''}`}
+      className={cn(
+        `flex items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-4 py-2 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10`,
+        className,
+      )}
       {...props}
     >
       {children}
@@ -62,10 +71,13 @@ export const LinkButtonSecondary = ({ children, isMobileOnly, isFullWidth, to, .
   );
 };
 
-export const ButtonTertiary = ({ children, isMobileOnly, isFullWidth, ...props }: ButtonProps) => {
+export const ButtonTertiary = ({ children, className, ...props }: ButtonProps) => {
   return (
     <button
-      className={`flex items-center justify-center gap-2 rounded-md bg-transparent px-6 py-3 hover:cursor-pointer hover:underline ${isMobileOnly ? 'md:hidden' : ''} ${isFullWidth ? 'w-full' : ''}`}
+      className={cn(
+        `flex items-center justify-center gap-2 rounded-md bg-transparent px-4 py-2 hover:cursor-pointer hover:underline`,
+        className,
+      )}
       {...props}
     >
       {children}
@@ -73,11 +85,11 @@ export const ButtonTertiary = ({ children, isMobileOnly, isFullWidth, ...props }
   );
 };
 
-export const LinkButtonTertiary = ({ children, isMobileOnly, isFullWidth, isPaddingless, to, ...props }: LinkProps) => {
+export const LinkButtonTertiary = ({ children, to, className, ...props }: LinkProps) => {
   return (
     <Link
       to={to}
-      className={`flex items-center rounded-md bg-transparent ${isPaddingless ? '' : 'px-6 py-3'} hover:cursor-pointer hover:underline ${isMobileOnly ? 'md:hidden' : ''} ${isFullWidth ? 'w-full' : ''}`}
+      className={cn(`flex items-center rounded-md bg-transparent hover:cursor-pointer hover:underline`, className)}
       {...props}
     >
       {children}
@@ -85,11 +97,14 @@ export const LinkButtonTertiary = ({ children, isMobileOnly, isFullWidth, isPadd
   );
 };
 
-export const ButtonMenuToggle = ({ children, isMobileOnly, ...props }: ButtonProps) => {
+export const ButtonMenuToggle = ({ children, className, ...props }: ButtonProps) => {
   return (
     <button
       type="button"
-      className={`absolute -top-10 right-0 z-50 translate-y-1/2 transform rounded-md bg-brand px-4 py-2 hover:cursor-pointer hover:bg-brand-hover ${isMobileOnly ? 'lg:hidden' : ''}`}
+      className={cn(
+        `absolute -top-10 right-0 z-50 translate-y-1/2 transform rounded-md bg-brand px-4 py-2 hover:cursor-pointer hover:bg-brand-hover`,
+        className,
+      )}
       {...props}
     >
       {children}
