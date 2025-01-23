@@ -12,13 +12,13 @@ interface CategoriesProps {
 
 export default function Categories({ children, selectedCategories, handleNewCategoryModal }: CategoriesProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [categoriesSelectedAmount, setCategoriesSelectedAmount] = useState(selectedCategories.length);
+  const [categoriesSelected, setCategoriesSelected] = useState(selectedCategories);
 
   const ref = useOutsideClick<HTMLDivElement>(() => setIsOpen(false));
 
   useEffect(() => {
-    setCategoriesSelectedAmount(selectedCategories.length);
-  }, [selectedCategories.length]);
+    setCategoriesSelected(selectedCategories);
+  }, [selectedCategories]);
 
   return (
     <div ref={ref} className="relative flex flex-col gap-2">
@@ -29,21 +29,10 @@ export default function Categories({ children, selectedCategories, handleNewCate
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full flex-row items-center justify-between gap-2 text-nowrap rounded-md border border-accent/10 bg-transparent p-2"
       >
-        {categoriesSelectedAmount > 0 ? (
-          <span className="flex w-fit flex-wrap gap-1">
-            {selectedCategories.map((name, index) => {
-              if (!name) {
-                return null;
-              }
-              return (
-                <span key={index} className="rounded-md border border-accent/10 p-1">
-                  {name}
-                </span>
-              );
-            })}
-          </span>
+        {categoriesSelected.length > 0 ? (
+          <span>{categoriesSelected.length} selected</span>
         ) : (
-          <span className="border border-transparent py-1">Select Categories</span>
+          <span>Select Categories</span>
         )}
 
         <Icon SvgIcon={ChevronDownIcon} isBorderless />

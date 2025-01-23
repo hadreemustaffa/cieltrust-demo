@@ -190,17 +190,9 @@ export default function Budget() {
                         <Categories
                           handleNewCategoryModal={() => openModal('addNewCategoryModal')}
                           selectedCategories={[
-                            ...table.budget_categories.map((category) => category.name),
                             ...(editMethods
                               .watch('editCategories')
-                              ?.filter(
-                                // filter out categories that are already in the budget
-                                (category) =>
-                                  category.selected &&
-                                  !table.budget_categories.some(
-                                    (budget_category) => budget_category.name === category.name,
-                                  ),
-                              )
+                              ?.filter((category) => category.selected)
                               .map((category) => category.name) ?? []),
                           ]}
                         >
@@ -211,7 +203,7 @@ export default function Budget() {
                               <li key={field.id}>
                                 <label
                                   htmlFor={field.id}
-                                  className={`flex flex-row items-center justify-between rounded-sm px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10 ${isChecked ? 'pointer-events-none cursor-not-allowed opacity-50' : ''}`}
+                                  className={`flex flex-row items-center justify-between rounded-sm px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10`}
                                 >
                                   {field.name}
 
@@ -221,10 +213,6 @@ export default function Budget() {
                                       type="checkbox"
                                       className="rounded-md border border-accent/10 bg-transparent"
                                       defaultChecked={isChecked}
-                                      onClick={(e) => {
-                                        // disable clicking on checkbox
-                                        e.preventDefault();
-                                      }}
                                       {...editMethods.register(`editCategories.${index}.selected` as const)}
                                     />
                                   ) : (
