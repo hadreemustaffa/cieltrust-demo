@@ -1,7 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import Icon from '@/components/icon';
-import useOutsideClick from '@/hooks/use-outside-click';
 import EditIcon from '@/images/icons/edit.svg?react';
 import MoreHorizontalIcon from '@/images/icons/more-horizontal.svg?react';
 import TrashIcon from '@/images/icons/trash.svg?react';
@@ -21,8 +20,14 @@ type MoreMenuProps =
 export default function MoreMenu({ onEdit, isDeletable, onDelete }: MoreMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
 
-  const ref = useOutsideClick<HTMLDivElement>(() => setIsOpen(false));
+  const ref = useRef<HTMLDivElement>(null);
   const buttonRef = useRef<HTMLButtonElement>(null);
+
+  const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
+    if (!event.relatedTarget || !ref?.current?.contains(event.relatedTarget) || event.relatedTarget === ref.current) {
+      setIsOpen(false);
+    }
+  };
 
   useEffect(() => {
     const handleKeyDown = (event: KeyboardEvent) => {
@@ -41,12 +46,6 @@ export default function MoreMenu({ onEdit, isDeletable, onDelete }: MoreMenuProp
     };
   }, [isOpen]);
 
-  const handleBlur = (event: React.FocusEvent<HTMLDivElement>) => {
-    if (!event.relatedTarget || !ref?.current?.contains(event.relatedTarget) || event.relatedTarget === ref.current) {
-      setIsOpen(false);
-    }
-  };
-
   return (
     <div className="relative flex flex-row items-center" onBlur={handleBlur}>
       <button ref={buttonRef} type="button" onClick={() => setIsOpen(!isOpen)}>
@@ -57,15 +56,7 @@ export default function MoreMenu({ onEdit, isDeletable, onDelete }: MoreMenuProp
         <div
           ref={ref}
           className="absolute -right-2 top-6 z-50 flex flex-col gap-2 rounded-md border border-accent/10 bg-card p-2 shadow-md"
-          onBlur={(event: React.FocusEvent) => {
-            if (
-              !event.relatedTarget ||
-              !ref?.current?.contains(event.relatedTarget) ||
-              event.relatedTarget === ref.current
-            ) {
-              setIsOpen(false);
-            }
-          }}
+          onBlur={handleBlur}
         >
           <button
             type="button"

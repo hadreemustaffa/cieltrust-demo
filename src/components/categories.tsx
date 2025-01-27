@@ -38,20 +38,18 @@ export default function Categories({ children, selectedCategories, handleNewCate
         <Icon SvgIcon={ChevronDownIcon} isBorderless />
       </button>
 
-      <ul
-        className={`absolute left-0 top-full z-50 flex max-h-32 w-full flex-col gap-2 overflow-y-auto rounded-md border border-accent/10 bg-card p-4 text-sm shadow-md ${
-          isOpen ? 'opacity-100' : 'pointer-events-none opacity-0'
-        }`}
-      >
-        {children}
+      {isOpen && (
+        <ul className="absolute left-0 top-full z-50 flex max-h-32 w-full flex-col gap-2 overflow-y-auto rounded-md border border-accent/10 bg-card p-4 text-sm shadow-md">
+          {children}
 
-        <div className="flex flex-wrap gap-2 rounded-md border border-accent/10 p-2 text-xs">
-          <p>Can&apos;t find the category you&apos;re looking for?</p>
-          <button type="button" className="underline hover:text-copy-secondary" onClick={handleNewCategoryModal}>
-            Create a new one
-          </button>
-        </div>
-      </ul>
+          <div className="flex flex-wrap gap-2 rounded-md border border-accent/10 p-2 text-xs">
+            <p>Can&apos;t find the category you&apos;re looking for?</p>
+            <button type="button" className="underline hover:text-copy-secondary" onClick={handleNewCategoryModal}>
+              Create a new one
+            </button>
+          </div>
+        </ul>
+      )}
     </div>
   );
 }
