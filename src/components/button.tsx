@@ -46,7 +46,7 @@ export const ButtonSecondary = ({ children, className, ...props }: ButtonProps) 
   return (
     <button
       className={cn(
-        `flex h-fit items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-4 py-2 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10`,
+        `flex items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-4 py-2 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10`,
         className,
       )}
       {...props}

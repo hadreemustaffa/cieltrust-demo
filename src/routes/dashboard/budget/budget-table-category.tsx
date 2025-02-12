@@ -19,7 +19,7 @@ export default function BudgetTableCategory({ category, totalBudgetAmount }: Bud
 
   const { setBudgetTables } = useBudgetTables();
 
-  const spent = category.spent + 100;
+  const spent = category.spent;
   const remaining = budgetAmount - spent;
 
   const onSubmit: SubmitHandler<BudgetTableCategoryProps> = async () => {

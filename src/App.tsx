@@ -6,7 +6,6 @@ import ErrorBoundary from '@/components/error-boundary';
 import Layout from '@/components/layout';
 import Loading from '@/components/loading';
 import { DashboardProvider } from '@/context/dashboard-context';
-import { ModalProvider } from '@/context/modal-context';
 import { SessionProvider } from '@/context/session-context';
 import Dashboard from '@/routes/dashboard/dashboard';
 import Home from '@/routes/home/home';
@@ -99,11 +98,9 @@ function App() {
   return (
     <SessionProvider>
       <DashboardProvider>
-        <ModalProvider>
-          <SkeletonTheme baseColor="hsl(220, 13%, 15%)" highlightColor="hsl(220, 13%, 18%)">
-            <RouterProvider router={router} future={{ v7_startTransition: true }} />
-          </SkeletonTheme>
-        </ModalProvider>
+        <SkeletonTheme baseColor="hsl(220, 13%, 15%)" highlightColor="hsl(220, 13%, 18%)">
+          <RouterProvider router={router} future={{ v7_startTransition: true }} />
+        </SkeletonTheme>
       </DashboardProvider>
     </SessionProvider>
   );
