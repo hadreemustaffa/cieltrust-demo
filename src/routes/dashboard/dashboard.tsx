@@ -1,15 +1,13 @@
 import { useEffect } from 'react';
 import { useLoaderData } from 'react-router';
 
-import { ButtonPrimary } from '@/components/button';
-import Icon from '@/components/icon';
 import { BudgetTablesProvider } from '@/context/budget-tables-context';
 import { CategoriesProvider } from '@/context/categories-context';
 import { ModalProvider } from '@/context/modal-context';
 import { useDashboard } from '@/hooks/use-dashboard';
-import PlusIcon from '@/images/icons/plus.svg?react';
 import AccountOverview from '@/routes/dashboard/account-overview/account-overview';
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
+import AddTransaction from '@/routes/dashboard/add-transaction/add-transaction';
 import Budget from '@/routes/dashboard/budget/budget';
 import { Category, Table } from '@/routes/dashboard/budget/budget.types';
 import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
@@ -56,10 +54,7 @@ export default function Dashboard() {
     <ModalProvider>
       <CategoriesProvider initialCategories={data.categories || []}>
         <div className="my-auto flex flex-col gap-4 text-left">
-          <ButtonPrimary className="w-fit self-end">
-            <Icon SvgIcon={PlusIcon} aria-hidden={true} isBorderless />
-            Add Transaction
-          </ButtonPrimary>
+          <AddTransaction />
           <AccountOverview data={data?.overview?.[0]} />
 
           <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
