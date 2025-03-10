@@ -1,6 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
 
 import { ButtonSecondary } from '@/components/button';
+import Icon from '@/components/icon';
+import MoonIcon from '@/images/icons/moon.svg?react';
+import SunIcon from '@/images/icons/sun.svg?react';
 
 const storageKey = 'theme-preference';
 
@@ -66,10 +69,11 @@ export default function ThemeToggle() {
       title="Toggles light & dark"
       aria-label="auto"
       aria-live="polite"
-      isFullWidth
       onClick={themeHandleClick}
     >
-      {theme.value === 'light' ? '🌞' : '🌙'}
+      <span>
+        {theme.value === 'light' ? <Icon SvgIcon={SunIcon} isBorderless /> : <Icon SvgIcon={MoonIcon} isBorderless />}
+      </span>
     </ButtonSecondary>
   );
 }

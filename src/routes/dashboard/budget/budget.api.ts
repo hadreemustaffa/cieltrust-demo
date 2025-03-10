@@ -130,6 +130,27 @@ export const editBudgetTable = async ({
       throw categoryError;
     }
 
+    const removedCategories = tableCategories
+      .filter((category) => !selectedCategories.includes(category))
+      .map((category) => ({
+        budget_id: id,
+        name: category,
+      }));
+
+    const { error: removeError } = await supabase
+      .from('budget_categories')
+      .delete()
+      .in(
+        'name',
+        removedCategories.map((category) => category.name),
+      )
+      .eq('budget_id', id);
+
+    if (removeError) {
+      console.log('Error removing categories:', removeError);
+      throw removeError;
+    }
+
     if (budgetData) {
       setBudgetTablesProvider((prevTables) =>
         prevTables.map((table) =>
@@ -141,7 +162,9 @@ export const editBudgetTable = async ({
                 recurrence: recurrence,
                 start_date: start_date,
                 budget_categories: [
-                  ...table.budget_categories,
+                  ...table.budget_categories.filter(
+                    (category) => !removedCategories.some((removed) => removed.name === category.name),
+                  ),
                   ...categoryData.map((newCategory: Category) => ({
                     ...newCategory,
                   })),

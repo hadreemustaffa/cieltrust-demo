@@ -172,9 +172,7 @@ export default function LoginForm() {
         {isError && <ErrorMessage error={errorMessage || ERROR_MSG.INVALID_CREDENTIALS} />}
 
         <div className="flex w-full justify-end gap-8">
-          <LinkButtonTertiary to="/signup/" isPaddingless>
-            Create account
-          </LinkButtonTertiary>
+          <LinkButtonTertiary to="/signup/">Create account</LinkButtonTertiary>
           <ButtonPrimary type="submit" disabled={isLoading}>
             {isLoading ? 'Logging in...' : 'Log In'}
           </ButtonPrimary>
