@@ -32,7 +32,6 @@ export default function ManageCategories({ tables, dashboardId }: ManageCategori
     handleSubmit,
     getValues,
     reset,
-    setFocus,
     formState: { errors, isSubmitSuccessful },
   } = useForm<Category>();
 
@@ -64,14 +63,6 @@ export default function ManageCategories({ tables, dashboardId }: ManageCategori
       setCurrentPage((prev) => prev - 1);
     }
   }, [categories, currentPage, paginatedCategories.length]);
-
-  useEffect(() => {
-    setFocus('name');
-
-    return () => {
-      reset();
-    };
-  }, [setFocus, reset]);
 
   return (
     <div className="flex flex-col gap-4">

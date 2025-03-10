@@ -48,7 +48,7 @@ export default function UpcomingPayment() {
             </ul>
           </>
         ) : (
-          <p className="mt-auto">No upcoming payments</p>
+          <p className="text-sm">You don&apos;t have any upcoming payments scheduled.</p>
         )}
       </div>
     </div>

@@ -108,7 +108,12 @@ export default function SavingGoalsItem({
             <Icon SvgIcon={XIcon} width={16} height={16} isBorderless />
           </button>
         ) : (
-          <MoreMenu onEdit={() => openModal(`editGoalModal-${id}`)} isDeletable onDelete={handleDeleteModal} />
+          <MoreMenu
+            isEditable
+            onEdit={() => openModal(`editGoalModal-${id}`)}
+            isDeletable
+            onDelete={handleDeleteModal}
+          />
         )}
       </div>
 

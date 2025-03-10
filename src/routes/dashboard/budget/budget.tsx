@@ -3,16 +3,15 @@ import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-
 
 import BudgetTable from './budget-table';
 
-import { ButtonPrimary, ButtonSecondary } from '@/components/button';
+import { ButtonPrimary } from '@/components/button';
 import Categories from '@/components/categories';
-import Icon from '@/components/icon';
 import Modal from '@/components/modal';
+import MoreMenu from '@/components/more-menu';
 import { ERROR_MSG } from '@/data/errorMessages';
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useCategories } from '@/hooks/use-categories';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
-import PlusIcon from '@/images/icons/plus.svg?react';
 import BudgetTableForm from '@/routes/dashboard/budget/budget-table-form';
 import { addBudgetTable, deleteBudgetTable, editBudgetTable } from '@/routes/dashboard/budget/budget.api';
 import { BudgetFormProps, Category, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
@@ -157,10 +156,22 @@ export default function Budget() {
           <h2 className="text-lg font-semibold">Budgets</h2>
 
           <div className="flex flex-row flex-wrap gap-4">
-            <ButtonSecondary onClick={() => openModal(`manageCategoriesModal`)}>Manage Categories</ButtonSecondary>
-            <ButtonSecondary aria-label="Add goal" onClick={() => openModal('addBudgetTableModal')}>
-              <Icon SvgIcon={PlusIcon} isBorderless />
-            </ButtonSecondary>
+            <MoreMenu>
+              <button
+                type="button"
+                className="flex items-center gap-2 rounded-sm px-2 py-1 text-left hover:bg-accent/10"
+                onClick={() => openModal(`manageCategoriesModal`)}
+              >
+                Manage
+              </button>
+              <button
+                type="button"
+                className="flex items-center gap-2 rounded-sm px-2 py-1 text-left hover:bg-accent/10"
+                onClick={() => openModal(`addBudgetTableModal`)}
+              >
+                Add
+              </button>
+            </MoreMenu>
           </div>
         </div>
 
@@ -235,7 +246,7 @@ export default function Budget() {
               </BudgetTable>
             ))
           ) : (
-            <p>No budgets found</p>
+            <p className="text-sm">You haven&apos;t created any budgets yet.</p>
           )}
         </div>
 
