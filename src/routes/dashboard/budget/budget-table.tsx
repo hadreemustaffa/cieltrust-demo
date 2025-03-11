@@ -15,7 +15,7 @@ export default function BudgetTable({ table, onEdit, onDelete, children, ...prop
           <h3 className="font-bold">{table.name}</h3>
           <div className="flex gap-2">
             <p className="text-sm font-bold">${table.amount}</p>
-            <MoreMenu isDeletable onEdit={onEdit} onDelete={() => openModal('delete')} />
+            <MoreMenu isEditable onEdit={onEdit} isDeletable onDelete={() => openModal('delete')} />
           </div>
         </caption>
 
