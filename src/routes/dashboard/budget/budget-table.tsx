@@ -8,13 +8,20 @@ import { BudgetTableProps, CategoryWithAmount } from '@/routes/dashboard/budget/
 export default function BudgetTable({ table, onEdit, onDelete, children, ...props }: BudgetTableProps) {
   const { activeModal, openModal, closeModal } = useModal();
 
+  let sumOfCategoriesAmount = 0;
+  table.budget_categories.forEach((category) => {
+    sumOfCategoriesAmount += Number(category.amount);
+  });
+
   return (
     <div {...props} className="flex flex-col items-start gap-4 rounded-md border border-accent/10 p-4 text-left">
       <table className="flex w-full flex-col items-center justify-between gap-4">
         <caption className="flex w-full flex-row items-center justify-between gap-2 rounded-md border border-accent/10 bg-accent/5 p-2">
           <h3 className="font-bold">{table.name}</h3>
           <div className="flex gap-2">
-            <p className="text-sm font-bold">${table.amount}</p>
+            <p className={`text-sm font-bold ${sumOfCategoriesAmount > table.amount ? 'text-red-500' : ''}`}>
+              ${table.amount}
+            </p>
             <MoreMenu isEditable onEdit={onEdit} isDeletable onDelete={() => openModal('delete')} />
           </div>
         </caption>
@@ -36,7 +43,7 @@ export default function BudgetTable({ table, onEdit, onDelete, children, ...prop
           </tr>
 
           {table.budget_categories.map((category: CategoryWithAmount) => (
-            <BudgetTableCategory key={category.id} category={category} totalBudgetAmount={table.amount} />
+            <BudgetTableCategory key={category.id} category={category} />
           ))}
         </tbody>
       </table>

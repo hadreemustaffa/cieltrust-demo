@@ -91,5 +91,4 @@ export type CategoryWithAmount = Category & {
 
 export interface BudgetTableCategoryProps {
   category: CategoryWithAmount;
-  totalBudgetAmount: number;
 }
