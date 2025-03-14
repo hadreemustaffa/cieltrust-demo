@@ -53,24 +53,24 @@ export default function Dashboard() {
   return (
     <ModalProvider>
       <CategoriesProvider initialCategories={data.categories || []}>
-        <div className="my-auto flex flex-col gap-4 text-left">
-          <AddTransaction />
-          <AccountOverview data={data?.overview?.[0]} />
+        <BudgetTablesProvider initialBudgetTables={data?.budget}>
+          <div className="my-auto flex flex-col gap-4 text-left">
+            <AddTransaction />
+            <AccountOverview data={data?.overview?.[0]} />
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <SavingGoals data={data?.saving_goals} />
+            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+              <SavingGoals data={data?.saving_goals} />
 
-            <div className="col-span-1 flex items-center justify-center rounded-md border border-accent/10 p-4 md:col-span-2">
-              <p>VISUAL CHART</p>
-            </div>
+              <div className="col-span-1 flex items-center justify-center rounded-md border border-accent/10 p-4 md:col-span-2">
+                <p>VISUAL CHART</p>
+              </div>
 
-            <BudgetTablesProvider initialBudgetTables={data?.budget}>
               <UpcomingPayment />
 
               <Budget />
-            </BudgetTablesProvider>
+            </div>
           </div>
-        </div>
+        </BudgetTablesProvider>
       </CategoriesProvider>
     </ModalProvider>
   );
