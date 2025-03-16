@@ -1,4 +1,4 @@
-import { ButtonSecondary } from '@/components/button';
+import { ButtonDelete, ButtonSecondary } from '@/components/button';
 import Modal from '@/components/modal';
 import MoreMenu from '@/components/more-menu';
 import { useBudgetTables } from '@/hooks/use-budget-tables';
@@ -84,13 +84,7 @@ export default function BudgetTable({ table, children, ...props }: BudgetTablePr
               Cancel
             </ButtonSecondary>
 
-            <button
-              type="button"
-              className="w-fit rounded-md bg-red-700 px-6 py-3 text-white hover:bg-red-500"
-              onClick={() => handleDeleteBudgetTable(table.id)}
-            >
-              Delete
-            </button>
+            <ButtonDelete onClick={() => handleDeleteBudgetTable(table.id)}>Delete</ButtonDelete>
           </div>
         </Modal>
       )}
