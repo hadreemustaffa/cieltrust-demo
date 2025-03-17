@@ -9,7 +9,11 @@ type IconProps = {
 
 export default function Icon({ SvgIcon, isBorderless, width = 24, height = 24, ...props }: IconProps) {
   return (
-    <span className={`flex rounded-md ${isBorderless ? '' : 'border border-accent/10 p-2'}`} {...props}>
+    <span
+      aria-hidden="true"
+      className={`flex rounded-md ${isBorderless ? '' : 'border border-accent/10 p-2'}`}
+      {...props}
+    >
       <SvgIcon width={width} height={height} />
     </span>
   );

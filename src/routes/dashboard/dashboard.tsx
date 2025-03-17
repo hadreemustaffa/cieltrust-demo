@@ -12,6 +12,7 @@ import Budget from '@/routes/dashboard/budget/budget';
 import { Category, Table } from '@/routes/dashboard/budget/budget.types';
 import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
 import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
+import TransactionHistory from '@/routes/dashboard/transaction-history/transaction-history';
 import UpcomingPayment from '@/routes/dashboard/upcoming-payment/upcoming-payment';
 import supabase from '@/utils/supabase';
 
@@ -55,7 +56,10 @@ export default function Dashboard() {
       <CategoriesProvider initialCategories={data.categories || []}>
         <BudgetTablesProvider initialBudgetTables={data?.budget}>
           <div className="my-auto flex flex-col gap-4 text-left">
-            <AddTransaction />
+            <div className="flex flex-row gap-2 self-end">
+              <TransactionHistory />
+              <AddTransaction />
+            </div>
             <AccountOverview data={data?.overview?.[0]} />
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
