@@ -3,8 +3,9 @@ import React, { useEffect } from 'react';
 import { ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
 import XIcon from '@/images/icons/x.svg?react';
+import { cn } from '@/utils/cn';
 
-interface ModalProps {
+interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
   id: string;
   title: string;
   isOpen: boolean;
@@ -12,7 +13,7 @@ interface ModalProps {
   handleClose: () => void;
 }
 
-export default function Modal({ title, isOpen, children, handleClose }: ModalProps) {
+export default function Modal({ title, isOpen, children, handleClose, className }: ModalProps) {
   useEffect(() => {
     if (isOpen) {
       document.body.style.overflow = 'hidden';
@@ -45,7 +46,9 @@ export default function Modal({ title, isOpen, children, handleClose }: ModalPro
       aria-labelledby="modal-title"
       className="fixed inset-0 z-50 flex h-full w-full items-center justify-center bg-background/90 p-4"
     >
-      <div className="flex w-full max-w-lg flex-col gap-6 rounded-md border border-accent/10 bg-card p-4">
+      <div
+        className={cn('flex w-full max-w-lg flex-col gap-6 rounded-md border border-accent/10 bg-card p-4', className)}
+      >
         <div className="flex flex-row items-center justify-between gap-2">
           <h2 id="modal-title" className="text-lg font-semibold">
             {title}

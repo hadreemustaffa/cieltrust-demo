@@ -13,6 +13,7 @@ import { Category, Table } from '@/routes/dashboard/budget/budget.types';
 import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
 import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 import TransactionHistory from '@/routes/dashboard/transaction-history/transaction-history';
+import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
 import UpcomingPayment from '@/routes/dashboard/upcoming-payment/upcoming-payment';
 import supabase from '@/utils/supabase';
 
@@ -22,17 +23,19 @@ interface DashboardProps {
   saving_goals: SavingGoalsFormProps[];
   overview: Overview[];
   categories: Category[];
+  transactions: Transaction[];
 }
 
 const saving_goals = 'saving_goals:saving_goals(*)';
 const budget = 'budget:budget(*, budget_categories(id, budget_id, name, spent, amount))';
 const overview = 'overview:overview(*)';
 const categories = 'categories:categories(*)';
+const transactions = 'transactions:transactions(*)';
 
 async function loader() {
   const { data, error } = await supabase
     .from('dashboard')
-    .select(`id, ${saving_goals}, ${budget}, ${overview}, ${categories}`)
+    .select(`id, ${saving_goals}, ${budget}, ${overview}, ${categories}, ${transactions}`)
     .single();
 
   if (error) throw new Error('Failed to fetch dashboard data');
@@ -57,7 +60,7 @@ export default function Dashboard() {
         <BudgetTablesProvider initialBudgetTables={data?.budget}>
           <div className="my-auto flex flex-col gap-4 text-left">
             <div className="flex flex-row gap-2 self-end">
-              <TransactionHistory />
+              <TransactionHistory data={data?.transactions} />
               <AddTransaction />
             </div>
             <AccountOverview data={data?.overview?.[0]} />

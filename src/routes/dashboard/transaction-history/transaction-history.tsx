@@ -1,52 +1,63 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 
 import { ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import { useModal } from '@/hooks/use-modal';
 import ClockIcon from '@/images/icons/clock.svg?react';
-import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
-import { formatStr } from '@/utils/formatStr';
-import supabase from '@/utils/supabase';
+import { getTransactionHistory } from '@/routes/dashboard/transaction-history/transaction-history.api';
+import { Transaction, TransactionHistoryProps } from '@/routes/dashboard/transaction-history/transaction-history.types';
 
-export default function TransactionHistory() {
-  const [history, setHistory] = useState([]);
+export default function TransactionHistory({ data }: TransactionHistoryProps) {
+  const [transactionType, setTransactionType] = useState('income');
+  const [history, setHistory] = useState<Transaction[]>(data);
   const [currentPage, setCurrentPage] = useState(1);
+  const prevTransactionTypeRef = useRef(transactionType);
   const itemsPerPage = 10;
-
-  const paginatedHistory = history.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
-  const totalPages = Math.ceil(history.length / itemsPerPage);
-  const startItem = (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(startItem + itemsPerPage - 1, history.length);
 
   const { activeModal, openModal, closeModal } = useModal();
 
+  const incomeTransactions = history.filter((transaction) => transaction.type === 'income');
+  const expensesTransactions = history.filter((transaction) => transaction.type === 'expenses');
+
+  const currentTransactions = transactionType === 'income' ? incomeTransactions : expensesTransactions;
+  const paginatedTransactions = currentTransactions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
+
+  const startItem = currentTransactions.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(startItem + itemsPerPage - 1, currentTransactions.length);
+  const totalPages = Math.ceil(currentTransactions.length / itemsPerPage);
+
   useEffect(() => {
-    if (paginatedHistory.length === 0 && currentPage > 1) {
+    if (prevTransactionTypeRef.current !== transactionType) {
+      setCurrentPage(1);
+      prevTransactionTypeRef.current = transactionType;
+      return;
+    }
+
+    if (paginatedTransactions.length === 0 && currentPage > 1) {
       setCurrentPage((prev) => prev - 1);
     }
-  }, [currentPage, paginatedHistory.length]);
+  }, [transactionType, currentPage, paginatedTransactions.length]);
 
   useEffect(() => {
-    const getTransactionHistory = async () => {
-      const { data, error } = await supabase
-        .from('transactions')
-        .select('*')
-        .order('transaction_date', { ascending: false });
+    if (activeModal !== 'viewTransactionHistory') return;
 
-      if (data) {
-        setHistory(data);
-      }
-
-      if (error) {
-        console.error('Error fetching transaction history:', error);
-      }
+    const fetchData = async () => {
+      await getTransactionHistory({
+        setState: setHistory,
+      });
     };
 
-    if (activeModal === 'viewTransactionHistory') {
-      getTransactionHistory();
-    }
+    fetchData();
+
+    return () => {
+      setTransactionType('income');
+    };
   }, [activeModal]);
+
+  const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
+  const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setTransactionType(e.target.value);
 
   return (
     <>
@@ -61,61 +72,103 @@ export default function TransactionHistory() {
           title="Transaction History"
           isOpen={activeModal === 'viewTransactionHistory'}
           handleClose={closeModal}
+          className="max-h-[80vh] max-w-3xl overflow-y-auto"
         >
+          <div className="flex flex-row items-center gap-2">
+            <label htmlFor="transactionTypeSelect" className="text-sm">
+              Change Transaction Type:
+            </label>
+            <select
+              id="transactionTypeSelect"
+              value={transactionType}
+              onChange={handleTypeChange}
+              className="rounded-md border border-accent/10 bg-card px-2 py-1 hover:cursor-pointer"
+            >
+              <option value="income">Income</option>
+              <option value="expenses">Expenses</option>
+            </select>
+          </div>
+
           {history.length > 0 ? (
             <>
-              <table className="flex flex-col gap-2">
-                <tbody className="flex w-full flex-col gap-4 overflow-x-scroll text-sm md:overflow-auto">
-                  <tr className="grid grid-cols-6 justify-between sm:w-full">
-                    <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1">
-                      Type
-                    </th>
-                    <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1">
-                      From
-                    </th>
-                    <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1">
-                      Budget
-                    </th>
-                    <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1">
-                      Category
-                    </th>
-                    <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1">
+              <table className="flex flex-col gap-2 border border-accent/10">
+                <tbody className="flex w-full flex-col overflow-x-scroll text-sm md:overflow-auto">
+                  <tr
+                    className={`grid w-[640px] justify-between bg-accent/5 sm:w-full ${
+                      transactionType === 'income' ? 'grid-cols-4' : 'grid-cols-5'
+                    }`}
+                  >
+                    {transactionType === 'income' ? (
+                      <th scope="col" className="rounded-sm px-2 py-1">
+                        From
+                      </th>
+                    ) : (
+                      <>
+                        <th scope="col" className="rounded-sm px-2 py-1">
+                          Budget
+                        </th>
+                        <th scope="col" className="rounded-sm border-l border-l-accent/10 px-2 py-1">
+                          Category
+                        </th>
+                      </>
+                    )}
+                    <th scope="col" className="rounded-sm border-l border-l-accent/10 px-2 py-1">
                       Amount
                     </th>
-                    <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1">
+                    <th scope="col" className="rounded-sm border-l border-l-accent/10 px-2 py-1">
                       Date
                     </th>
+                    <th scope="col" className="rounded-sm border-l border-l-accent/10 px-2 py-1">
+                      Reference
+                    </th>
                   </tr>
-                  {paginatedHistory.map((transaction: Transaction) => (
-                    <tr
-                      key={transaction.id}
-                      className="flex flex-row justify-between gap-2 rounded-md border border-accent/10 px-2 py-1"
-                    >
-                      <th scope="row">{formatStr(transaction.type)}</th>
-                      <td className="text-sm">{transaction.from ? transaction.from : 'N/A'}</td>
-                      <td className="text-sm">{transaction.budget ? transaction.budget : 'N/A'}</td>
-                      <td className="text-sm">{transaction.category ? transaction.category : 'N/A'}</td>
-                      <td className="text-sm">{transaction.amount}</td>
-                      <td className="text-sm">{transaction.transaction_date}</td>
-                    </tr>
-                  ))}
+
+                  {transactionType === 'income' &&
+                    paginatedTransactions.map((transaction) => (
+                      <tr
+                        key={transaction.id}
+                        className="grid w-[640px] grid-cols-4 border-b border-b-accent/10 last:border-b-0 sm:w-full"
+                      >
+                        <td className="px-2 py-1 text-sm">{transaction.from_source}</td>
+                        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
+                        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.transaction_date}</td>
+                        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.reference}</td>
+                      </tr>
+                    ))}
+
+                  {transactionType === 'expenses' &&
+                    paginatedTransactions.map((transaction) => (
+                      <tr
+                        key={transaction.id}
+                        className="grid w-[640px] grid-cols-5 border-b border-b-accent/10 last:border-b-0 sm:w-full"
+                      >
+                        <td className="px-2 py-1 text-sm">{transaction.budget}</td>
+                        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.category}</td>
+                        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
+                        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.transaction_date}</td>
+                        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.reference}</td>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
+
               <div className="flex items-center justify-between text-xs">
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                  onClick={handlePrevPage}
                   className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
                   disabled={currentPage === 1}
                 >
                   Previous
                 </button>
                 <span>
-                  Showing {startItem} - {endItem} of {history.length} transactions
+                  {currentTransactions.length > 0
+                    ? `Showing ${startItem} - ${endItem} of ${currentTransactions.length} transactions`
+                    : 'No transactions found'}
                 </span>
                 <button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                  onClick={handleNextPage}
                   className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
-                  disabled={currentPage === totalPages}
+                  disabled={currentPage === totalPages || totalPages === 0}
                 >
                   Next
                 </button>
