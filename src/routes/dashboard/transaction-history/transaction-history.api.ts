@@ -1,6 +1,9 @@
 import React from 'react';
 
-import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
+import {
+  DeleteTransactionHistoryProps,
+  Transaction,
+} from '@/routes/dashboard/transaction-history/transaction-history.types';
 import supabase from '@/utils/supabase';
 
 export const getTransactionHistory = async ({
@@ -19,5 +22,13 @@ export const getTransactionHistory = async ({
 
   if (error) {
     console.error('Error fetching transaction history:', error);
+  }
+};
+
+export const deleteTransactionHistory = async ({ id }: DeleteTransactionHistoryProps) => {
+  const { error } = await supabase.from('transactions').delete().in('id', id);
+
+  if (error) {
+    console.log('Error deleting transactions:', error);
   }
 };

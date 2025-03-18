@@ -12,3 +12,7 @@ export interface Transaction {
 export interface TransactionHistoryProps {
   data: Transaction[];
 }
+
+export interface DeleteTransactionHistoryProps {
+  id: string[];
+}
