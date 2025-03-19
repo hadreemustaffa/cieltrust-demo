@@ -80,9 +80,11 @@ export default function TransactionHistory({ data }: TransactionHistoryProps) {
         .map(([key]) => key.replace('historyCheckbox-', ''));
     };
 
-    await deleteTransactionHistory({
-      id: getSelectedIds(),
-    });
+    if (window.confirm('Are you sure you want to delete the selected transactions?')) {
+      await deleteTransactionHistory({
+        id: getSelectedIds(),
+      });
+    }
   };
 
   useEffect(() => {
@@ -156,7 +158,11 @@ export default function TransactionHistory({ data }: TransactionHistoryProps) {
                 </select>
               </div>
 
-              {watchedValues.filter(Boolean).length > 0 && <ButtonDelete type="submit">Delete Selected</ButtonDelete>}
+              {watchedValues.filter(Boolean).length > 0 && (
+                <ButtonDelete type="submit" className="max-h-8 px-2">
+                  Delete Selected
+                </ButtonDelete>
+              )}
             </div>
 
             {history.length > 0 ? (
