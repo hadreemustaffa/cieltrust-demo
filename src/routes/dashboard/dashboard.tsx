@@ -63,7 +63,7 @@ export default function Dashboard() {
               <TransactionHistory data={data?.transactions} />
               <AddTransaction />
             </div>
-            <AccountOverview data={data?.overview?.[0]} />
+            <AccountOverview data={data?.overview[0]} />
 
             <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
               <SavingGoals data={data?.saving_goals} />

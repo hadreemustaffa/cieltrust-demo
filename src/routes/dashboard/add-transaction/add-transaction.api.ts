@@ -11,6 +11,7 @@ interface AddTransactionProps {
   transactionType: FormData['transactionType'];
   date: FormData['date'];
   from: IncomeFormData['from'];
+  savings: IncomeFormData['savings'];
   amount: IncomeFormData['amount'] | ExpensesFormData['amount'];
   reference?: FormData['reference'];
   budget?: ExpensesFormData['budget'];
@@ -24,6 +25,7 @@ export const addTransaction = async ({
   setBudgetTables,
   date,
   from,
+  savings,
   amount,
   reference,
   budget,
@@ -38,6 +40,7 @@ export const addTransaction = async ({
           type: transactionType,
           transaction_date: date,
           from_source: from,
+          savings: savings,
           amount: amount,
           reference: reference,
           budget: budget,

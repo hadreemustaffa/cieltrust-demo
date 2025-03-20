@@ -34,7 +34,7 @@ export default function TransactionHistory({ data }: TransactionHistoryProps) {
 
   let tableColumns;
   if (transactionType === 'income') {
-    tableColumns = ['From', 'Amount', 'Date', 'Reference'];
+    tableColumns = ['From', 'Amount', 'Savings (%)', 'Date', 'Reference'];
   } else {
     tableColumns = ['Budget', 'Category', 'Amount', 'Date', 'Reference'];
   }
@@ -169,13 +169,7 @@ export default function TransactionHistory({ data }: TransactionHistoryProps) {
               <>
                 <table className="flex flex-col gap-2 border border-accent/10">
                   <tbody className="flex w-full flex-col overflow-x-scroll text-sm md:overflow-auto">
-                    <tr
-                      className={`grid w-[640px] justify-between bg-accent/5 sm:w-full ${
-                        transactionType === 'income'
-                          ? 'grid-cols-[30px_repeat(4,_1fr)]'
-                          : 'grid-cols-[30px_repeat(5,_1fr)]'
-                      }`}
-                    >
+                    <tr className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] justify-between bg-accent/5 sm:w-full">
                       <th scope="col" className="rounded-sm px-2 py-1">
                         <Input
                           type="checkbox"
@@ -200,7 +194,7 @@ export default function TransactionHistory({ data }: TransactionHistoryProps) {
                       paginatedTransactions.map((transaction) => (
                         <tr
                           key={transaction.id}
-                          className="grid w-[640px] grid-cols-[30px_repeat(4,_1fr)] border-b border-b-accent/10 last:border-b-0 sm:w-full"
+                          className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] border-b border-b-accent/10 last:border-b-0 sm:w-full"
                         >
                           <td className="px-2 py-1 text-sm">
                             <Input
@@ -211,6 +205,7 @@ export default function TransactionHistory({ data }: TransactionHistoryProps) {
                           </td>
                           <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.from_source}</td>
                           <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
+                          <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.savings}</td>
                           <td className="border-l border-accent/10 px-2 py-1 text-sm">
                             {transaction.transaction_date}
                           </td>
@@ -268,7 +263,7 @@ export default function TransactionHistory({ data }: TransactionHistoryProps) {
                 </div>
               </>
             ) : (
-              <p className="text-center">No transaction history found.</p>
+              <p className="py-8 text-center">No transaction history found.</p>
             )}
           </form>
         </Modal>

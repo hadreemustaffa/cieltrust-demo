@@ -8,6 +8,7 @@ export interface FormData {
 export interface IncomeFormData {
   from: string;
   amount: number;
+  savings?: number;
 }
 
 export interface ExpensesFormData {

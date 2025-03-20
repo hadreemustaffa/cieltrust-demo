@@ -27,19 +27,14 @@ export default function AccountOverview(data: AccountOverviewProps) {
     );
   }
 
-  const balance = overview.data.balance;
-  const income = overview.data.income;
-  const expenses = overview.data.expenses;
-  const savings = overview.data.income * 0.2;
-
   return (
     <div className="grid grid-cols-1 gap-4 rounded-md border border-accent/10 p-4 text-left md:grid-cols-2 2xl:grid-cols-4">
       {overview && (
         <>
-          <OverviewCard columnTitle="balance" amount={balance + income - expenses - savings} />
-          <OverviewCard columnTitle="income" amount={income} />
-          <OverviewCard columnTitle="expenses" amount={expenses} />
-          <OverviewCard columnTitle="savings" amount={savings} />
+          <OverviewCard columnTitle="balance" amount={overview.data.balance} />
+          <OverviewCard columnTitle="income" amount={overview.data.income} />
+          <OverviewCard columnTitle="expenses" amount={overview.data.expenses} />
+          <OverviewCard columnTitle="savings" amount={overview.data.savings} />
         </>
       )}
     </div>

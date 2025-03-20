@@ -37,6 +37,7 @@ export default function AddTransactionForm() {
       setBudgetTables,
       date: getValues('date'),
       from: getValues('from'),
+      savings: getValues('savings'),
       amount: getValues('amount'),
       reference: getValues('reference'),
       budget: getValues('budget'),
@@ -92,7 +93,7 @@ export default function AddTransactionForm() {
         {transactionType === 'expenses' && <ExpensesForm />}
 
         <div className="flex flex-col gap-2">
-          <label htmlFor="reference">Reference (optional):</label>
+          <label htmlFor="reference">Reference:</label>
           <Input id="reference" type="text" placeholder="e.g invoice number, remarks" {...register('reference')} />
           {errors.reference && <ErrorMessage error={errors.reference.message} />}
         </div>
@@ -123,18 +124,35 @@ const IncomeForm = () => {
         />
         {errors.from && <ErrorMessage error={errors.from.message} />}
       </div>
-      <div className="flex flex-col gap-2">
-        <label htmlFor="income-amount">Amount:</label>
-        <Input
-          id="income-amount"
-          type="number"
-          min={0}
-          placeholder="Enter amount"
-          {...register('amount', {
-            required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
-          })}
-        />
-        {errors.amount && <ErrorMessage error={errors.amount.message} />}
+      <div className="flex flex-col gap-2 sm:flex-row">
+        <div className="flex w-full flex-col gap-2">
+          <label htmlFor="income-amount">Amount:</label>
+          <Input
+            id="income-amount"
+            type="number"
+            min={0}
+            placeholder="Enter amount"
+            {...register('amount', {
+              required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
+            })}
+          />
+          {errors.amount && <ErrorMessage error={errors.amount.message} />}
+        </div>
+
+        <div className="flex w-full flex-col gap-2">
+          <label htmlFor="income-savings-custom">Add to Savings (%):</label>
+          <Input
+            id="income-savings-custom"
+            type="number"
+            min={0}
+            max={100}
+            step={5}
+            defaultValue={0}
+            placeholder="0-100"
+            {...register('savings')}
+          />
+          {errors.savings && <ErrorMessage error={errors.savings.message} />}
+        </div>
       </div>
     </>
   );
