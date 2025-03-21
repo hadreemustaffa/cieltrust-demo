@@ -9,6 +9,7 @@ import { ERROR_MSG } from '@/data/errorMessages';
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
+import { useOverview } from '@/hooks/use-overview';
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 import { addTransaction } from '@/routes/dashboard/add-transaction/add-transaction.api';
 import { ExpensesFormData, FormData, IncomeFormData } from '@/routes/dashboard/add-transaction/add-transaction.types';
@@ -18,6 +19,7 @@ export default function AddTransactionForm() {
   const { closeModal } = useModal();
   const { dashboardId } = useDashboard();
   const { budgetTables, setBudgetTables } = useBudgetTables();
+  const { setOverview } = useOverview();
 
   const methods = useForm<FormData & IncomeFormData & ExpensesFormData>();
 
@@ -33,8 +35,9 @@ export default function AddTransactionForm() {
     await addTransaction({
       dashboardId: dashboardId,
       transactionType: transactionType,
-      budgetTables,
-      setBudgetTables,
+      budgetTables: budgetTables,
+      setBudgetTables: setBudgetTables,
+      setOverview: setOverview,
       date: getValues('date'),
       from: getValues('from'),
       savings: getValues('savings'),

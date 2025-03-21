@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
 import { ExpensesFormData, FormData, IncomeFormData } from '@/routes/dashboard/add-transaction/add-transaction.types';
 import { Category, Table } from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
@@ -8,6 +9,7 @@ interface AddTransactionProps {
   dashboardId: number | null;
   budgetTables: Table[];
   setBudgetTables: React.Dispatch<React.SetStateAction<Table[]>>;
+  setOverview: React.Dispatch<React.SetStateAction<Overview>>;
   transactionType: FormData['transactionType'];
   date: FormData['date'];
   from: IncomeFormData['from'];
@@ -23,6 +25,7 @@ export const addTransaction = async ({
   transactionType,
   budgetTables,
   setBudgetTables,
+  setOverview,
   date,
   from,
   savings,
@@ -50,6 +53,15 @@ export const addTransaction = async ({
       .select()
       .single();
 
+    if (from) {
+      setOverview((prevOverview) => ({
+        ...prevOverview,
+        balance: prevOverview.balance + Number(amount) - (Number(savings) / 100) * Number(amount),
+        income: prevOverview.income + Number(amount),
+        savings: prevOverview.savings + (Number(savings) / 100) * Number(amount),
+      }));
+    }
+
     if (category) {
       const foundCategory = budgetTables
         .flatMap((table: Table) => table.budget_categories)
@@ -75,6 +87,12 @@ export const addTransaction = async ({
           ),
         })),
       );
+
+      setOverview((prevOverview) => ({
+        ...prevOverview,
+        balance: prevOverview.balance - Number(amount),
+        expenses: prevOverview.expenses + Number(amount),
+      }));
 
       if (categoryError) {
         console.log('Error updating category:', categoryError);

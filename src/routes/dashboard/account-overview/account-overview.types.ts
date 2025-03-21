@@ -5,12 +5,9 @@ export type Overview = {
   savings: number;
 };
 
-export interface AccountOverviewProps {
-  data: Overview;
-}
-
 export interface AccountOverviewCardProps {
   amount: number;
+  lastMonthAmount: number;
   columnTitle: string;
 }
 

@@ -4,6 +4,7 @@ import { useLoaderData } from 'react-router';
 import { BudgetTablesProvider } from '@/context/budget-tables-context';
 import { CategoriesProvider } from '@/context/categories-context';
 import { ModalProvider } from '@/context/modal-context';
+import { OverviewProvider } from '@/context/overview-context';
 import { useDashboard } from '@/hooks/use-dashboard';
 import AccountOverview from '@/routes/dashboard/account-overview/account-overview';
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
@@ -58,25 +59,27 @@ export default function Dashboard() {
     <ModalProvider>
       <CategoriesProvider initialCategories={data.categories || []}>
         <BudgetTablesProvider initialBudgetTables={data?.budget}>
-          <div className="my-auto flex flex-col gap-4 text-left">
-            <div className="flex flex-row gap-2 self-end">
-              <TransactionHistory data={data?.transactions} />
-              <AddTransaction />
-            </div>
-            <AccountOverview data={data?.overview[0]} />
-
-            <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-              <SavingGoals data={data?.saving_goals} />
-
-              <div className="col-span-1 flex items-center justify-center rounded-md border border-accent/10 p-4 md:col-span-2">
-                <p>VISUAL CHART</p>
+          <OverviewProvider initialOverview={data?.overview[0]}>
+            <div className="my-auto flex flex-col gap-4 text-left">
+              <div className="flex flex-row gap-2 self-end">
+                <TransactionHistory data={data?.transactions} />
+                <AddTransaction />
               </div>
+              <AccountOverview />
 
-              <UpcomingPayment />
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <SavingGoals data={data?.saving_goals} />
 
-              <Budget />
+                <div className="col-span-1 flex items-center justify-center rounded-md border border-accent/10 p-4 md:col-span-2">
+                  <p>VISUAL CHART</p>
+                </div>
+
+                <UpcomingPayment />
+
+                <Budget />
+              </div>
             </div>
-          </div>
+          </OverviewProvider>
         </BudgetTablesProvider>
       </CategoriesProvider>
     </ModalProvider>

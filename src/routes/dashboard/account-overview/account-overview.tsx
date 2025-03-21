@@ -5,16 +5,35 @@ import Skeleton from 'react-loading-skeleton';
 
 import OverviewCard from './account-overview-card';
 
-import { AccountOverviewProps } from '@/routes/dashboard/account-overview/account-overview.types';
+import { useLocalStorage } from '@/hooks/use-local-storage';
+import { useOverview } from '@/hooks/use-overview';
 
-export default function AccountOverview(data: AccountOverviewProps) {
-  const [overview, setOverview] = useState(data);
+export default function AccountOverview() {
+  const { overview } = useOverview();
   const [isLoading, setIsLoading] = useState(true);
+  const { setItem, getItem } = useLocalStorage();
 
   useEffect(() => {
-    setOverview(data);
-    setIsLoading(false);
-  }, [data]);
+    if (overview) {
+      setIsLoading(false);
+    }
+
+    const today = new Date();
+    if (today.getDate() === 21) {
+      const lastMonthAmounts = {
+        balance: overview?.balance,
+        income: overview?.income,
+        expenses: overview?.expenses,
+        savings: overview?.savings,
+      };
+      setItem('lastMonthAmounts', JSON.stringify(lastMonthAmounts));
+    }
+  }, [overview, setItem]);
+
+  const parsedValue = (value: string) => {
+    const allStoredAmount = JSON.parse(getItem('lastMonthAmounts') || '{}');
+    return allStoredAmount[value];
+  };
 
   if (isLoading) {
     return (
@@ -31,10 +50,10 @@ export default function AccountOverview(data: AccountOverviewProps) {
     <div className="grid grid-cols-1 gap-4 rounded-md border border-accent/10 p-4 text-left md:grid-cols-2 2xl:grid-cols-4">
       {overview && (
         <>
-          <OverviewCard columnTitle="balance" amount={overview.data.balance} />
-          <OverviewCard columnTitle="income" amount={overview.data.income} />
-          <OverviewCard columnTitle="expenses" amount={overview.data.expenses} />
-          <OverviewCard columnTitle="savings" amount={overview.data.savings} />
+          <OverviewCard columnTitle="balance" amount={overview.balance} lastMonthAmount={parsedValue('balance')} />
+          <OverviewCard columnTitle="income" amount={overview.income} lastMonthAmount={parsedValue('income')} />
+          <OverviewCard columnTitle="expenses" amount={overview.expenses} lastMonthAmount={parsedValue('expenses')} />
+          <OverviewCard columnTitle="savings" amount={overview.savings} lastMonthAmount={parsedValue('savings')} />
         </>
       )}
     </div>
