@@ -13,22 +13,35 @@ export default function AccountOverview() {
   const [isLoading, setIsLoading] = useState(true);
   const { setItem, getItem } = useLocalStorage();
 
+  const DAY_TO_SYNC_OVERVIEW = 28;
+
   useEffect(() => {
     if (overview) {
       setIsLoading(false);
     }
 
     const today = new Date();
-    if (today.getDate() === 21) {
+    const currentMonth = today.getMonth();
+    const currentYear = today.getFullYear();
+
+    const lastSyncDateStr = getItem('lastSyncDate');
+    const lastSyncDate = lastSyncDateStr ? new Date(lastSyncDateStr) : null;
+
+    if (
+      today.getDate() === DAY_TO_SYNC_OVERVIEW &&
+      (!lastSyncDate || lastSyncDate.getMonth() !== currentMonth || lastSyncDate.getFullYear() !== currentYear)
+    ) {
       const lastMonthAmounts = {
         balance: overview?.balance,
         income: overview?.income,
         expenses: overview?.expenses,
         savings: overview?.savings,
       };
+
       setItem('lastMonthAmounts', JSON.stringify(lastMonthAmounts));
+      setItem('lastSyncDate', today.toISOString());
     }
-  }, [overview, setItem]);
+  }, [overview, setItem, getItem]);
 
   const parsedValue = (value: string) => {
     const allStoredAmount = JSON.parse(getItem('lastMonthAmounts') || '{}');
