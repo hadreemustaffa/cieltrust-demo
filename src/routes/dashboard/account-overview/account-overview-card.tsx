@@ -18,12 +18,12 @@ export default function AccountOverviewCard({ amount, lastMonthAmount, columnTit
             </div>
             {lastMonthAmount <= amount ? (
               <div className="flex flex-row items-center gap-2 rounded-sm bg-green-800 px-2 py-1 text-xs text-white">
-                <p>+{lastMonthAmount === 0 ? amount : percentDifference}%</p>
+                <p>+{lastMonthAmount === 0 ? amount : Math.round(percentDifference)}%</p>
                 <Icon SvgIcon={TrendingUpIcon} width={16} height={16} isBorderless />
               </div>
             ) : (
               <div className="flex flex-row items-center gap-2 rounded-sm bg-red-700 px-2 py-1 text-xs text-white">
-                <p>{percentDifference}%</p>
+                <p>{Math.round(percentDifference)}%</p>
                 <Icon SvgIcon={TrendingDownIcon} width={16} height={16} isBorderless />
               </div>
             )}
