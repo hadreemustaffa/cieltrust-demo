@@ -5,48 +5,45 @@ import Skeleton from 'react-loading-skeleton';
 
 import OverviewCard from './account-overview-card';
 
-import { useLocalStorage } from '@/hooks/use-local-storage';
 import { useOverview } from '@/hooks/use-overview';
+import { useSession } from '@/hooks/use-session';
 
 export default function AccountOverview() {
   const { overview } = useOverview();
   const [isLoading, setIsLoading] = useState(true);
-  const { setItem, getItem } = useLocalStorage();
+  const { session } = useSession();
+
+  const isAnonymousUser = session?.user?.is_anonymous;
 
   const DAY_TO_SYNC_OVERVIEW = 28;
+
+  const setAmount = (value: string) => {
+    if (isAnonymousUser) {
+      return 0;
+    }
+
+    const today = new Date();
+
+    if (overview && today.getDate() === DAY_TO_SYNC_OVERVIEW) {
+      if (value === 'balance') {
+        return overview.balance;
+      } else if (value === 'income') {
+        return overview.income;
+      } else if (value === 'expenses') {
+        return overview.expenses;
+      } else if (value === 'savings') {
+        return overview.savings;
+      }
+    }
+
+    return 0;
+  };
 
   useEffect(() => {
     if (overview) {
       setIsLoading(false);
     }
-
-    const today = new Date();
-    const currentMonth = today.getMonth();
-    const currentYear = today.getFullYear();
-
-    const lastSyncDateStr = getItem('lastSyncDate');
-    const lastSyncDate = lastSyncDateStr ? new Date(lastSyncDateStr) : null;
-
-    if (
-      today.getDate() === DAY_TO_SYNC_OVERVIEW &&
-      (!lastSyncDate || lastSyncDate.getMonth() !== currentMonth || lastSyncDate.getFullYear() !== currentYear)
-    ) {
-      const lastMonthAmounts = {
-        balance: overview?.balance,
-        income: overview?.income,
-        expenses: overview?.expenses,
-        savings: overview?.savings,
-      };
-
-      setItem('lastMonthAmounts', JSON.stringify(lastMonthAmounts));
-      setItem('lastSyncDate', today.toISOString());
-    }
-  }, [overview, setItem, getItem]);
-
-  const parsedValue = (value: string) => {
-    const allStoredAmount = JSON.parse(getItem('lastMonthAmounts') || '{}');
-    return allStoredAmount[value];
-  };
+  }, [overview]);
 
   if (isLoading) {
     return (
@@ -63,10 +60,10 @@ export default function AccountOverview() {
     <div className="grid grid-cols-1 gap-4 rounded-md border border-accent/10 p-4 text-left md:grid-cols-2 2xl:grid-cols-4">
       {overview && (
         <>
-          <OverviewCard columnTitle="balance" amount={overview.balance} lastMonthAmount={parsedValue('balance')} />
-          <OverviewCard columnTitle="income" amount={overview.income} lastMonthAmount={parsedValue('income')} />
-          <OverviewCard columnTitle="expenses" amount={overview.expenses} lastMonthAmount={parsedValue('expenses')} />
-          <OverviewCard columnTitle="savings" amount={overview.savings} lastMonthAmount={parsedValue('savings')} />
+          <OverviewCard columnTitle="balance" amount={overview.balance} lastMonthAmount={setAmount('balance')} />
+          <OverviewCard columnTitle="income" amount={overview.income} lastMonthAmount={setAmount('income')} />
+          <OverviewCard columnTitle="expenses" amount={overview.expenses} lastMonthAmount={setAmount('expenses')} />
+          <OverviewCard columnTitle="savings" amount={overview.savings} lastMonthAmount={setAmount('savings')} />
         </>
       )}
     </div>
