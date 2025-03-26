@@ -138,11 +138,8 @@ export default function Budget() {
   }, [editMethods.formState.isSubmitSuccessful, editMethods, closeModal]);
 
   return (
-    <div
-      data-testid="budget"
-      className="rounded-md border border-accent/10 p-4 md:col-span-full md:col-start-1 md:row-start-3 xl:col-span-2 xl:row-start-2"
-    >
-      <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
+    <div className="col-span-full rounded-md border border-accent/10 p-4 xl:col-span-2 xl:col-start-1 xl:row-start-1">
+      <div className="flex h-full flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row flex-wrap items-center justify-between gap-4">
           <h2 className="text-lg font-semibold">Budgets</h2>
 
