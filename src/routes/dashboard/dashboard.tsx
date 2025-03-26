@@ -16,6 +16,7 @@ import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goa
 import TransactionHistory from '@/routes/dashboard/transaction-history/transaction-history';
 import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
 import UpcomingPayment from '@/routes/dashboard/upcoming-payment/upcoming-payment';
+import VisualChart from '@/routes/dashboard/visual-chart/visual-chart';
 import supabase from '@/utils/supabase';
 
 interface DashboardProps {
@@ -68,15 +69,10 @@ export default function Dashboard() {
               <AccountOverview />
 
               <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                <SavingGoals data={data?.saving_goals} />
-
-                <div className="col-span-1 flex items-center justify-center rounded-md border border-accent/10 p-4 md:col-span-2">
-                  <p>VISUAL CHART</p>
-                </div>
-
                 <UpcomingPayment />
-
                 <Budget />
+                <VisualChart data={data?.transactions} />
+                <SavingGoals data={data?.saving_goals} />
               </div>
             </div>
           </OverviewProvider>
