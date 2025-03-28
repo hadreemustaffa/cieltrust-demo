@@ -60,7 +60,6 @@ export default function VisualChart({ data }: VisualChartProps) {
         labels = Array.from({ length: dayjs(endDate).diff(startDate, 'month') + 1 }, (_, i) =>
           startDate.add(i, 'month').format('YYYY-MM'),
         );
-        console.log(labels);
         break;
     }
 
