@@ -2,11 +2,12 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ButtonPrimary, ButtonSecondary } from '@/components/button';
+import Icon from '@/components/icon';
 import Modal from '@/components/modal';
-import MoreMenu from '@/components/more-menu';
 import { ERROR_MSG } from '@/data/errorMessages';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
+import PlusIcon from '@/images/icons/plus.svg?react';
 import SavingGoalsItem from '@/routes/dashboard/saving-goals/saving-goals-item';
 import { SavingGoalsFormProps, SavingGoalsProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 import supabase from '@/utils/supabase';
@@ -94,19 +95,18 @@ export default function SavingGoals(data: SavingGoalsProps) {
   }, [activeModal, setFocus, reset]);
 
   return (
-    <div className="col-span-1 row-start-2 rounded-md border border-accent/10 p-4 md:col-span-2 md:row-start-1">
+    <div className="rounded-md border border-accent/10 p-4 md:col-span-full lg:col-span-2">
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-semibold">Saving Goals</h2>
-          <MoreMenu>
-            <button
-              type="button"
-              className="flex items-center gap-2 rounded-sm px-2 py-1 text-left hover:bg-accent/10"
-              onClick={() => openModal(`addSavingGoalModal`)}
-            >
-              Add
-            </button>
-          </MoreMenu>
+          <button
+            type="button"
+            aria-label="add saving goal"
+            onClick={() => openModal(`addSavingGoalModal`)}
+            className="flex gap-1 rounded-md border border-accent/10 px-2 py-1 hover:border-accent/50"
+          >
+            <Icon SvgIcon={PlusIcon} width={24} height={24} isBorderless />
+          </button>
         </div>
 
         {activeModal === 'addSavingGoalModal' && (

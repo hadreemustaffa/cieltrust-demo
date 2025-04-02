@@ -4,6 +4,7 @@ import { useLoaderData } from 'react-router';
 import { BudgetTablesProvider } from '@/context/budget-tables-context';
 import { CategoriesProvider } from '@/context/categories-context';
 import { ModalProvider } from '@/context/modal-context';
+import { OverviewProvider } from '@/context/overview-context';
 import { useDashboard } from '@/hooks/use-dashboard';
 import AccountOverview from '@/routes/dashboard/account-overview/account-overview';
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
@@ -12,7 +13,10 @@ import Budget from '@/routes/dashboard/budget/budget';
 import { Category, Table } from '@/routes/dashboard/budget/budget.types';
 import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
 import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
+import TransactionHistory from '@/routes/dashboard/transaction-history/transaction-history';
+import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
 import UpcomingPayment from '@/routes/dashboard/upcoming-payment/upcoming-payment';
+import VisualChart from '@/routes/dashboard/visual-chart/visual-chart';
 import supabase from '@/utils/supabase';
 
 interface DashboardProps {
@@ -21,17 +25,19 @@ interface DashboardProps {
   saving_goals: SavingGoalsFormProps[];
   overview: Overview[];
   categories: Category[];
+  transactions: Transaction[];
 }
 
 const saving_goals = 'saving_goals:saving_goals(*)';
 const budget = 'budget:budget(*, budget_categories(id, budget_id, name, spent, amount))';
 const overview = 'overview:overview(*)';
 const categories = 'categories:categories(*)';
+const transactions = 'transactions:transactions(*)';
 
 async function loader() {
   const { data, error } = await supabase
     .from('dashboard')
-    .select(`id, ${saving_goals}, ${budget}, ${overview}, ${categories}`)
+    .select(`id, ${saving_goals}, ${budget}, ${overview}, ${categories}, ${transactions}`)
     .single();
 
   if (error) throw new Error('Failed to fetch dashboard data');
@@ -53,24 +59,24 @@ export default function Dashboard() {
   return (
     <ModalProvider>
       <CategoriesProvider initialCategories={data.categories || []}>
-        <div className="my-auto flex flex-col gap-4 text-left">
-          <AddTransaction />
-          <AccountOverview data={data?.overview?.[0]} />
+        <BudgetTablesProvider initialBudgetTables={data?.budget}>
+          <OverviewProvider initialOverview={data?.overview[0]}>
+            <div className="my-auto flex flex-col gap-4 text-left">
+              <div className="flex flex-row gap-2 self-end">
+                <TransactionHistory data={data?.transactions} />
+                <AddTransaction />
+              </div>
+              <AccountOverview />
 
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <SavingGoals data={data?.saving_goals} />
-
-            <div className="col-span-1 flex items-center justify-center rounded-md border border-accent/10 p-4 md:col-span-2">
-              <p>VISUAL CHART</p>
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <UpcomingPayment />
+                <Budget />
+                <VisualChart data={data?.transactions} />
+                <SavingGoals data={data?.saving_goals} />
+              </div>
             </div>
-
-            <BudgetTablesProvider initialBudgetTables={data?.budget}>
-              <UpcomingPayment />
-
-              <Budget />
-            </BudgetTablesProvider>
-          </div>
-        </div>
+          </OverviewProvider>
+        </BudgetTablesProvider>
       </CategoriesProvider>
     </ModalProvider>
   );

@@ -13,7 +13,7 @@ import { useCategories } from '@/hooks/use-categories';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
 import BudgetTableForm from '@/routes/dashboard/budget/budget-table-form';
-import { addBudgetTable, deleteBudgetTable, editBudgetTable } from '@/routes/dashboard/budget/budget.api';
+import { addBudgetTable, editBudgetTable } from '@/routes/dashboard/budget/budget.api';
 import { BudgetFormProps, Category, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
 import ManageCategories from '@/routes/dashboard/manage-categories/manage-categories';
 import supabase from '@/utils/supabase';
@@ -101,15 +101,6 @@ export default function Budget() {
     }
   };
 
-  const handleDeleteBudgetTable = async (id: number) => {
-    await deleteBudgetTable({
-      id,
-      setBudgetTablesProvider: setBudgetTables,
-    });
-
-    closeModal();
-  };
-
   // update fields array default values on each category change
   useEffect(() => {
     methods.reset({
@@ -147,11 +138,8 @@ export default function Budget() {
   }, [editMethods.formState.isSubmitSuccessful, editMethods, closeModal]);
 
   return (
-    <div
-      data-testid="budget"
-      className="rounded-md border border-accent/10 p-4 md:col-span-full md:col-start-1 md:row-start-3 xl:col-span-2 xl:row-start-2"
-    >
-      <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
+    <div className="col-span-full rounded-md border border-accent/10 p-4 xl:col-span-2 xl:col-start-1 xl:row-start-1">
+      <div className="flex h-full flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row flex-wrap items-center justify-between gap-4">
           <h2 className="text-lg font-semibold">Budgets</h2>
 
@@ -160,16 +148,16 @@ export default function Budget() {
               <button
                 type="button"
                 className="flex items-center gap-2 rounded-sm px-2 py-1 text-left hover:bg-accent/10"
-                onClick={() => openModal(`manageCategoriesModal`)}
+                onClick={() => openModal(`addBudgetTableModal`)}
               >
-                Manage
+                Add
               </button>
               <button
                 type="button"
                 className="flex items-center gap-2 rounded-sm px-2 py-1 text-left hover:bg-accent/10"
-                onClick={() => openModal(`addBudgetTableModal`)}
+                onClick={() => openModal(`manageCategoriesModal`)}
               >
-                Add
+                Manage
               </button>
             </MoreMenu>
           </div>
@@ -178,12 +166,7 @@ export default function Budget() {
         <div className="flex flex-col gap-4">
           {budgetTables.length > 0 ? (
             budgetTables.map((table) => (
-              <BudgetTable
-                key={table.id}
-                table={table}
-                onEdit={() => openModal(`editBudgetTableModal-${table.id}`)}
-                onDelete={handleDeleteBudgetTable}
-              >
+              <BudgetTable key={table.id} table={table}>
                 {activeModal === `editBudgetTableModal-${table.id}` && (
                   <Modal
                     id={`editBudgetTableModal-${table.id}`}

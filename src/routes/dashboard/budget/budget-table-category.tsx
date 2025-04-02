@@ -1,12 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { BudgetTableCategoryProps } from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
-export default function BudgetTableCategory({ category, totalBudgetAmount }: BudgetTableCategoryProps) {
-  const [amountLimit, setAmountLimit] = useState(totalBudgetAmount);
+export default function BudgetTableCategory({ category }: BudgetTableCategoryProps) {
   const [budgetAmount, setBudgetAmount] = useState(category.amount);
 
   const { register, handleSubmit, getValues } = useForm<BudgetTableCategoryProps>({
@@ -58,10 +57,6 @@ export default function BudgetTableCategory({ category, totalBudgetAmount }: Bud
       console.log(error);
     }
   };
-
-  useEffect(() => {
-    setAmountLimit(totalBudgetAmount);
-  }, [totalBudgetAmount]);
 
   return (
     <tr key={category.id} className="grid w-[440px] grid-cols-4 items-center justify-between gap-2 sm:w-full">

@@ -111,3 +111,18 @@ export const ButtonMenuToggle = ({ children, className, ...props }: ButtonProps)
     </button>
   );
 };
+
+export const ButtonDelete = ({ children, className, ...props }: ButtonProps) => {
+  return (
+    <button
+      type="button"
+      className={cn(
+        `flex items-center justify-center rounded-md border border-red-800 bg-red-700 px-4 py-2 text-white hover:cursor-pointer hover:bg-red-500 hover:text-white`,
+        className,
+      )}
+      {...props}
+    >
+      {children}
+    </button>
+  );
+};

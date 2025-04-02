@@ -1,9 +1,18 @@
-export interface FormProps {
-  name: 'balance' | 'income' | 'expenses' | 'savings';
+export interface FormData {
+  transactionType: 'income' | 'expenses';
+  id: number | null;
+  date: string;
+  reference?: string;
 }
 
-export interface FormData {
-  name: FormProps['name'];
+export interface IncomeFormData {
+  from: string;
   amount: number;
-  id: number | null;
+  savings?: number;
+}
+
+export interface ExpensesFormData {
+  budget: string;
+  category: string;
+  amount: number;
 }

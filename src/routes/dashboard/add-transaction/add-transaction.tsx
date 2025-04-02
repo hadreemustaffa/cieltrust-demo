@@ -10,9 +10,9 @@ export default function AddTransaction() {
 
   return (
     <>
-      <ButtonPrimary onClick={() => openModal('addTransaction')} className="w-fit self-end">
-        <Icon SvgIcon={PlusIcon} aria-hidden={true} isBorderless />
-        Add Transaction
+      <ButtonPrimary onClick={() => openModal('addTransaction')} className="gap-2">
+        <Icon SvgIcon={PlusIcon} isBorderless />
+        <span className="hidden sm:inline">Add Transaction</span>
       </ButtonPrimary>
 
       {activeModal === 'addTransaction' && (

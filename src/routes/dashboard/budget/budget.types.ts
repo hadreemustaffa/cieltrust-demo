@@ -38,8 +38,6 @@ export type Table = {
 
 export interface BudgetTableProps {
   table: Table;
-  onEdit: () => void;
-  onDelete: (id: number) => void;
   children: React.ReactNode;
 }
 
@@ -91,5 +89,4 @@ export type CategoryWithAmount = Category & {
 
 export interface BudgetTableCategoryProps {
   category: CategoryWithAmount;
-  totalBudgetAmount: number;
 }

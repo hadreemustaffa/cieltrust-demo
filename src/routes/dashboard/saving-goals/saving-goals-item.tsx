@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { ButtonPrimary, ButtonSecondary } from '@/components/button';
+import { ButtonDelete, ButtonPrimary, ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import MoreMenu from '@/components/more-menu';
@@ -217,13 +217,7 @@ export default function SavingGoalsItem({
             Cancel
           </ButtonSecondary>
 
-          <button
-            type="button"
-            className="w-fit rounded-md bg-red-700 px-6 py-3 text-white hover:bg-red-500"
-            onClick={() => handleDelete()}
-          >
-            Delete
-          </button>
+          <ButtonDelete onClick={() => handleDelete()}>Delete</ButtonDelete>
         </div>
       </Modal>
     </li>
