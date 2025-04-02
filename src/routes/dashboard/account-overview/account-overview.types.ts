@@ -3,6 +3,12 @@ export type Overview = {
   income: number;
   expenses: number;
   savings: number;
+  previous_month: {
+    balance: number;
+    income: number;
+    expenses: number;
+    savings: number;
+  };
 };
 
 export interface AccountOverviewCardProps {

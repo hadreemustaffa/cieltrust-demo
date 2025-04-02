@@ -7,6 +7,7 @@ import OverviewCard from './account-overview-card';
 
 import { useOverview } from '@/hooks/use-overview';
 import { useSession } from '@/hooks/use-session';
+import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
 
 export default function AccountOverview() {
   const { overview } = useOverview();
@@ -15,28 +16,12 @@ export default function AccountOverview() {
 
   const isAnonymousUser = session?.user?.is_anonymous;
 
-  const DAY_TO_SYNC_OVERVIEW = 28;
-
-  const setAmount = (value: string) => {
-    if (isAnonymousUser) {
+  const setAmount = (value: keyof Overview['previous_month']) => {
+    if (isAnonymousUser || !overview) {
       return 0;
     }
 
-    const today = new Date();
-
-    if (overview && today.getDate() === DAY_TO_SYNC_OVERVIEW) {
-      if (value === 'balance') {
-        return overview.balance;
-      } else if (value === 'income') {
-        return overview.income;
-      } else if (value === 'expenses') {
-        return overview.expenses;
-      } else if (value === 'savings') {
-        return overview.savings;
-      }
-    }
-
-    return 0;
+    return overview.previous_month?.[value] || 0;
   };
 
   useEffect(() => {
