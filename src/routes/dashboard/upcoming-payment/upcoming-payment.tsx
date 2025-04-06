@@ -38,7 +38,8 @@ export default function UpcomingPayment() {
     return (
       total +
       table.budget_categories.reduce((categoryTotal, category) => {
-        return categoryTotal + parseFloat(category.amount.toString()) - parseFloat(category.spent.toString());
+        const remaining = parseFloat(category.amount.toString()) - parseFloat(category.spent.toString());
+        return categoryTotal + Math.max(0, remaining);
       }, 0)
     );
   }, 0);
