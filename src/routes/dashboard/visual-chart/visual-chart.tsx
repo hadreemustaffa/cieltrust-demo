@@ -53,7 +53,7 @@ export default function VisualChart({ data }: VisualChartProps) {
       case '1Y':
         startDate = selectedDate.subtract(1, 'year').startOf('month');
         endDate = selectedDate.endOf('month');
-        labels = Array.from({ length: 12 }, (_, i) => startDate.add(i, 'month').format('YYYY-MM'));
+        labels = Array.from({ length: 13 }, (_, i) => startDate.add(i, 'month').format('YYYY-MM'));
         break;
       case 'YTD':
         startDate = selectedDate.startOf('year');
