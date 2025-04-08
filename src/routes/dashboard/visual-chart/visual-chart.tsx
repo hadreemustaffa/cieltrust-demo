@@ -32,6 +32,8 @@ export default function VisualChart({ data }: VisualChartProps) {
     return Array.from(new Set(data.map((transaction) => dayjs(transaction.transaction_date).format('YYYY-MM')))).sort();
   }, [data]);
 
+  const currentMonth = availableMonths.find((month) => dayjs().format('YYYY-MM') === month);
+
   const generateChartData = (selectedDate: dayjs.Dayjs, period: TimePeriod) => {
     let startDate: dayjs.Dayjs;
     let endDate: dayjs.Dayjs;
@@ -178,13 +180,17 @@ export default function VisualChart({ data }: VisualChartProps) {
                 const newDate = dayjs(e.target.value + '-01');
                 setSelectedDate(newDate);
               }}
-              className="rounded border bg-card p-2"
+              className="rounded border border-accent/30 bg-card p-2 hover:cursor-pointer hover:border-accent/50"
             >
               {availableMonths.map((month) => (
                 <option key={month} value={month}>
                   {dayjs(month + '-01').format('MMMM YYYY')}
                 </option>
               ))}
+              {/* add current month if it's not in the transaction history */}
+              {currentMonth === undefined && (
+                <option value={dayjs().format('YYYY-MM')}>{dayjs().format('MMMM YYYY')}</option>
+              )}
             </select>
           )}
         </div>
