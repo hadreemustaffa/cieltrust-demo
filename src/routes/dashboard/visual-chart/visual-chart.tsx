@@ -11,91 +11,35 @@ import {
 } from 'chart.js';
 import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
-import { useMemo, useState } from 'react';
+import { useState } from 'react';
 import { Line } from 'react-chartjs-2';
 
 import { ButtonSecondary } from '@/components/button';
-import { VisualChartProps } from '@/routes/dashboard/visual-chart/visual-chart.types';
+import { PERIODS, TimePeriod, VisualChartProps } from '@/routes/dashboard/visual-chart/visual-chart.types';
+import { generateChartData } from '@/utils/generateChartData';
 
 dayjs.extend(isBetween);
 
 ChartJS.register(CategoryScale, Filler, LinearScale, PointElement, LineElement, Title, Tooltip, Legend);
 
 export default function VisualChart({ data }: VisualChartProps) {
-  const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('1M');
+  const [selectedPeriod, setSelectedPeriod] = useState<TimePeriod>('6M');
   const [selectedDate, setSelectedDate] = useState<dayjs.Dayjs>(dayjs());
+  const [selectedYear, setSelectedYear] = useState<number>(dayjs().year());
 
-  const PERIODS = ['1M', '6M', '1Y', 'YTD'] as const;
-  type TimePeriod = (typeof PERIODS)[number];
-
-  const availableMonths = useMemo(() => {
-    return Array.from(new Set(data.map((transaction) => dayjs(transaction.transaction_date).format('YYYY-MM')))).sort();
-  }, [data]);
+  const availableMonths = Array.from(
+    new Set(data.map((transaction) => dayjs(transaction.transaction_date).format('YYYY-MM'))),
+  ).sort();
 
   const currentMonth = availableMonths.find((month) => dayjs().format('YYYY-MM') === month);
 
-  const generateChartData = (selectedDate: dayjs.Dayjs, period: TimePeriod) => {
-    let startDate: dayjs.Dayjs;
-    let endDate: dayjs.Dayjs;
-    let labels: string[];
+  const availableYears = Array.from(
+    new Set(data.map((transaction) => dayjs(transaction.transaction_date).year())),
+  ).sort();
 
-    switch (period) {
-      case '1M':
-        startDate = selectedDate.startOf('month');
-        endDate = selectedDate.endOf('month');
-        labels = Array.from({ length: dayjs(endDate).diff(startDate, 'day') + 1 }, (_, i) =>
-          startDate.add(i, 'day').format('YYYY-MM-DD'),
-        );
-        break;
-      case '6M':
-        startDate = selectedDate.subtract(5, 'month').startOf('month');
-        endDate = selectedDate.endOf('month');
-        labels = Array.from({ length: 6 }, (_, i) => startDate.add(i, 'month').format('YYYY-MM'));
-        break;
-      case '1Y':
-        startDate = selectedDate.subtract(1, 'year').startOf('month');
-        endDate = selectedDate.endOf('month');
-        labels = Array.from({ length: 13 }, (_, i) => startDate.add(i, 'month').format('YYYY-MM'));
-        break;
-      case 'YTD':
-        startDate = selectedDate.startOf('year');
-        endDate = selectedDate;
-        labels = Array.from({ length: dayjs(endDate).diff(startDate, 'month') + 1 }, (_, i) =>
-          startDate.add(i, 'month').format('YYYY-MM'),
-        );
-        break;
-    }
+  const currentYear = availableYears.find((year) => dayjs().year() === year);
 
-    const expensesData = labels.map((label) => {
-      const periodStart = period === '1M' ? dayjs(label) : dayjs(label + '-01');
-
-      const periodEnd = period === '1M' ? dayjs(label) : periodStart.endOf('month');
-
-      return data
-        .filter(
-          (transaction) =>
-            transaction.type === 'expenses' &&
-            dayjs(transaction.transaction_date).isBetween(periodStart.subtract(1, 'day'), periodEnd, null, '[]'),
-        )
-        .reduce((acc, cur) => acc + cur.amount, 0);
-    });
-
-    const incomeData = labels.map((label) => {
-      const periodStart = period === '1M' ? dayjs(label) : dayjs(label + '-01');
-
-      const periodEnd = period === '1M' ? dayjs(label) : periodStart.endOf('month');
-
-      return data
-        .filter(
-          (transaction) =>
-            transaction.type === 'income' &&
-            dayjs(transaction.transaction_date).isBetween(periodStart.subtract(1, 'day'), periodEnd, null, '[]'),
-        )
-        .reduce((acc, cur) => acc + cur.amount, 0);
-    });
-
-    return { labels, expensesData, incomeData };
-  };
+  const availableMonthsByYear = availableMonths.filter((month) => dayjs(month).year() === selectedYear);
 
   const options = {
     plugins: {
@@ -125,7 +69,7 @@ export default function VisualChart({ data }: VisualChartProps) {
     },
   };
 
-  const { labels, expensesData, incomeData } = generateChartData(selectedDate, selectedPeriod);
+  const { labels, expensesData, incomeData } = generateChartData({ data }, selectedDate, selectedPeriod);
 
   const chartData = {
     labels:
@@ -172,26 +116,52 @@ export default function VisualChart({ data }: VisualChartProps) {
             ))}
           </div>
 
-          {availableMonths.length !== 0 && (
-            <select
-              id="selectMonth"
-              value={selectedDate.format('YYYY-MM')}
-              onChange={(e) => {
-                const newDate = dayjs(e.target.value + '-01');
-                setSelectedDate(newDate);
-              }}
-              className="rounded border border-accent/30 bg-card p-2 hover:cursor-pointer hover:border-accent/50"
-            >
-              {availableMonths.map((month) => (
-                <option key={month} value={month}>
-                  {dayjs(month + '-01').format('MMMM YYYY')}
-                </option>
-              ))}
-              {/* add current month if it's not in the transaction history */}
-              {currentMonth === undefined && (
-                <option value={dayjs().format('YYYY-MM')}>{dayjs().format('MMMM YYYY')}</option>
-              )}
-            </select>
+          {availableMonths.length !== 0 && selectedPeriod !== 'YTD' && (
+            <>
+              <select
+                id="selectMonth"
+                value={selectedDate.format('YYYY-MM')}
+                onChange={(e) => {
+                  const newDate = dayjs(e.target.value + '-01');
+                  setSelectedDate(newDate);
+                }}
+                className="rounded border border-accent/30 bg-card p-2 hover:cursor-pointer hover:border-accent/50"
+              >
+                {availableMonthsByYear.map((month) => (
+                  <option key={month} value={month}>
+                    {dayjs(month + '-01').format('MMMM')}
+                  </option>
+                ))}
+                {currentMonth === undefined && selectedYear === dayjs().year() && (
+                  <option value={dayjs().format('YYYY-MM')}>{dayjs().format('MMMM')}</option>
+                )}
+              </select>
+              <select
+                id="selectYear"
+                value={selectedYear}
+                onChange={(e) => {
+                  let firstAvailableMonthByYear;
+                  const newYear = parseInt(e.target.value, 10);
+                  setSelectedYear(newYear);
+                  const availableMonthsByYear = availableMonths.filter((month) => dayjs(month).year() === newYear);
+                  if (newYear !== dayjs().year()) {
+                    firstAvailableMonthByYear = dayjs(availableMonthsByYear[0]).month();
+                  } else {
+                    firstAvailableMonthByYear = dayjs().month();
+                  }
+                  const newDate = dayjs(`${newYear}-${firstAvailableMonthByYear + 1}-01`);
+                  setSelectedDate(newDate);
+                }}
+                className="rounded border border-accent/30 bg-card p-2 hover:cursor-pointer hover:border-accent/50"
+              >
+                {availableYears.map((year) => (
+                  <option key={year} value={year}>
+                    {dayjs(year + '-01').format('YYYY')}
+                  </option>
+                ))}
+                {currentYear === undefined && <option value={dayjs().format('YYYY')}>{dayjs().format('YYYY')}</option>}
+              </select>
+            </>
           )}
         </div>
 
