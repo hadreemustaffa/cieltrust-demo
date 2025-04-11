@@ -1,8 +1,9 @@
 import dayjs from 'dayjs';
 
-import { TimePeriod, VisualChartProps } from '@/routes/dashboard/visual-chart/visual-chart.types';
+import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
+import { TimePeriod } from '@/routes/dashboard/visual-chart/visual-chart.types';
 
-export const generateChartData = ({ data }: VisualChartProps, selectedDate: dayjs.Dayjs, period: TimePeriod) => {
+export const generateChartData = (transactions: Transaction[], selectedDate: dayjs.Dayjs, period: TimePeriod) => {
   let startDate: dayjs.Dayjs;
   let endDate: dayjs.Dayjs;
   let labels: string[] = [];
@@ -35,31 +36,51 @@ export const generateChartData = ({ data }: VisualChartProps, selectedDate: dayj
   }
 
   const expensesData = labels.map((label) => {
-    const periodStart = period === '1M' ? dayjs(label) : dayjs(label + '-01');
+    if (period === '1M') {
+      const day = dayjs(label);
+      return transactions
+        .filter(
+          (transaction) =>
+            transaction.type === 'expenses' &&
+            dayjs(transaction.transaction_date).format('YYYY-MM-DD') === day.format('YYYY-MM-DD'),
+        )
+        .reduce((acc, cur) => acc + cur.amount, 0);
+    } else {
+      const periodStart = dayjs(label + '-01');
+      const periodEnd = periodStart.endOf('month');
 
-    const periodEnd = period === '1M' ? dayjs(label) : periodStart.endOf('month');
-
-    return data
-      .filter(
-        (transaction) =>
-          transaction.type === 'expenses' &&
-          dayjs(transaction.transaction_date).isBetween(periodStart.subtract(1, 'day'), periodEnd, null, '[]'),
-      )
-      .reduce((acc, cur) => acc + cur.amount, 0);
+      return transactions
+        .filter(
+          (transaction) =>
+            transaction.type === 'expenses' &&
+            dayjs(transaction.transaction_date).isBetween(periodStart.subtract(1, 'day'), periodEnd, null, '[]'),
+        )
+        .reduce((acc, cur) => acc + cur.amount, 0);
+    }
   });
 
   const incomeData = labels.map((label) => {
-    const periodStart = period === '1M' ? dayjs(label) : dayjs(label + '-01');
+    if (period === '1M') {
+      const day = dayjs(label);
+      return transactions
+        .filter(
+          (transaction) =>
+            transaction.type === 'income' &&
+            dayjs(transaction.transaction_date).format('YYYY-MM-DD') === day.format('YYYY-MM-DD'),
+        )
+        .reduce((acc, cur) => acc + cur.amount, 0);
+    } else {
+      const periodStart = dayjs(label + '-01');
+      const periodEnd = periodStart.endOf('month');
 
-    const periodEnd = period === '1M' ? dayjs(label) : periodStart.endOf('month');
-
-    return data
-      .filter(
-        (transaction) =>
-          transaction.type === 'income' &&
-          dayjs(transaction.transaction_date).isBetween(periodStart.subtract(1, 'day'), periodEnd, null, '[]'),
-      )
-      .reduce((acc, cur) => acc + cur.amount, 0);
+      return transactions
+        .filter(
+          (transaction) =>
+            transaction.type === 'income' &&
+            dayjs(transaction.transaction_date).isBetween(periodStart.subtract(1, 'day'), periodEnd, null, '[]'),
+        )
+        .reduce((acc, cur) => acc + cur.amount, 0);
+    }
   });
 
   return { labels, expensesData, incomeData };
