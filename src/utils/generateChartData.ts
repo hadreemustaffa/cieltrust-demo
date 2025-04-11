@@ -55,7 +55,7 @@ export const generateChartData = (transactions: Transaction[], selectedDate: day
             transaction.type === 'expenses' &&
             dayjs(transaction.transaction_date).isBetween(periodStart.subtract(1, 'day'), periodEnd, null, '[]'),
         )
-        .reduce((acc, cur) => acc + cur.amount, 0);
+        .reduce((acc, cur) => Number(acc + cur.amount), 0);
     }
   });
 
@@ -79,7 +79,7 @@ export const generateChartData = (transactions: Transaction[], selectedDate: day
             transaction.type === 'income' &&
             dayjs(transaction.transaction_date).isBetween(periodStart.subtract(1, 'day'), periodEnd, null, '[]'),
         )
-        .reduce((acc, cur) => acc + cur.amount, 0);
+        .reduce((acc, cur) => Number(acc + cur.amount), 0);
     }
   });
 

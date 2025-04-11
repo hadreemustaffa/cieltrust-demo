@@ -38,7 +38,7 @@ export const addTransaction = async ({
   category,
 }: AddTransactionProps) => {
   try {
-    const { error } = await supabase
+    const { data, error } = await supabase
       .from('transactions')
       .insert([
         {
@@ -56,78 +56,80 @@ export const addTransaction = async ({
       .select()
       .single();
 
-    if (transactionType === 'income') {
-      setOverview((prevOverview) => ({
-        ...prevOverview,
-        balance: prevOverview.balance + Number(amount) - (Number(savings) / 100) * Number(amount),
-        income: prevOverview.income + Number(amount),
-        savings: prevOverview.savings + (Number(savings) / 100) * Number(amount),
-      }));
+    if (data) {
+      if (transactionType === 'income') {
+        setOverview((prevOverview) => ({
+          ...prevOverview,
+          balance: prevOverview.balance + Number(amount) - (Number(savings) / 100) * Number(amount),
+          income: prevOverview.income + Number(amount),
+          savings: prevOverview.savings + (Number(savings) / 100) * Number(amount),
+        }));
 
-      setHistory((prevHistory) => [
-        ...prevHistory,
-        {
-          type: 'income',
-          id: null,
-          transaction_date: date,
-          from_source: from,
-          savings: savings ?? 0,
-          amount: amount,
-          reference: reference,
-        },
-      ]);
-    }
-
-    if (transactionType === 'expenses') {
-      const foundCategory = budgetTables
-        .flatMap((table: Table) => table.budget_categories)
-        .find((cat: Category) => cat.name === category);
-
-      const categoryId = foundCategory?.id;
-      const categorySpent = Number(foundCategory?.spent || 0);
-      const newAmount = Number(amount);
-
-      const { error: categoryError } = await supabase
-        .from('budget_categories')
-        .update({
-          spent: categorySpent + newAmount,
-        })
-        .eq('id', categoryId)
-        .select();
-
-      setBudgetTables(
-        budgetTables.map((table) => ({
-          ...table,
-          budget_categories: table.budget_categories.flatMap((cat) =>
-            cat.id === categoryId ? [{ ...cat, spent: Number(cat.spent || 0) + newAmount }] : [cat],
-          ),
-        })),
-      );
-
-      setOverview((prevOverview) => ({
-        ...prevOverview,
-        balance: prevOverview.balance - Number(amount),
-        expenses: prevOverview.expenses + Number(amount),
-      }));
-
-      if (budget && category) {
         setHistory((prevHistory) => [
           ...prevHistory,
           {
-            type: 'expenses',
-            id: null,
+            type: 'income',
+            id: data.id,
             transaction_date: date,
-            budget: budget,
-            category: category,
-            amount: amount,
+            from_source: from,
+            savings: Number(savings),
+            amount: Number(amount),
             reference: reference,
           },
         ]);
       }
 
-      if (categoryError) {
-        console.log('Error updating category:', categoryError);
-        throw categoryError;
+      if (transactionType === 'expenses') {
+        const foundCategory = budgetTables
+          .flatMap((table: Table) => table.budget_categories)
+          .find((cat: Category) => cat.name === category);
+
+        const categoryId = foundCategory?.id;
+        const categorySpent = Number(foundCategory?.spent || 0);
+        const newAmount = Number(amount);
+
+        const { error: categoryError } = await supabase
+          .from('budget_categories')
+          .update({
+            spent: categorySpent + newAmount,
+          })
+          .eq('id', categoryId)
+          .select();
+
+        setBudgetTables(
+          budgetTables.map((table) => ({
+            ...table,
+            budget_categories: table.budget_categories.flatMap((cat) =>
+              cat.id === categoryId ? [{ ...cat, spent: Number(cat.spent || 0) + newAmount }] : [cat],
+            ),
+          })),
+        );
+
+        setOverview((prevOverview) => ({
+          ...prevOverview,
+          balance: prevOverview.balance - Number(amount),
+          expenses: prevOverview.expenses + Number(amount),
+        }));
+
+        if (budget && category) {
+          setHistory((prevHistory) => [
+            ...prevHistory,
+            {
+              type: 'expenses',
+              id: data.id,
+              transaction_date: date,
+              budget: budget,
+              category: category,
+              amount: Number(amount),
+              reference: reference,
+            },
+          ]);
+        }
+
+        if (categoryError) {
+          console.log('Error updating category:', categoryError);
+          throw categoryError;
+        }
       }
     }
 
