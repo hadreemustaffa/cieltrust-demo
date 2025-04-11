@@ -5,6 +5,7 @@ import { BudgetTablesProvider } from '@/context/budget-tables-context';
 import { CategoriesProvider } from '@/context/categories-context';
 import { ModalProvider } from '@/context/modal-context';
 import { OverviewProvider } from '@/context/overview-context';
+import { TransactionHistoryProvider } from '@/context/transaction-history-context';
 import { useDashboard } from '@/hooks/use-dashboard';
 import AccountOverview from '@/routes/dashboard/account-overview/account-overview';
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
@@ -61,20 +62,22 @@ export default function Dashboard() {
       <CategoriesProvider initialCategories={data.categories || []}>
         <BudgetTablesProvider initialBudgetTables={data?.budget}>
           <OverviewProvider initialOverview={data?.overview[0]}>
-            <div className="my-auto flex flex-col gap-4 text-left">
-              <div className="flex flex-row gap-2 self-end">
-                <TransactionHistory data={data?.transactions} />
-                <AddTransaction />
-              </div>
-              <AccountOverview />
+            <TransactionHistoryProvider initialHistory={data?.transactions}>
+              <div className="my-auto flex flex-col gap-4 text-left">
+                <div className="flex flex-row gap-2 self-end">
+                  <TransactionHistory />
+                  <AddTransaction />
+                </div>
+                <AccountOverview />
 
-              <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                <UpcomingPayment />
-                <Budget />
-                <VisualChart data={data?.transactions} />
-                <SavingGoals data={data?.saving_goals} />
+                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                  <UpcomingPayment />
+                  <Budget />
+                  <VisualChart />
+                  <SavingGoals data={data?.saving_goals} />
+                </div>
               </div>
-            </div>
+            </TransactionHistoryProvider>
           </OverviewProvider>
         </BudgetTablesProvider>
       </CategoriesProvider>

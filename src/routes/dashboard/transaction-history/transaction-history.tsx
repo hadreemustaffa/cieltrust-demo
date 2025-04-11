@@ -6,21 +6,22 @@ import { Input } from '@/components/forms/custom_form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import { useModal } from '@/hooks/use-modal';
+import { useTransactionHistory } from '@/hooks/use-transaction-history';
 import ClockIcon from '@/images/icons/clock.svg?react';
 import {
   deleteTransactionHistory,
   getTransactionHistory,
 } from '@/routes/dashboard/transaction-history/transaction-history.api';
-import { Transaction, TransactionHistoryProps } from '@/routes/dashboard/transaction-history/transaction-history.types';
+import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
 
-export default function TransactionHistory({ data }: TransactionHistoryProps) {
-  const [transactionType, setTransactionType] = useState('income');
-  const [history, setHistory] = useState<Transaction[]>(data);
+export default function TransactionHistory() {
+  const [transactionType, setTransactionType] = useState<Transaction['type']>('income');
   const [currentPage, setCurrentPage] = useState(1);
   const prevTransactionTypeRef = useRef(transactionType);
   const itemsPerPage = 10;
 
   const { activeModal, openModal, closeModal } = useModal();
+  const { history, setHistory } = useTransactionHistory();
 
   const {
     register,
@@ -120,11 +121,12 @@ export default function TransactionHistory({ data }: TransactionHistoryProps) {
       reset();
       setTransactionType('income');
     };
-  }, [activeModal, reset]);
+  }, [activeModal, reset, setHistory]);
 
   const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) => setTransactionType(e.target.value);
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
+    setTransactionType(e.target.value as Transaction['type']);
 
   return (
     <>
@@ -203,9 +205,13 @@ export default function TransactionHistory({ data }: TransactionHistoryProps) {
                               {...register(`historyCheckbox-${transaction.id}`)}
                             />
                           </td>
-                          <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.from_source}</td>
-                          <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
-                          <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.savings}</td>
+                          {transaction.type === 'income' && (
+                            <>
+                              <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.from_source}</td>
+                              <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
+                              <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.savings}</td>
+                            </>
+                          )}
                           <td className="border-l border-accent/10 px-2 py-1 text-sm">
                             {transaction.transaction_date}
                           </td>
@@ -226,9 +232,13 @@ export default function TransactionHistory({ data }: TransactionHistoryProps) {
                               {...register(`historyCheckbox-${transaction.id}`)}
                             />
                           </td>
-                          <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.budget}</td>
-                          <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.category}</td>
-                          <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
+                          {transaction.type === 'expenses' && (
+                            <>
+                              <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.budget}</td>
+                              <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.category}</td>
+                              <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
+                            </>
+                          )}
                           <td className="border-l border-accent/10 px-2 py-1 text-sm">
                             {transaction.transaction_date}
                           </td>
