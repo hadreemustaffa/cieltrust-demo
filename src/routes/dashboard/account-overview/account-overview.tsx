@@ -3,7 +3,7 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import { useEffect, useState } from 'react';
 import Skeleton from 'react-loading-skeleton';
 
-import OverviewCard from './account-overview-card';
+import AccountOverviewCard from './account-overview-card';
 
 import { useOverview } from '@/hooks/use-overview';
 import { useSession } from '@/hooks/use-session';
@@ -45,10 +45,20 @@ export default function AccountOverview() {
     <div className="grid grid-cols-1 gap-4 rounded-md border border-accent/10 p-4 text-left md:grid-cols-2 2xl:grid-cols-4">
       {overview && (
         <>
-          <OverviewCard columnTitle="balance" amount={overview.balance} lastMonthAmount={setAmount('balance')} />
-          <OverviewCard columnTitle="income" amount={overview.income} lastMonthAmount={setAmount('income')} />
-          <OverviewCard columnTitle="expenses" amount={overview.expenses} lastMonthAmount={setAmount('expenses')} />
-          <OverviewCard columnTitle="savings" amount={overview.savings} lastMonthAmount={setAmount('savings')} />
+          <AccountOverviewCard columnTitle="balance" amount={overview.balance} lastMonthAmount={setAmount('balance')} />
+          <AccountOverviewCard
+            columnTitle="income"
+            amount={overview.income}
+            lastMonthAmount={setAmount('income')}
+            hasTooltip
+          />
+          <AccountOverviewCard
+            columnTitle="expenses"
+            amount={overview.expenses}
+            lastMonthAmount={setAmount('expenses')}
+            hasTooltip
+          />
+          <AccountOverviewCard columnTitle="savings" amount={overview.savings} lastMonthAmount={setAmount('savings')} />
         </>
       )}
     </div>

@@ -15,6 +15,7 @@ export interface AccountOverviewCardProps {
   amount: number;
   lastMonthAmount: number;
   columnTitle: string;
+  hasTooltip?: boolean;
 }
 
 export interface AccountOverviewCardFormProps {
