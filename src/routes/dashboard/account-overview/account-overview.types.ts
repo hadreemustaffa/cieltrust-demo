@@ -1,3 +1,5 @@
+type ColumnTitle = 'balance' | 'income' | 'expenses' | 'savings';
+
 export type Overview = {
   balance: number;
   income: number;
@@ -14,7 +16,7 @@ export type Overview = {
 export interface AccountOverviewCardProps {
   amount: number;
   lastMonthAmount: number;
-  columnTitle: string;
+  columnTitle: ColumnTitle;
   hasTooltip?: boolean;
 }
 
