@@ -110,6 +110,11 @@ html[style='color-scheme: light'] {
   gap: 1rem;
 }
 
+#tooltip-default:hover [role='tooltip'] {
+  opacity: 1;
+  visibility: visible;
+}
+
 @media screen and (min-width: 48rem) {
   .react-tabs__tab-list {
     flex-direction: row;
