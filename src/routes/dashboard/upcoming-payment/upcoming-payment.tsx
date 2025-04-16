@@ -51,7 +51,7 @@ export default function UpcomingPayment() {
   });
 
   return (
-    <div className="col-span-full flex rounded-md border border-accent/10 p-4 xl:col-span-2 xl:col-start-3">
+    <div className="col-span-full flex rounded-md sm:border sm:border-accent/10 sm:p-4 xl:col-span-2 xl:col-start-3">
       <div className="flex w-full flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <h2 className="text-lg font-semibold">Upcoming Payments</h2>
         {budgetTables.length > 0 ? (
