@@ -95,7 +95,7 @@ export default function SavingGoals(data: SavingGoalsProps) {
   }, [activeModal, setFocus, reset]);
 
   return (
-    <div className="rounded-md border border-accent/10 p-4 md:col-span-full lg:col-span-2">
+    <div className="rounded-md sm:border sm:border-accent/10 sm:p-4 md:col-span-full lg:col-span-2">
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-semibold">Saving Goals</h2>

@@ -42,7 +42,7 @@ export default function AccountOverview() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 rounded-md border border-accent/10 p-4 text-left md:grid-cols-2 2xl:grid-cols-4">
+    <div className="grid grid-cols-1 gap-4 rounded-md text-left sm:border sm:border-accent/10 sm:p-4 md:grid-cols-2 2xl:grid-cols-4">
       {overview && (
         <>
           <AccountOverviewCard columnTitle="balance" amount={overview.balance} lastMonthAmount={setAmount('balance')} />
