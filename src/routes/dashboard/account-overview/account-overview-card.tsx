@@ -51,14 +51,14 @@ export default function AccountOverviewCard({
         </div>
 
         <p className="flex flex-row items-center gap-2 text-2xl font-bold">
-          $ <span>{amount.toFixed(2)}</span>
+          $ <span>{Math.round(amount)}</span>
         </p>
       </div>
 
       <div className="h-[1px] w-full bg-accent/10"></div>
 
       <p className="text-sm">
-        Last month: <span className="font-semibold">{lastMonthAmount.toFixed(2)}</span>
+        Last month: <span className="font-semibold">{Math.round(lastMonthAmount)}</span>
       </p>
     </div>
   );
