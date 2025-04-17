@@ -1,11 +1,14 @@
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useState } from 'react';
+import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { redirect } from 'react-router';
 
 import { deleteUser } from '@/actions/delete';
 import { logout } from '@/actions/logout';
 import { ButtonDelete, ButtonPrimary, ButtonSecondary, ButtonTertiary } from '@/components/button';
+import ErrorMessage from '@/components/error-message';
 import { Input } from '@/components/forms/custom_form';
 import Icon from '@/components/icon';
+import { PasswordInput } from '@/components/password';
 import { useSession } from '@/hooks/use-session';
 import AlertTriangleIcon from '@/images/icons/alert-triangle.svg?react';
 import XIcon from '@/images/icons/x.svg?react';
@@ -14,21 +17,33 @@ import supabase from '@/utils/supabase';
 interface SettingsProps {
   firstName: string;
   lastName: string;
+  password?: string;
+  confirmPassword?: string;
   handleClose: () => void;
 }
 
 export default function Settings({ firstName, lastName, handleClose }: SettingsProps) {
+  const [isError, setIsError] = useState(false);
+  const [errorMessage, setErrorMessage] = useState('');
   const { session } = useSession();
+
+  const methods = useForm<SettingsProps>();
 
   const {
     register,
     getValues,
     formState: { errors, isSubmitting },
     handleSubmit,
-  } = useForm<SettingsProps>();
+  } = methods;
 
   const onSubmit: SubmitHandler<SettingsProps> = async () => {
-    if (firstName === getValues('firstName') && lastName === getValues('lastName')) {
+    if (
+      firstName === getValues('firstName') &&
+      lastName === getValues('lastName') &&
+      getValues('password') === '' &&
+      getValues('confirmPassword') === ''
+    ) {
+      handleClose();
       return;
     }
 
@@ -37,12 +52,18 @@ export default function Settings({ firstName, lastName, handleClose }: SettingsP
         first_name: getValues('firstName'),
         last_name: getValues('lastName'),
       },
+      password: getValues('password'),
     });
 
     if (error) {
       console.log(error);
+      setIsError(true);
+      setErrorMessage(error.message);
+    } else {
+      setIsError(false);
+      setErrorMessage('');
+      handleClose();
     }
-    handleClose();
   };
 
   const handleDeleteAccount = async () => {
@@ -52,10 +73,10 @@ export default function Settings({ firstName, lastName, handleClose }: SettingsP
 
     if (!userConfirmed) return;
 
-    const verificationText = prompt("Please type 'DELETE' to confirm account deletion:");
-    if (verificationText?.toUpperCase() !== 'DELETE') {
-      if (verificationText) {
-        alert(`Please enter the correct verification text.\nAccount deletion cancelled.`);
+    const confirmationText = prompt("Please type 'DELETE' to confirm account deletion:");
+    if (confirmationText?.toUpperCase() !== 'DELETE') {
+      if (confirmationText || confirmationText === '') {
+        alert(`Please enter the correct confirmation text.\nAccount deletion cancelled.`);
       }
       return;
     }
@@ -79,68 +100,76 @@ export default function Settings({ firstName, lastName, handleClose }: SettingsP
         </ButtonTertiary>
       </div>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 overflow-y-auto p-4">
-        <div className="space-y-4 text-left text-sm">
-          {session?.user.email && <p className="text-left text-sm text-copy/70">{session?.user.email}</p>}
-          <div className="flex flex-col gap-2">
-            <label htmlFor="firstNameSettings" className="text-sm">
-              First Name
-            </label>
+      <FormProvider {...methods}>
+        <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 overflow-y-auto p-4">
+          <div className="space-y-4 text-left">
+            {session?.user.email && <p className="text-left text-copy/70">{session?.user.email}</p>}
+            <div className="flex flex-col gap-2">
+              <label htmlFor="firstNameSettings" className="text-sm">
+                First Name:
+              </label>
 
-            <Input
-              id="firstNameSettings"
-              type="text"
-              placeholder="Enter first name"
-              defaultValue={firstName}
-              aria-invalid={errors.firstName ? 'true' : 'false'}
-              {...register('firstName')}
-            />
-            {errors.firstName && <p className="text-sm text-red-500">{errors.firstName.message}</p>}
-          </div>
-          <div className="flex flex-col gap-2">
-            <label htmlFor="lastNameSettings" className="text-sm">
-              Last Name
-            </label>
+              <Input
+                id="firstNameSettings"
+                type="text"
+                placeholder="Enter first name"
+                defaultValue={firstName}
+                aria-invalid={errors.firstName ? 'true' : 'false'}
+                {...register('firstName')}
+              />
+              {errors.firstName && <ErrorMessage error={errors.firstName.message} />}
+            </div>
+            <div className="flex flex-col gap-2">
+              <label htmlFor="lastNameSettings" className="text-sm">
+                Last Name:
+              </label>
 
-            <Input
-              id="lastNameSettings"
-              type="text"
-              placeholder="Enter last name"
-              defaultValue={lastName}
-              aria-invalid={errors.lastName ? 'true' : 'false'}
-              {...register('lastName')}
-            />
-            {errors.lastName && <p className="text-sm text-red-500">{errors.lastName.message}</p>}
+              <Input
+                id="lastNameSettings"
+                type="text"
+                placeholder="Enter last name"
+                defaultValue={lastName}
+                aria-invalid={errors.lastName ? 'true' : 'false'}
+                {...register('lastName')}
+              />
+              {errors.lastName && <ErrorMessage error={errors.lastName.message} />}
+            </div>
+
+            <PasswordInput label={'New Password'} id={'password'} />
+
+            <PasswordInput label={'Confirm New Password'} id={'confirmPassword'} />
+
+            {isError && <ErrorMessage error={errorMessage} />}
           </div>
-        </div>
-        <div className="flex flex-col gap-4 border-y border-y-accent/10 py-6">
-          <div className="rounded-md bg-red-100 p-3 text-left">
-            <div className="flex flex-col items-start">
-              <div className="flex flex-row items-center gap-2">
-                <Icon SvgIcon={AlertTriangleIcon} isBorderless className="text-red-500" />
-                <h3 className="text-sm font-medium text-red-800">Warning: Account Deletion</h3>
-              </div>
-              <div className="mt-2 text-sm text-red-700">
-                <ul className="list-disc space-y-1 pl-5">
-                  <li>Your account will be permanently deleted</li>
-                  <li>All records will be cleared from our database</li>
-                  <li>This data cannot be recovered once deleted</li>
-                </ul>
+          <div className="flex flex-col gap-4 border-y border-y-accent/10 py-6">
+            <div className="rounded-md bg-red-100 p-3 text-left">
+              <div className="flex flex-col items-start">
+                <div className="flex flex-row items-center gap-2">
+                  <Icon SvgIcon={AlertTriangleIcon} isBorderless className="text-red-500" />
+                  <h3 className="text-sm font-medium text-red-800">Warning: Account Deletion</h3>
+                </div>
+                <div className="mt-2 text-sm text-red-700">
+                  <ul className="list-disc space-y-1 pl-5">
+                    <li>Your account will be permanently deleted</li>
+                    <li>All records will be cleared from our database</li>
+                    <li>This data cannot be recovered once deleted</li>
+                  </ul>
+                </div>
               </div>
             </div>
-          </div>
 
-          <ButtonDelete onClick={handleDeleteAccount}>Delete Account</ButtonDelete>
-        </div>
-        <div className="flex justify-end space-x-3">
-          <ButtonSecondary type="button" onClick={handleClose}>
-            Cancel
-          </ButtonSecondary>
-          <ButtonPrimary type="submit" disabled={isSubmitting}>
-            Save
-          </ButtonPrimary>
-        </div>
-      </form>
+            <ButtonDelete onClick={handleDeleteAccount}>Delete Account</ButtonDelete>
+          </div>
+          <div className="flex justify-end space-x-3">
+            <ButtonSecondary type="button" onClick={handleClose}>
+              Cancel
+            </ButtonSecondary>
+            <ButtonPrimary type="submit" disabled={isSubmitting}>
+              Save
+            </ButtonPrimary>
+          </div>
+        </form>
+      </FormProvider>
     </>
   );
 }
