@@ -5,6 +5,7 @@ import EyeOffIcon from '../images/icons/eye-off.svg?react';
 import EyeIcon from '../images/icons/eye.svg?react';
 
 import ErrorMessage from '@/components/error-message';
+import { Input } from '@/components/forms/custom_form';
 import { ERROR_MSG } from '@/data/errorMessages';
 
 export interface PasswordInputProps {
@@ -36,10 +37,9 @@ export const PasswordInput = ({ label, id }: PasswordInputProps) => {
         </label>
 
         <div className="relative">
-          <input
+          <Input
             id={id}
             type={isPasswordVisible ? 'text' : 'password'}
-            className="w-full rounded-md border border-accent/10 bg-transparent px-4 py-2"
             aria-invalid={isPasswordError ? 'true' : 'false'}
             {...register(id, {
               minLength: {
