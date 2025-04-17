@@ -13,7 +13,6 @@ import Settings from '@/routes/dashboard/settings/settings';
 
 function DashboardHeader() {
   const [isOpen, setIsOpen] = useState(false);
-
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   const ref = useOutsideClick<HTMLUListElement>(() => setIsOpen(false));
@@ -34,6 +33,11 @@ function DashboardHeader() {
     if (!event.relatedTarget || !ref?.current?.contains(event.relatedTarget) || event.relatedTarget === ref.current) {
       setIsOpen(false);
     }
+  };
+
+  const handleSettingsOpen = () => {
+    setIsSettingsOpen(true);
+    setIsOpen(false);
   };
 
   useEffect(() => {
@@ -80,7 +84,7 @@ function DashboardHeader() {
             <li className="rounded-sm hover:bg-accent/10">
               <button
                 type="button"
-                onClick={() => setIsSettingsOpen(true)}
+                onClick={handleSettingsOpen}
                 className="flex w-full flex-row items-center gap-2 p-2 text-left"
               >
                 <Icon SvgIcon={SettingsIcon} width={16} height={16} isBorderless />
@@ -101,17 +105,20 @@ function DashboardHeader() {
         )}
       </div>
 
-      {isSettingsOpen && (
-        <div
-          className={`fixed inset-y-0 right-0 flex h-full w-full flex-col bg-background shadow-lg duration-300 ease-in-out sm:w-80`}
-        >
+      <div
+        className={`fixed inset-y-0 right-0 flex h-full w-full transform flex-col border-l border-l-accent/10 bg-background shadow-lg transition-transform duration-300 ease-in-out sm:w-80 ${
+          isSettingsOpen ? 'pointer-events-auto translate-x-0' : 'pointer-events-none translate-x-full'
+        } `}
+        aria-hidden={!isSettingsOpen}
+      >
+        {isSettingsOpen && (
           <Settings
             firstName={session?.user.user_metadata.first_name}
             lastName={session?.user.user_metadata.last_name}
             handleClose={() => setIsSettingsOpen(false)}
           />
-        </div>
-      )}
+        )}
+      </div>
     </header>
   );
 }
