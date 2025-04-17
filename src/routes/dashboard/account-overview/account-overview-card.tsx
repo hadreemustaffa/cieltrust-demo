@@ -35,7 +35,7 @@ export default function AccountOverviewCard({
   const formattedTitle = columnTitle.charAt(0).toUpperCase() + columnTitle.slice(1);
 
   return (
-    <div className="flex flex-col gap-2 rounded-md border border-accent/10 bg-surface p-4">
+    <div className="flex min-w-60 flex-col gap-2 rounded-md border border-accent/10 bg-surface p-4">
       <div className="flex flex-col justify-between gap-2 text-left">
         <div className="flex flex-row items-center justify-between">
           <div className="relative flex flex-row items-center gap-2">
