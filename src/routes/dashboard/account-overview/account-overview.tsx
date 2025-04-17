@@ -42,9 +42,9 @@ export default function AccountOverview() {
   }
 
   return (
-    <div className="grid grid-cols-1 gap-4 rounded-md text-left sm:border sm:border-accent/10 sm:p-4 md:grid-cols-2 2xl:grid-cols-4">
+    <div className="grid grid-cols-1 rounded-md text-left sm:border sm:border-accent/10 sm:p-4">
       {overview && (
-        <>
+        <div className="flex flex-row gap-4 overflow-x-auto md:grid md:grid-cols-2 md:overflow-x-visible 2xl:grid-cols-4">
           <AccountOverviewCard columnTitle="balance" amount={overview.balance} lastMonthAmount={setAmount('balance')} />
           <AccountOverviewCard
             columnTitle="income"
@@ -59,7 +59,7 @@ export default function AccountOverview() {
             hasTooltip
           />
           <AccountOverviewCard columnTitle="savings" amount={overview.savings} lastMonthAmount={setAmount('savings')} />
-        </>
+        </div>
       )}
     </div>
   );

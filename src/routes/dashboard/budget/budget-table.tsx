@@ -43,7 +43,7 @@ export default function BudgetTable({ table, children, ...props }: BudgetTablePr
           </div>
         </caption>
 
-        <tbody className="flex w-full flex-col gap-4 overflow-x-scroll text-sm md:overflow-auto">
+        <tbody className="flex w-full flex-col gap-4 overflow-x-auto text-sm">
           <tr className="grid w-[440px] grid-cols-4 justify-between gap-2 sm:w-full">
             <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1">
               Category
