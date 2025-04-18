@@ -41,6 +41,7 @@ export const PasswordInput = ({ label, id }: PasswordInputProps) => {
             id={id}
             type={isPasswordVisible ? 'text' : 'password'}
             aria-invalid={isPasswordError ? 'true' : 'false'}
+            autoComplete="new-password"
             {...register(id, {
               minLength: {
                 value: 8,
