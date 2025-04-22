@@ -164,70 +164,74 @@ export default function Budget() {
         </div>
 
         <div className="flex flex-col gap-4">
-          {budgetTables.length > 0 ? (
-            budgetTables.map((table) => (
-              <BudgetTable key={table.id} table={table}>
-                {activeModal === `editBudgetTableModal-${table.id}` && (
-                  <Modal
-                    id={`editBudgetTableModal-${table.id}`}
-                    title="Edit this budget?"
-                    isOpen={activeModal === `editBudgetTableModal-${table.id}`}
-                    handleClose={() => closeModal()}
-                  >
-                    <FormProvider {...editMethods}>
-                      <BudgetTableForm
-                        variant="edit"
-                        table={table}
-                        tables={budgetTables}
-                        onSubmit={onEditSubmit(table.id)}
-                      >
-                        <Categories
-                          handleNewCategoryModal={() => openModal('addNewCategoryModal')}
-                          selectedCategories={[
-                            ...(editMethods
-                              .watch('editCategories')
-                              ?.filter((category) => category.selected)
-                              .map((category) => category.name) ?? []),
-                          ]}
+          {budgetTables.filter((table) => !table.is_recurring).length > 0 ? (
+            budgetTables
+              .filter((table) => !table.is_recurring)
+              .map((table) => (
+                <BudgetTable key={table.id} table={table}>
+                  {activeModal === `editBudgetTableModal-${table.id}` && (
+                    <Modal
+                      id={`editBudgetTableModal-${table.id}`}
+                      title="Edit this budget?"
+                      isOpen={activeModal === `editBudgetTableModal-${table.id}`}
+                      handleClose={() => closeModal()}
+                    >
+                      <FormProvider {...editMethods}>
+                        <BudgetTableForm
+                          variant="edit"
+                          table={table}
+                          tables={budgetTables}
+                          onSubmit={onEditSubmit(table.id)}
                         >
-                          {editCategoriesArr.fields.map((field, index) => {
-                            const isChecked = table.budget_categories.some((category) => category.name === field.name);
+                          <Categories
+                            handleNewCategoryModal={() => openModal('addNewCategoryModal')}
+                            selectedCategories={[
+                              ...(editMethods
+                                .watch('editCategories')
+                                ?.filter((category) => category.selected)
+                                .map((category) => category.name) ?? []),
+                            ]}
+                          >
+                            {editCategoriesArr.fields.map((field, index) => {
+                              const isChecked = table.budget_categories.some(
+                                (category) => category.name === field.name,
+                              );
 
-                            return (
-                              <li key={field.id}>
-                                <label
-                                  htmlFor={field.id}
-                                  className={`flex flex-row items-center justify-between rounded-sm px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10`}
-                                >
-                                  {field.name}
+                              return (
+                                <li key={field.id}>
+                                  <label
+                                    htmlFor={field.id}
+                                    className={`flex flex-row items-center justify-between rounded-sm px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10`}
+                                  >
+                                    {field.name}
 
-                                  {isChecked ? (
-                                    <input
-                                      id={field.id}
-                                      type="checkbox"
-                                      className="rounded-md border border-accent/10 bg-transparent"
-                                      defaultChecked={isChecked}
-                                      {...editMethods.register(`editCategories.${index}.selected` as const)}
-                                    />
-                                  ) : (
-                                    <input
-                                      id={field.id}
-                                      type="checkbox"
-                                      className="rounded-md border border-accent/10 bg-transparent"
-                                      {...editMethods.register(`editCategories.${index}.selected` as const)}
-                                    />
-                                  )}
-                                </label>
-                              </li>
-                            );
-                          })}
-                        </Categories>
-                      </BudgetTableForm>
-                    </FormProvider>
-                  </Modal>
-                )}
-              </BudgetTable>
-            ))
+                                    {isChecked ? (
+                                      <input
+                                        id={field.id}
+                                        type="checkbox"
+                                        className="rounded-md border border-accent/10 bg-transparent"
+                                        defaultChecked={isChecked}
+                                        {...editMethods.register(`editCategories.${index}.selected` as const)}
+                                      />
+                                    ) : (
+                                      <input
+                                        id={field.id}
+                                        type="checkbox"
+                                        className="rounded-md border border-accent/10 bg-transparent"
+                                        {...editMethods.register(`editCategories.${index}.selected` as const)}
+                                      />
+                                    )}
+                                  </label>
+                                </li>
+                              );
+                            })}
+                          </Categories>
+                        </BudgetTableForm>
+                      </FormProvider>
+                    </Modal>
+                  )}
+                </BudgetTable>
+              ))
           ) : (
             <p className="text-sm">You haven&apos;t created any budgets yet.</p>
           )}

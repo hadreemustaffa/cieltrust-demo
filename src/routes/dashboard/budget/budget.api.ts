@@ -26,6 +26,7 @@ export const addBudgetTable = async ({
         dashboard_id: id,
         name: name,
         amount: amount,
+        is_recurring: false,
         recurrence: recurrence,
         start_date: start_date,
       })
@@ -65,6 +66,7 @@ export const addBudgetTable = async ({
         budget_categories: categoryData,
         amount: budgetData.amount,
         remaining: budgetData.amount,
+        is_recurring: false,
         recurrence: budgetData.recurrence,
         start_date: budgetData.start_date,
       };
@@ -92,6 +94,7 @@ export const editBudgetTable = async ({
       .update({
         name: name,
         amount: amount,
+        is_recurring: false,
         recurrence: recurrence,
         start_date: start_date,
       })
@@ -159,6 +162,7 @@ export const editBudgetTable = async ({
                 ...table,
                 name: name,
                 amount: amount,
+                is_recurring: false,
                 recurrence: recurrence,
                 start_date: start_date,
                 budget_categories: [

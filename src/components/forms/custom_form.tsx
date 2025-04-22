@@ -2,13 +2,17 @@ import React from 'react';
 import { useForm } from 'react-hook-form';
 import type { FieldValues, SubmitHandler, UseFormReturn } from 'react-hook-form';
 
-type InputProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement>;
+import { cn } from '@/utils/cn';
 
-export const Input = React.forwardRef<HTMLInputElement, InputProps>((props, ref) => (
+type InputProps = React.DetailedHTMLProps<React.InputHTMLAttributes<HTMLInputElement>, HTMLInputElement> & {
+  className?: string;
+};
+
+export const Input = React.forwardRef<HTMLInputElement, InputProps>(({ className, ...props }, ref) => (
   <input
     ref={ref}
     {...props}
-    className="w-full rounded-md border border-accent/10 bg-transparent p-2 hover:cursor-pointer"
+    className={cn(`w-full rounded-md border border-accent/10 bg-transparent p-2 hover:cursor-pointer`, className)}
   />
 ));
 Input.displayName = 'Input';
