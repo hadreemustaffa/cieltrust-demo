@@ -5,14 +5,14 @@ import { Input, Select } from '@/components/forms/custom_form';
 import Icon from '@/components/icon';
 import { ERROR_MSG } from '@/data/errorMessages';
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
-import { BudgetFormProps, BudgetTableFormProps, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
+import { AddBudgetFormProps, BudgetTableFormProps, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
 
 export default function BudgetTableForm({ table, tables, onSubmit, children, variant }: BudgetTableFormProps) {
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
-  } = useFormContext<BudgetFormProps>();
+  } = useFormContext<AddBudgetFormProps>();
 
   const {
     register: editRegister,
@@ -24,12 +24,12 @@ export default function BudgetTableForm({ table, tables, onSubmit, children, var
     return (
       <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <label htmlFor="goalName" className="text-sm">
+          <label htmlFor="budgetName" className="text-sm">
             Name
           </label>
 
           <Input
-            id="goalName"
+            id="budgetName"
             type="text"
             placeholder="Enter budget name"
             defaultValue={''}
@@ -49,26 +49,6 @@ export default function BudgetTableForm({ table, tables, onSubmit, children, var
         </div>
 
         {children}
-
-        <div className="flex flex-col gap-2">
-          <label htmlFor="startDate" className="text-sm">
-            Start Date
-          </label>
-          <Input
-            id="startDate"
-            type="date"
-            className="w-full rounded-md border border-accent/10 bg-transparent p-2"
-            defaultValue={''}
-            {...register('start_date', {
-              required: {
-                value: true,
-                message: ERROR_MSG.FIELD_IS_REQUIRED,
-              },
-              valueAsDate: true,
-            })}
-          />
-          {errors.start_date && <p className="text-sm text-red-500">{errors.start_date.message}</p>}
-        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">
@@ -129,12 +109,12 @@ export default function BudgetTableForm({ table, tables, onSubmit, children, var
     return (
       <form onSubmit={handleEditSubmit(onSubmit)} className="flex flex-col gap-4">
         <div className="flex flex-col gap-2">
-          <label htmlFor="goalName" className="text-sm">
+          <label htmlFor="budgetName" className="text-sm">
             Name
           </label>
 
           <Input
-            id="goalName"
+            id="budgetName"
             type="text"
             placeholder="Enter budget name"
             defaultValue={table.name}
@@ -161,25 +141,6 @@ export default function BudgetTableForm({ table, tables, onSubmit, children, var
         </div>
 
         {children}
-
-        <div className="flex flex-col gap-2">
-          <label htmlFor="startDate" className="text-sm">
-            Start Date
-          </label>
-          <Input
-            id="startDate"
-            type="date"
-            className="w-full rounded-md border border-accent/10 bg-transparent p-2"
-            defaultValue={table.start_date}
-            {...editRegister('start_date', {
-              required: {
-                value: true,
-                message: ERROR_MSG.FIELD_IS_REQUIRED,
-              },
-            })}
-          />
-          {editErrors.start_date && <p className="text-sm text-red-500">{editErrors.start_date.message}</p>}
-        </div>
 
         <div className="grid grid-cols-2 gap-4">
           <div className="flex flex-col gap-2">

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import {
-  BudgetFormProps,
+  AddBudgetFormProps,
   Category,
   DeleteBudgetTableProps,
   EditBudgetFormProps,
@@ -14,11 +14,10 @@ export const addBudgetTable = async ({
   name,
   amount,
   recurrence,
-  start_date,
   addCategories,
   fields,
   setBudgetTablesProvider,
-}: BudgetFormProps & { setBudgetTablesProvider: React.Dispatch<React.SetStateAction<Table[]>> }) => {
+}: AddBudgetFormProps & { setBudgetTablesProvider: React.Dispatch<React.SetStateAction<Table[]>> }) => {
   try {
     const { data: budgetData, error: budgetError } = await supabase
       .from('budget')
@@ -28,7 +27,6 @@ export const addBudgetTable = async ({
         amount: amount,
         is_recurring: false,
         recurrence: recurrence,
-        start_date: start_date,
       })
       .select()
       .single();
@@ -164,7 +162,6 @@ export const editBudgetTable = async ({
                 amount: amount,
                 is_recurring: false,
                 recurrence: recurrence,
-                start_date: start_date,
                 budget_categories: [
                   ...table.budget_categories.filter(
                     (category) => !removedCategories.some((removed) => removed.name === category.name),
