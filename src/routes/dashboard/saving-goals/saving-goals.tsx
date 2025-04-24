@@ -99,14 +99,10 @@ export default function SavingGoals(data: SavingGoalsProps) {
       <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-semibold">Saving Goals</h2>
-          <button
-            type="button"
-            aria-label="add saving goal"
-            onClick={() => openModal(`addSavingGoalModal`)}
-            className="flex gap-1 rounded-md border border-accent/10 px-2 py-1 hover:border-accent/50"
-          >
-            <Icon SvgIcon={PlusIcon} width={24} height={24} isBorderless />
-          </button>
+
+          <ButtonSecondary onClick={() => openModal('addSavingGoalModal')} className="lg:px-2 lg:py-1">
+            <Icon SvgIcon={PlusIcon} isBorderless />
+          </ButtonSecondary>
         </div>
 
         {activeModal === 'addSavingGoalModal' && (
