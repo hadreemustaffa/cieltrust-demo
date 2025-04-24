@@ -35,9 +35,7 @@ export default function BudgetTable({ table, children, ...props }: BudgetTablePr
               ${table.amount}
             </p>
             <MoreMenu
-              isEditable
               onEdit={() => openModal(`editBudgetTableModal-${table.id}`)}
-              isDeletable
               onDelete={() => openModal(`deleteBudgetTableModal-${table.id}`)}
             />
           </div>
