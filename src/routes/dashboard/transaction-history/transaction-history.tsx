@@ -132,7 +132,7 @@ export default function TransactionHistory() {
     <>
       <ButtonSecondary onClick={() => openModal('viewTransactionHistory')} className="gap-2">
         <Icon SvgIcon={ClockIcon} isBorderless />
-        <span className="hidden sm:inline">View Transaction History</span>
+        <span className="hidden md:inline">View Transaction History</span>
       </ButtonSecondary>
 
       {activeModal === 'viewTransactionHistory' && (

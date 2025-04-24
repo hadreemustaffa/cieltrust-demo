@@ -12,7 +12,7 @@ export default function AddTransaction() {
     <>
       <ButtonPrimary onClick={() => openModal('addTransaction')} className="gap-2">
         <Icon SvgIcon={PlusIcon} isBorderless />
-        <span className="hidden sm:inline">Add Transaction</span>
+        <span className="hidden md:inline">Add Transaction</span>
       </ButtonPrimary>
 
       {activeModal === 'addTransaction' && (

@@ -17,7 +17,7 @@ export const ButtonPrimary = ({ children, className, ...props }: ButtonProps) =>
     <button
       type="button"
       className={cn(
-        `flex items-center justify-center rounded-md bg-brand px-4 py-2 text-white hover:cursor-pointer hover:bg-brand-hover hover:text-white`,
+        `flex items-center justify-center rounded-md bg-brand px-2 py-1 text-white hover:cursor-pointer hover:bg-brand-hover hover:text-white lg:px-4 lg:py-2`,
         className,
       )}
       {...props}
@@ -32,7 +32,7 @@ export const LinkButtonPrimary = ({ children, to, className, ...props }: LinkPro
     <Link
       to={to}
       className={cn(
-        `flex items-center justify-center rounded-md bg-brand px-4 py-2 text-white hover:cursor-pointer hover:bg-brand-hover hover:text-white`,
+        `flex items-center justify-center rounded-md bg-brand px-2 py-1 text-white hover:cursor-pointer hover:bg-brand-hover hover:text-white lg:px-4 lg:py-2`,
         className,
       )}
       {...props}
@@ -46,7 +46,7 @@ export const ButtonSecondary = ({ children, className, ...props }: ButtonProps) 
   return (
     <button
       className={cn(
-        `flex items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-4 py-2 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10`,
+        `flex items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-2 py-1 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10 lg:px-4 lg:py-2`,
         className,
       )}
       {...props}
@@ -61,7 +61,7 @@ export const LinkButtonSecondary = ({ children, to, className, ...props }: LinkP
     <Link
       to={to}
       className={cn(
-        `flex items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-4 py-2 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10`,
+        `flex items-center justify-center whitespace-nowrap rounded-md border border-accent/30 bg-transparent px-2 py-1 hover:cursor-pointer hover:border-accent-hover/50 hover:text-accent-hover active:bg-accent/10 lg:px-4 lg:py-2`,
         className,
       )}
       {...props}
@@ -75,7 +75,7 @@ export const ButtonTertiary = ({ children, className, ...props }: ButtonProps) =
   return (
     <button
       className={cn(
-        `flex items-center justify-center gap-2 rounded-md bg-transparent px-4 py-2 hover:cursor-pointer hover:underline`,
+        `flex items-center justify-center gap-2 rounded-md bg-transparent px-2 py-1 hover:cursor-pointer hover:underline lg:px-4 lg:py-2`,
         className,
       )}
       {...props}
@@ -102,7 +102,7 @@ export const ButtonMenuToggle = ({ children, className, ...props }: ButtonProps)
     <button
       type="button"
       className={cn(
-        `absolute -top-10 right-0 z-50 translate-y-1/2 transform rounded-md bg-brand px-4 py-2 hover:cursor-pointer hover:bg-brand-hover`,
+        `absolute -top-10 right-0 z-50 translate-y-1/2 transform rounded-md bg-brand px-2 py-1 hover:cursor-pointer hover:bg-brand-hover lg:px-4 lg:py-2`,
         className,
       )}
       {...props}
@@ -117,7 +117,7 @@ export const ButtonDelete = ({ children, className, ...props }: ButtonProps) => 
     <button
       type="button"
       className={cn(
-        `flex items-center justify-center rounded-md border border-red-800 bg-red-700 px-4 py-2 text-white hover:cursor-pointer hover:bg-red-500 hover:text-white`,
+        `flex items-center justify-center rounded-md border border-red-800 bg-red-700 px-2 py-1 text-white hover:cursor-pointer hover:bg-red-500 hover:text-white lg:px-4 lg:py-2`,
         className,
       )}
       {...props}
