@@ -12,6 +12,7 @@ import { Overview } from '@/routes/dashboard/account-overview/account-overview.t
 import AddTransaction from '@/routes/dashboard/add-transaction/add-transaction';
 import Budget from '@/routes/dashboard/budget/budget';
 import { Category, Table } from '@/routes/dashboard/budget/budget.types';
+import ManageCategories from '@/routes/dashboard/manage-categories/manage-categories';
 import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
 import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 import TransactionHistory from '@/routes/dashboard/transaction-history/transaction-history';
@@ -65,6 +66,7 @@ export default function Dashboard() {
             <TransactionHistoryProvider initialHistory={data?.transactions}>
               <div className="my-auto flex flex-col gap-4 text-left">
                 <div className="flex flex-row gap-2 self-end">
+                  <ManageCategories />
                   <TransactionHistory />
                   <AddTransaction />
                 </div>

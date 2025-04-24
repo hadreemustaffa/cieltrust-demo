@@ -2,11 +2,6 @@ import React from 'react';
 
 import { Category, Table } from '@/routes/dashboard/budget/budget.types';
 
-export interface ManageCategoriesProps {
-  tables: Table[];
-  dashboardId: number | null;
-}
-
 export interface CategoryItemProps {
   category: Category;
   tables: Table[];

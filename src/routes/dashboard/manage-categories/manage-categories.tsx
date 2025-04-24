@@ -4,9 +4,13 @@ import { SubmitHandler, useForm } from 'react-hook-form';
 import { ButtonSecondary } from '@/components/button';
 import { Input } from '@/components/forms/custom_form';
 import Icon from '@/components/icon';
+import Modal from '@/components/modal';
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useCategories } from '@/hooks/use-categories';
+import { useDashboard } from '@/hooks/use-dashboard';
+import { useModal } from '@/hooks/use-modal';
 import EditIcon from '@/images/icons/edit.svg?react';
+import ListIcon from '@/images/icons/list.svg?react';
 import PlusIcon from '@/images/icons/plus.svg?react';
 import TrashIcon from '@/images/icons/trash.svg?react';
 import { Category } from '@/routes/dashboard/budget/budget.types';
@@ -15,11 +19,14 @@ import {
   deleteCategory,
   updateCategory,
 } from '@/routes/dashboard/manage-categories/manage-categories.api';
-import { CategoryItemProps, ManageCategoriesProps } from '@/routes/dashboard/manage-categories/manage-categories.types';
+import { CategoryItemProps } from '@/routes/dashboard/manage-categories/manage-categories.types';
 
-export default function ManageCategories({ tables, dashboardId }: ManageCategoriesProps) {
+export default function ManageCategories() {
+  const { dashboardId } = useDashboard();
   const { categories, setCategories } = useCategories();
-  const { setBudgetTables } = useBudgetTables();
+  const { budgetTables, setBudgetTables } = useBudgetTables();
+  const { activeModal, openModal, closeModal } = useModal();
+
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 5;
 
@@ -40,7 +47,7 @@ export default function ManageCategories({ tables, dashboardId }: ManageCategori
   };
 
   const handleDeleteCategory = async (category: Category) => {
-    await deleteCategory({ category, dashboardId, tables });
+    await deleteCategory({ category, dashboardId, tables: budgetTables });
 
     setCategories((prev) => prev.filter((cat) => cat.id !== category.id));
     setBudgetTables((prev) => {
@@ -65,86 +72,105 @@ export default function ManageCategories({ tables, dashboardId }: ManageCategori
   }, [categories, currentPage, paginatedCategories.length]);
 
   return (
-    <div className="flex flex-col gap-4">
-      <form onSubmit={handleSubmit(onNewCategorySubmit)} className="flex flex-row items-center gap-2">
-        <div className="relative flex w-full flex-col gap-2">
-          <label htmlFor={'addNewCategory'} className="sr-only">
-            Add Category
-          </label>
-          <Input
-            id="addNewCategory"
-            type="text"
-            placeholder="Enter category name"
-            defaultValue=""
-            {...register('name', {
-              required: {
-                value: true,
-                message: 'Category name is required',
-              },
-              validate: (value) => {
-                if (categories.some((cat) => cat.name === value)) {
-                  return 'Category already exists';
-                }
-                return true;
-              },
-            })}
-          />
-          {errors.name && <p className="absolute top-full pl-2 pt-1 text-xs text-red-500">{errors.name.message}</p>}
-        </div>
+    <>
+      <ButtonSecondary onClick={() => openModal('manageCategoriesModal')} className="gap-2">
+        <Icon SvgIcon={ListIcon} isBorderless />
+        <span className="hidden md:inline">Manage Categories</span>
+      </ButtonSecondary>
 
-        <ButtonSecondary type="submit">
-          <Icon SvgIcon={PlusIcon} isBorderless />
-        </ButtonSecondary>
-      </form>
-
-      {categories.length > 0 ? (
-        <>
-          <ul className="flex flex-col gap-2">
-            {paginatedCategories.map((category, index) => (
-              <li key={category.id} className="flex flex-row items-center gap-2">
-                <span>{startItem + index}.</span>
-                <CategoryItem
-                  category={category}
-                  tables={tables}
-                  dashboardId={dashboardId}
-                  onDelete={() => handleDeleteCategory(category)}
+      {activeModal === 'manageCategoriesModal' && (
+        <Modal
+          id="manageCategoriesModal"
+          title="Manage Categories"
+          isOpen={activeModal === 'manageCategoriesModal'}
+          handleClose={() => closeModal()}
+        >
+          <div className="flex flex-col gap-4">
+            <form onSubmit={handleSubmit(onNewCategorySubmit)} className="flex flex-row items-center gap-2">
+              <div className="relative flex w-full flex-col gap-2">
+                <label htmlFor={'addNewCategory'} className="sr-only">
+                  Add Category
+                </label>
+                <Input
+                  id="addNewCategory"
+                  type="text"
+                  placeholder="Enter category name"
+                  defaultValue=""
+                  autoComplete="off"
+                  {...register('name', {
+                    required: {
+                      value: true,
+                      message: 'Category name is required',
+                    },
+                    validate: (value) => {
+                      if (categories.some((cat) => cat.name === value)) {
+                        return 'Category already exists';
+                      }
+                      return true;
+                    },
+                  })}
                 />
-              </li>
-            ))}
-          </ul>
-          <div className="flex items-center justify-between text-xs">
-            <button
-              onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-              className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
-              disabled={currentPage === 1}
-            >
-              Previous
-            </button>
-            <span>
-              Showing {startItem} of {categories.length} categories
-            </span>
-            <button
-              onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-              className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
-              disabled={currentPage === totalPages}
-            >
-              Next
-            </button>
+                {errors.name && (
+                  <p className="absolute top-full pl-2 pt-1 text-xs text-red-500">{errors.name.message}</p>
+                )}
+              </div>
+
+              <ButtonSecondary type="submit">
+                <Icon SvgIcon={PlusIcon} isBorderless />
+              </ButtonSecondary>
+            </form>
+
+            {categories.length > 0 ? (
+              <>
+                <ul className="flex flex-col gap-2">
+                  {paginatedCategories.map((category, index) => (
+                    <li key={category.id} className="flex flex-row items-center gap-2">
+                      <span>{startItem + index}.</span>
+                      <CategoryItem
+                        category={category}
+                        tables={budgetTables}
+                        dashboardId={dashboardId}
+                        onDelete={() => handleDeleteCategory(category)}
+                      />
+                    </li>
+                  ))}
+                </ul>
+                <div className="flex items-center justify-between text-xs">
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                    className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
+                    disabled={currentPage === 1}
+                  >
+                    Previous
+                  </button>
+                  <span>
+                    Showing {startItem} of {categories.length} categories
+                  </span>
+                  <button
+                    onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                    className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
+                    disabled={currentPage === totalPages}
+                  >
+                    Next
+                  </button>
+                </div>
+              </>
+            ) : (
+              <p>No categories found</p>
+            )}
           </div>
-        </>
-      ) : (
-        <p>No categories found</p>
+        </Modal>
       )}
-    </div>
+    </>
   );
 }
 
-const CategoryItem = ({ category, tables, dashboardId, onDelete }: CategoryItemProps) => {
+const CategoryItem = ({ category, dashboardId, onDelete }: CategoryItemProps) => {
   const [isEditting, setIsEditting] = useState(false);
   const [name, setName] = useState(category.name);
 
   const { setCategories } = useCategories();
-  const { setBudgetTables } = useBudgetTables();
+  const { budgetTables, setBudgetTables } = useBudgetTables();
 
   const {
     register,
@@ -155,7 +181,7 @@ const CategoryItem = ({ category, tables, dashboardId, onDelete }: CategoryItemP
 
   const onEditSubmit: SubmitHandler<Category> = async () => {
     try {
-      await updateCategory({ category, dashboardId, tables, name: getValues('name'), setState: setName });
+      await updateCategory({ category, dashboardId, tables: budgetTables, name: getValues('name'), setState: setName });
 
       updateBudgetTables();
       updateCategories();
