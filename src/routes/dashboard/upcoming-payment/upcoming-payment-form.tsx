@@ -5,21 +5,24 @@ import { Input, Select } from '@/components/forms/custom_form';
 import Icon from '@/components/icon';
 import { ERROR_MSG } from '@/data/errorMessages';
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
-import { BudgetFormProps, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
-import { UpcomingPaymentFormProps } from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
+import {
+  AddUpcomingPaymentFormProps,
+  EditUpcomingPaymentFormProps,
+  UpcomingPaymentFormProps,
+} from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
 
 export default function UpcomingPaymentForm({ table, tables, onSubmit, variant }: UpcomingPaymentFormProps) {
   const {
     register,
     formState: { errors, isSubmitting },
     handleSubmit,
-  } = useFormContext<BudgetFormProps>();
+  } = useFormContext<AddUpcomingPaymentFormProps>();
 
   const {
     register: editRegister,
     formState: { errors: editErrors, isSubmitting: editIsSubmitting },
     handleSubmit: handleEditSubmit,
-  } = useFormContext<EditBudgetFormProps>();
+  } = useFormContext<EditUpcomingPaymentFormProps>();
 
   if (variant === 'add') {
     return (
@@ -167,7 +170,7 @@ export default function UpcomingPaymentForm({ table, tables, onSubmit, variant }
             id="startDate"
             type="date"
             className="w-full rounded-md border border-accent/10 bg-transparent p-2"
-            defaultValue={table.start_date}
+            defaultValue={table.start_date ?? ''}
             {...editRegister('start_date', {
               required: {
                 value: true,

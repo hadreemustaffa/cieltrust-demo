@@ -49,12 +49,11 @@ export default function UpcomingPayment() {
           amount: editMethods.getValues('amount'),
           recurrence: editMethods.getValues('recurrence'),
           start_date: editMethods.getValues('start_date'),
-          state: budgetTables,
           setBudgetTablesProvider: setBudgetTables,
         });
       };
     },
-    [budgetTables, editMethods, setBudgetTables],
+    [editMethods, setBudgetTables],
   );
 
   const handleDeleteUpcomingPayment = async (id: number) => {
@@ -94,6 +93,11 @@ export default function UpcomingPayment() {
 
   const calculateNextPaymentDate = (startDate: string, recurrence: string) => {
     const currentDate = dayjs();
+
+    if (startDate === '') {
+      return currentDate;
+    }
+
     let nextDate = dayjs(startDate);
 
     if (nextDate.isAfter(currentDate)) {
@@ -130,54 +134,54 @@ export default function UpcomingPayment() {
   const sortedUpcomingPayments = [...budgetTables]
     .filter((table) => table.is_recurring)
     .sort((a, b) => {
-      const nextDateA = calculateNextPaymentDate(a.start_date, a.recurrence);
-      const nextDateB = calculateNextPaymentDate(b.start_date, b.recurrence);
+      const nextDateA = calculateNextPaymentDate(a.start_date ?? '', a.recurrence);
+      const nextDateB = calculateNextPaymentDate(b.start_date ?? '', b.recurrence);
       return nextDateA.unix() - nextDateB.unix();
     });
 
   return (
-    <div className="col-span-full flex rounded-md sm:border sm:border-accent/10 sm:p-4 xl:col-span-2 xl:col-start-3">
+    <div className="col-span-full rounded-md sm:border sm:border-accent/10 sm:p-4 xl:col-span-2 xl:col-start-3">
       <div className="flex w-full flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row flex-wrap items-center justify-between gap-4">
           <h2 className="text-lg font-semibold">Upcoming Payments</h2>
 
-          <ButtonSecondary onClick={() => openModal('addUpcomingPaymentModal')} className="px-2 py-1">
+          <ButtonSecondary onClick={() => openModal('addUpcomingPaymentModal')} className="lg:px-2 lg:py-1">
             <Icon SvgIcon={PlusIcon} isBorderless />
           </ButtonSecondary>
         </div>
         {budgetTables.filter((table) => table.is_recurring).length > 0 ? (
-          <>
+          <div className="flex flex-col gap-4">
             <div className="flex flex-col items-center justify-center rounded-md border border-accent/10 bg-card p-4 text-center">
               <p className="text-lg font-medium">{`$ ${totalExpectedPayments}`}</p>
               <p className="text-sm text-copy/70">Estimated payments for the upcoming month</p>
             </div>
 
-            <ul className="flex flex-col gap-4">
+            <ul className="flex max-h-[300px] flex-col gap-4 overflow-y-auto">
               {sortedUpcomingPayments.map((payment) => {
-                const nextPaymentDate = calculateNextPaymentDate(payment.start_date, payment.recurrence);
+                const nextPaymentDate = calculateNextPaymentDate(payment.start_date ?? '', payment.recurrence);
 
                 return (
                   <li
                     key={payment.id}
-                    className="flex flex-row flex-wrap items-center justify-between gap-2 rounded-md border border-accent/10 p-4"
+                    className="grid grid-cols-[1fr_auto] items-center justify-between gap-2 rounded-md border border-accent/10 p-2"
                   >
                     <div className="flex flex-col">
                       <p className="font-semibold">{payment.name}</p>
                       <p className="text-sm text-copy/70">
-                        {payment.recurrence}, next on {nextPaymentDate.format('DD/MM/YYYY')}
+                        {payment.recurrence}, next on {nextPaymentDate.format('DD/MM/YY')}
                       </p>
                     </div>
 
-                    <div className="flex flex-row items-center justify-between gap-4">
+                    <div className="flex flex-row place-content-end items-center gap-4">
                       <p>$ {payment.amount}</p>
 
                       <MoreMenu
-                        isEditable
+                        variant="horizontal"
                         onEdit={() => openModal(`editUpcomingPaymentModal-${payment.id}`)}
-                        isDeletable
                         onDelete={() => openModal(`deleteUpcomingPaymentModal-${payment.id}`)}
                       />
                     </div>
+
                     {activeModal === `editUpcomingPaymentModal-${payment.id}` && (
                       <Modal
                         id={`editUpcomingPaymentModal-${payment.id}`}
@@ -195,6 +199,7 @@ export default function UpcomingPayment() {
                         </FormProvider>
                       </Modal>
                     )}
+
                     {activeModal === `deleteUpcomingPaymentModal-${payment.id}` && (
                       <Modal
                         id={`deleteUpcomingPaymentModal-${payment.id}`}
@@ -220,7 +225,7 @@ export default function UpcomingPayment() {
                 );
               })}
             </ul>
-          </>
+          </div>
         ) : (
           <p className="text-sm">You don&apos;t have any upcoming payments scheduled.</p>
         )}

@@ -7,7 +7,6 @@ export interface AddUpcomingPaymentFormProps {
   recurrence: string;
   start_date: string;
   amount: number;
-  state?: Table[];
 }
 
 export interface EditUpcomingPaymentFormProps {
@@ -17,7 +16,6 @@ export interface EditUpcomingPaymentFormProps {
   is_recurring?: boolean;
   recurrence: string;
   start_date: string;
-  state: Table[];
 }
 
 export type Table = {
@@ -27,7 +25,7 @@ export type Table = {
   remaining?: number;
   is_recurring: boolean;
   recurrence: string;
-  start_date: string;
+  start_date: string | null;
 };
 
 export interface UpcomingPaymentProps {

@@ -1,21 +1,20 @@
 import { useCallback, useEffect } from 'react';
 import { FormProvider, SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
 
-import BudgetTable from './budget-table';
-
-import { ButtonPrimary } from '@/components/button';
+import { ButtonPrimary, ButtonSecondary } from '@/components/button';
 import Categories from '@/components/categories';
+import Icon from '@/components/icon';
 import Modal from '@/components/modal';
-import MoreMenu from '@/components/more-menu';
 import { ERROR_MSG } from '@/data/errorMessages';
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useCategories } from '@/hooks/use-categories';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
+import PlusIcon from '@/images/icons/plus.svg?react';
+import BudgetTable from '@/routes/dashboard/budget/budget-table';
 import BudgetTableForm from '@/routes/dashboard/budget/budget-table-form';
 import { addBudgetTable, editBudgetTable } from '@/routes/dashboard/budget/budget.api';
-import { BudgetFormProps, Category, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
-import ManageCategories from '@/routes/dashboard/manage-categories/manage-categories';
+import { AddBudgetFormProps, Category, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
 export default function Budget() {
@@ -24,7 +23,7 @@ export default function Budget() {
   const { activeModal, openModal, closeModal } = useModal();
   const { dashboardId } = useDashboard();
 
-  const methods = useForm<BudgetFormProps>({
+  const methods = useForm<AddBudgetFormProps>({
     defaultValues: {
       addCategories: categories,
     },
@@ -46,21 +45,21 @@ export default function Budget() {
     name: 'editCategories',
   });
 
-  const onAddSubmit: SubmitHandler<BudgetFormProps> = async () => {
+  const onAddSubmit: SubmitHandler<AddBudgetFormProps> = async () => {
     await addBudgetTable({
       id: dashboardId,
       name: methods.getValues('name'),
       amount: methods.getValues('amount'),
       recurrence: methods.getValues('recurrence'),
-      start_date: new Date(methods.getValues('start_date')).toISOString().split('T')[0],
       addCategories: methods.getValues('addCategories'),
       fields: addCategoriesArr.fields,
+      start_date: methods.getValues('start_date'),
       setBudgetTablesProvider: setBudgetTables,
     });
   };
 
   const onEditSubmit = useCallback(
-    (budgetId: number): SubmitHandler<BudgetFormProps> => {
+    (budgetId: number): SubmitHandler<AddBudgetFormProps> => {
       return async () => {
         await editBudgetTable({
           id: budgetId,
@@ -139,31 +138,16 @@ export default function Budget() {
 
   return (
     <div className="col-span-full rounded-md sm:border sm:border-accent/10 sm:p-4 xl:col-span-2 xl:col-start-1 xl:row-start-1">
-      <div className="flex h-full flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
+      <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
         <div className="flex flex-row flex-wrap items-center justify-between gap-4">
           <h2 className="text-lg font-semibold">Budgets</h2>
 
-          <div className="flex flex-row flex-wrap gap-4">
-            <MoreMenu>
-              <button
-                type="button"
-                className="flex items-center gap-2 rounded-sm px-2 py-1 text-left hover:bg-accent/10"
-                onClick={() => openModal(`addBudgetTableModal`)}
-              >
-                Add
-              </button>
-              <button
-                type="button"
-                className="flex items-center gap-2 rounded-sm px-2 py-1 text-left hover:bg-accent/10"
-                onClick={() => openModal(`manageCategoriesModal`)}
-              >
-                Manage
-              </button>
-            </MoreMenu>
-          </div>
+          <ButtonSecondary onClick={() => openModal('addBudgetTableModal')} className="lg:px-2 lg:py-1">
+            <Icon SvgIcon={PlusIcon} isBorderless />
+          </ButtonSecondary>
         </div>
 
-        <div className="flex flex-col gap-4">
+        <div className="flex max-h-[400px] flex-col gap-4 overflow-y-auto">
           {budgetTables.filter((table) => !table.is_recurring).length > 0 ? (
             budgetTables
               .filter((table) => !table.is_recurring)
@@ -312,17 +296,6 @@ export default function Budget() {
                 </div>
               </div>
             </form>
-          </Modal>
-        )}
-
-        {activeModal === 'manageCategoriesModal' && (
-          <Modal
-            id="manageCategoriesModal"
-            title="Manage Categories"
-            isOpen={activeModal === 'manageCategoriesModal'}
-            handleClose={() => closeModal()}
-          >
-            <ManageCategories tables={budgetTables} dashboardId={dashboardId} />
           </Modal>
         )}
       </div>

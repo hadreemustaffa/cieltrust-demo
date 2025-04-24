@@ -1,11 +1,11 @@
 import React from 'react';
 
-export interface BudgetFormProps {
+export interface AddBudgetFormProps {
   id: number | null;
   name: string;
   is_recurring?: boolean;
   recurrence: string;
-  start_date: string;
+  start_date: string | null;
   amount: number;
   fields?: Category[];
   new_category?: string;
@@ -19,7 +19,7 @@ export interface EditBudgetFormProps {
   amount: number;
   is_recurring?: boolean;
   recurrence: string;
-  start_date: string;
+  start_date: string | null;
   editCategories?: Category[];
   state: Table[];
 }
@@ -36,7 +36,7 @@ export type Table = {
   remaining?: number;
   is_recurring: boolean;
   recurrence: string;
-  start_date: string;
+  start_date: string | null;
 };
 
 export interface BudgetTableProps {
@@ -49,7 +49,7 @@ export type BudgetTableFormProps =
       variant: 'add';
       table?: Table;
       tables: Table[];
-      onSubmit: (data: BudgetFormProps) => void;
+      onSubmit: (data: AddBudgetFormProps) => void;
       children: React.ReactNode;
     }
   | {
@@ -59,21 +59,6 @@ export type BudgetTableFormProps =
       onSubmit: (data: EditBudgetFormProps) => void;
       children: React.ReactNode;
     };
-
-export type AddBudgetTableFormProps = {
-  variant: 'add';
-  tables: Table[];
-  onSubmit: (data: BudgetFormProps) => void;
-  children: React.ReactNode;
-};
-
-export type EditBudgetTableFormProps = {
-  variant: 'edit';
-  table: Table;
-  tables: Table[];
-  onSubmit: (data: EditBudgetFormProps) => void;
-  children: React.ReactNode;
-};
 
 export interface DeleteBudgetTableProps {
   id: number | null;
