@@ -82,14 +82,16 @@ function DashboardHeader() {
             className={`absolute right-0 top-12 w-48 rounded-md border border-accent/10 bg-background p-2 shadow-lg transition-opacity`}
           >
             <li className="rounded-sm hover:bg-accent/10">
-              <button
-                type="button"
-                onClick={handleSettingsOpen}
-                className="flex w-full flex-row items-center gap-2 p-2 text-left"
-              >
-                <Icon SvgIcon={SettingsIcon} width={16} height={16} isBorderless />
-                Settings
-              </button>
+              {!isAnonymousUser && (
+                <button
+                  type="button"
+                  onClick={handleSettingsOpen}
+                  className="flex w-full flex-row items-center gap-2 p-2 text-left"
+                >
+                  <Icon SvgIcon={SettingsIcon} width={16} height={16} isBorderless />
+                  Settings
+                </button>
+              )}
             </li>
             <li className="rounded-sm hover:bg-accent/10">
               <button
