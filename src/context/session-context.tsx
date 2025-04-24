@@ -1,5 +1,5 @@
 import { Session } from '@supabase/supabase-js';
-import React, { SetStateAction, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 
 import { SessionContext } from '@/hooks/use-session';
 import supabase from '@/utils/supabase';
@@ -10,14 +10,17 @@ export const SessionProvider = ({ children }: Props) => {
   const [session, setSession] = useState<Session | null>(null);
 
   useEffect(() => {
-    const authStateListener = supabase.auth.onAuthStateChange(
-      async (_: string, session: SetStateAction<Session | null>) => {
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((event: string, session: Session) => {
+      if (event === 'SIGNED_OUT') {
+        setSession(null);
+      } else if (session) {
         setSession(session);
-      },
-    );
-
+      }
+    });
     return () => {
-      authStateListener.data.subscription.unsubscribe();
+      subscription.unsubscribe();
     };
   }, []);
 
