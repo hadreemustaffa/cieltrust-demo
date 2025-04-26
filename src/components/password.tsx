@@ -11,13 +11,14 @@ import { ERROR_MSG } from '@/data/errorMessages';
 export interface PasswordInputProps {
   label: string;
   id: 'password' | 'confirmPassword';
+  isRequired?: boolean;
 }
 
 interface FormData {
   [key: string]: string;
 }
 
-export const PasswordInput = ({ label, id }: PasswordInputProps) => {
+export const PasswordInput = ({ label, id, isRequired }: PasswordInputProps) => {
   const [isPasswordVisible, setIsPasswordVisible] = useState(false);
 
   const {
@@ -41,8 +42,11 @@ export const PasswordInput = ({ label, id }: PasswordInputProps) => {
             id={id}
             type={isPasswordVisible ? 'text' : 'password'}
             aria-invalid={isPasswordError ? 'true' : 'false'}
-            autoComplete="new-password"
             {...register(id, {
+              required: {
+                value: isRequired ?? false,
+                message: ERROR_MSG.FIELD_IS_REQUIRED,
+              },
               minLength: {
                 value: 8,
                 message: ERROR_MSG.PASSWORD_TOO_SHORT,
