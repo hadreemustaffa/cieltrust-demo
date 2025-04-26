@@ -15,7 +15,10 @@ import { useMemo, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 
 import { ButtonSecondary } from '@/components/button';
+import { Select } from '@/components/forms/custom-form';
+import Icon from '@/components/icon';
 import { useTransactionHistory } from '@/hooks/use-transaction-history';
+import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 import { PERIODS, TimePeriod } from '@/routes/dashboard/visual-chart/visual-chart.types';
 import { generateChartData } from '@/utils/generateChartData';
 
@@ -57,12 +60,26 @@ export default function VisualChart() {
     [history, chartConfig.date, chartConfig.period],
   );
 
+  const plugin = {
+    id: 'legendConfig',
+    afterInit(chart, args, plugins) {
+      const originalFit = chart.legend.fit;
+      const margin = plugins.margin || 0;
+      chart.legend.fit = function fit() {
+        if (originalFit) {
+          originalFit.call(this);
+        }
+        return (this.height += margin);
+      };
+    },
+  };
+
   const options = {
     responsive: true,
     maintainAspectRatio: true,
     plugins: {
-      legend: {
-        position: 'top' as const,
+      legendConfig: {
+        margin: 20,
       },
       tooltip: {
         intersect: false,
@@ -173,49 +190,59 @@ export default function VisualChart() {
               </div>
 
               {availableMonths.length > 0 && chartConfig.period !== 'YTD' && (
-                <div className="flex flex-wrap items-center gap-2">
+                <div className="flex flex-row items-center gap-2">
                   <label htmlFor="selectMonth" className="sr-only">
                     Select Month
                   </label>
-                  <select
-                    id="selectMonth"
-                    value={chartConfig.date.format('YYYY-MM')}
-                    onChange={(e) => handleMonthChange(e.target.value)}
-                    className="rounded border border-accent/30 bg-card p-2 hover:cursor-pointer hover:border-accent/50"
-                    aria-label="Select month"
-                  >
-                    {availableMonthsByYear.map((month) => (
-                      <option key={month} value={month}>
-                        {dayjs(month + '-01').format('MMMM')}
-                      </option>
-                    ))}
-                    {currentMonth === undefined && chartConfig.year === dayjs().year() && (
-                      <option value={dayjs().format('YYYY-MM')}>{dayjs().format('MMMM')}</option>
-                    )}
-                  </select>
+                  <div className="relative">
+                    <Select
+                      id="selectMonth"
+                      className="w-32"
+                      value={chartConfig.date.format('YYYY-MM')}
+                      onChange={(e) => handleMonthChange(e.target.value)}
+                      aria-label="Select month"
+                      options={availableMonthsByYear.map((month) => ({
+                        label: dayjs(month + '-01').format('MMMM'),
+                        value: month,
+                      }))}
+                    >
+                      {currentMonth === undefined && chartConfig.year === dayjs().year() && (
+                        <option value={dayjs().format('YYYY-MM')}>{dayjs().format('MMMM')}</option>
+                      )}
+                    </Select>
+
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <Icon SvgIcon={ChevronDownIcon} isBorderless />
+                    </span>
+                  </div>
 
                   <label htmlFor="selectYear" className="sr-only">
                     Select Year
                   </label>
-                  <select
-                    id="selectYear"
-                    value={chartConfig.year}
-                    onChange={(e) => handleYearChange(e.target.value)}
-                    className="rounded border border-accent/30 bg-card p-2 hover:cursor-pointer hover:border-accent/50"
-                    aria-label="Select year"
-                  >
-                    {availableYears.map((year) => (
-                      <option key={year} value={year}>
-                        {year}
-                      </option>
-                    ))}
-                    {currentYear === undefined && <option value={dayjs().year()}>{dayjs().year()}</option>}
-                  </select>
+                  <div className="relative">
+                    <Select
+                      id="selectYear"
+                      className="w-[86px]"
+                      value={chartConfig.year}
+                      onChange={(e) => handleYearChange(e.target.value)}
+                      aria-label="Select year"
+                      options={availableYears.map((year) => ({
+                        label: year,
+                        value: year,
+                      }))}
+                    >
+                      {currentYear === undefined && <option value={dayjs().year()}>{dayjs().year()}</option>}
+                    </Select>
+
+                    <span className="absolute right-2 top-1/2 -translate-y-1/2">
+                      <Icon SvgIcon={ChevronDownIcon} isBorderless />
+                    </span>
+                  </div>
                 </div>
               )}
             </div>
 
-            <Line data={chartData} options={options} />
+            <Line data={chartData} options={options} plugins={[plugin]} />
           </>
         )}
       </div>
