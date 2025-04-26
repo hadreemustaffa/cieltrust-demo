@@ -8,6 +8,8 @@ import Loading from '@/components/loading';
 import { DashboardProvider } from '@/context/dashboard-context';
 import { SessionProvider } from '@/context/session-context';
 import Dashboard from '@/routes/dashboard/dashboard';
+import ForgotPassword from '@/routes/dashboard/forgot-password/forgot-password';
+import ResetPassword from '@/routes/dashboard/reset-password/reset-password';
 import Home from '@/routes/home/home';
 import Login from '@/routes/login/login';
 import SignUp from '@/routes/sign-up/sign-up';
@@ -52,6 +54,8 @@ const router = createBrowserRouter(
       />
       <Route path="/signup/" element={<SignUp />} errorElement={<ErrorBoundary />} />
       <Route path="/login/" element={<Login />} errorElement={<ErrorBoundary />} />
+      <Route path="/forgot-password/" element={<ForgotPassword />} errorElement={<ErrorBoundary />} />
+      <Route path="/reset-password/" element={<ResetPassword />} errorElement={<ErrorBoundary />} />
       <Route
         element={
           <Suspense fallback={<Loading />}>
