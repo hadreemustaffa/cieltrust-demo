@@ -24,21 +24,29 @@ type Option = {
 
 type SelectProps = React.DetailedHTMLProps<React.SelectHTMLAttributes<HTMLSelectElement>, HTMLSelectElement> & {
   options: Option[];
+  children?: React.ReactNode;
+  className?: string;
 };
 
-export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(({ options, ...props }, ref) => (
-  <select
-    ref={ref}
-    {...props}
-    className="w-full appearance-none rounded-md border border-accent/10 bg-card p-2 hover:cursor-pointer"
-  >
-    {options.map(({ label, value }, index) => (
-      <option key={index} value={value}>
-        {label}
-      </option>
-    ))}
-  </select>
-));
+export const Select = React.forwardRef<HTMLSelectElement, SelectProps>(
+  ({ options, children, className, ...props }, ref) => (
+    <select
+      ref={ref}
+      {...props}
+      className={cn(
+        `w-full appearance-none rounded-md border border-accent/10 bg-card p-2 hover:cursor-pointer`,
+        className,
+      )}
+    >
+      {options.map(({ label, value }, index) => (
+        <option key={index} value={value}>
+          {label}
+        </option>
+      ))}
+      {children}
+    </select>
+  ),
+);
 Select.displayName = 'Select';
 
 type FormProps<TFormValues extends FieldValues> = {
