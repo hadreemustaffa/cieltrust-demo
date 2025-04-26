@@ -5,7 +5,7 @@ import EyeOffIcon from '../images/icons/eye-off.svg?react';
 import EyeIcon from '../images/icons/eye.svg?react';
 
 import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom_form';
+import { Input } from '@/components/forms/custom-form';
 import { ERROR_MSG } from '@/data/errorMessages';
 
 export interface PasswordInputProps {

@@ -3,7 +3,7 @@ import { FormProvider, SubmitHandler, useForm, useFormContext } from 'react-hook
 
 import { ButtonSecondary } from '@/components/button';
 import ErrorMessage from '@/components/error-message';
-import { Input, Select } from '@/components/forms/custom_form';
+import { Input, Select } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import { ERROR_MSG } from '@/data/errorMessages';
 import { useBudgetTables } from '@/hooks/use-budget-tables';

@@ -1,7 +1,7 @@
 import { useFormContext } from 'react-hook-form';
 
 import { ButtonPrimary } from '@/components/button';
-import { Input, Select } from '@/components/forms/custom_form';
+import { Input, Select } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import { ERROR_MSG } from '@/data/errorMessages';
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';

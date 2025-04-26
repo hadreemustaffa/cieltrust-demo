@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
-import { Input } from '@/components/forms/custom_form';
+import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import { useModal } from '@/hooks/use-modal';

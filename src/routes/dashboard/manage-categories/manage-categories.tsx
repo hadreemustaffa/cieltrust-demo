@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ButtonSecondary } from '@/components/button';
-import { Input } from '@/components/forms/custom_form';
+import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import { useBudgetTables } from '@/hooks/use-budget-tables';

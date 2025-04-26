@@ -6,7 +6,7 @@ import { deleteUser } from '@/actions/delete';
 import { logout } from '@/actions/logout';
 import { ButtonDelete, ButtonPrimary, ButtonSecondary, ButtonTertiary } from '@/components/button';
 import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom_form';
+import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import { PasswordInput } from '@/components/password';
 import { useSession } from '@/hooks/use-session';
