@@ -1,7 +1,8 @@
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ButtonDelete, ButtonPrimary, ButtonSecondary } from '@/components/button';
+import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import MoreMenu from '@/components/more-menu';
@@ -20,12 +21,10 @@ export default function SavingGoalsItem({
   onEditSuccess,
   ...props
 }: SavingGoalsItemProps) {
-  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
-  const [isComplete, setIsComplete] = useState(false);
-
   const { activeModal, openModal, closeModal } = useModal();
 
   const savedAmountPercentage = Math.round((savedAmount / targetAmount) * 100);
+  const isComplete = savedAmount >= targetAmount;
 
   const {
     register,
@@ -58,14 +57,9 @@ export default function SavingGoalsItem({
     closeModal();
   };
 
-  const handleDeleteModal = () => {
-    setIsDeleteModalOpen(!isDeleteModalOpen);
-  };
-
   const handleDelete = () => {
     onDelete();
-
-    setIsDeleteModalOpen(false);
+    closeModal();
   };
 
   const onSubmit: SubmitHandler<EditGoalFormProps> = async () => {
@@ -89,26 +83,30 @@ export default function SavingGoalsItem({
     updateList();
   }, [isSubmitSuccessful, reset]);
 
-  useEffect(() => {
-    if (savedAmount >= targetAmount) {
-      setIsComplete(true);
-    }
-  }, [savedAmount, targetAmount]);
-
   return (
-    <li {...props} className="relative flex flex-row items-center justify-between gap-2">
-      <p className="pl-4 before:absolute before:left-0 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-md before:bg-brand before:content-['']">
+    <li
+      {...props}
+      className="relative flex flex-row items-center justify-between gap-2 rounded-md border border-accent/10 p-2"
+    >
+      <p className="flex flex-row items-center gap-2 pl-4 before:absolute before:left-2 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-md before:bg-brand before:content-['']">
         {name}
+        <span className="text-xs text-copy/30">
+          ({savedAmount !== null ? savedAmount : 0}/{targetAmount})
+        </span>
       </p>
       <div className="flex flex-row items-center gap-4">
         <p className={`${isComplete && 'text-green-500'} font-semibold`}>{savedAmountPercentage}%</p>
 
         {isComplete ? (
-          <button type="button" onClick={handleDeleteModal}>
+          <button type="button" onClick={() => openModal(`deleteGoalModal-${id}`)}>
             <Icon SvgIcon={XIcon} width={16} height={16} isBorderless />
           </button>
         ) : (
-          <MoreMenu onEdit={() => openModal(`editGoalModal-${id}`)} onDelete={handleDeleteModal} />
+          <MoreMenu
+            variant="horizontal"
+            onEdit={() => openModal(`editGoalModal-${id}`)}
+            onDelete={() => openModal(`deleteGoalModal-${id}`)}
+          />
         )}
       </div>
 
@@ -123,11 +121,10 @@ export default function SavingGoalsItem({
             <label htmlFor="goalName" className="text-sm">
               Name
             </label>
-            <input
+            <Input
               id="goalName"
               type="text"
               placeholder="Insert goal name"
-              className="w-full rounded-md border border-accent/10 bg-transparent p-2"
               defaultValue={name}
               autoComplete="off"
               aria-invalid={errors.name ? 'true' : 'false'}
@@ -145,12 +142,11 @@ export default function SavingGoalsItem({
             <label htmlFor="goalAmount" className="text-sm">
               Target Amount
             </label>
-            <input
+            <Input
               id="goalAmount"
               type="number"
               min={0}
               placeholder="Insert amount"
-              className="w-full rounded-md border border-accent/10 bg-transparent p-2"
               defaultValue={targetAmount}
               autoComplete="off"
               aria-invalid={errors.target_amount ? 'true' : 'false'}
@@ -174,12 +170,11 @@ export default function SavingGoalsItem({
             <label htmlFor="goalSavedAmount" className="text-sm">
               Saved Amount (optional)
             </label>
-            <input
+            <Input
               id="goalSavedAmount"
               type="number"
               min={0}
               placeholder="Insert saved amount"
-              className="w-full rounded-md border border-accent/10 bg-transparent p-2"
               defaultValue={savedAmount}
               autoComplete="off"
               aria-invalid={errors.saved_amount ? 'true' : 'false'}
@@ -200,15 +195,18 @@ export default function SavingGoalsItem({
       </Modal>
 
       <Modal
-        id={`goal-delete-modal-${id}`}
+        id={`deleteGoalModal-${id}`}
         title="Delete this goal?"
-        isOpen={isDeleteModalOpen}
-        handleClose={() => setIsDeleteModalOpen(false)}
+        isOpen={activeModal === `deleteGoalModal-${id}`}
+        handleClose={() => closeModal()}
       >
-        <p>Are you sure you want to delete this goal?</p>
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete this goal?</p>
+          <p className="font-semibold">{name}</p>
+        </div>
 
         <div className="flex flex-row items-center justify-end gap-2">
-          <ButtonSecondary type="button" onClick={() => setIsDeleteModalOpen(false)}>
+          <ButtonSecondary type="button" onClick={() => closeModal()}>
             Cancel
           </ButtonSecondary>
 

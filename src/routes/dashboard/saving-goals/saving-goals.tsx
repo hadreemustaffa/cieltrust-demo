@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { ButtonPrimary, ButtonSecondary } from '@/components/button';
+import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import { ERROR_MSG } from '@/data/errorMessages';
@@ -117,11 +118,10 @@ export default function SavingGoals(data: SavingGoalsProps) {
                 <label htmlFor="goalName" className="text-sm">
                   Name
                 </label>
-                <input
+                <Input
                   id="goalName"
                   type="text"
                   placeholder="Insert goal name"
-                  className="w-full rounded-md border border-accent/10 bg-transparent p-2"
                   defaultValue={''}
                   autoComplete="off"
                   aria-invalid={errors.name ? 'true' : 'false'}
@@ -139,12 +139,11 @@ export default function SavingGoals(data: SavingGoalsProps) {
                 <label htmlFor="goalAmount" className="text-sm">
                   Target Amount
                 </label>
-                <input
+                <Input
                   id="goalAmount"
                   type="number"
                   min={0}
                   placeholder="Insert amount"
-                  className="w-full rounded-md border border-accent/10 bg-transparent p-2"
                   autoComplete="off"
                   aria-invalid={errors.target_amount ? 'true' : 'false'}
                   {...register('target_amount', {
@@ -167,13 +166,11 @@ export default function SavingGoals(data: SavingGoalsProps) {
                 <label htmlFor="goalSavedAmount" className="text-sm">
                   Saved Amount (optional)
                 </label>
-                <input
+                <Input
                   id="goalSavedAmount"
                   type="number"
                   min={0}
                   placeholder="Insert saved amount"
-                  className="w-full rounded-md border border-accent/10 bg-transparent p-2"
-                  defaultValue={0}
                   autoComplete="off"
                   aria-invalid={errors.saved_amount ? 'true' : 'false'}
                   {...register('saved_amount', {
@@ -196,10 +193,10 @@ export default function SavingGoals(data: SavingGoalsProps) {
         )}
 
         {savingGoalList && savingGoalList.data.length > 0 ? (
-          <ul className="flex flex-col gap-4">
-            {savingGoalList.data.map((goal, idx) => (
+          <ul className="flex max-h-[282px] flex-col gap-4 overflow-y-auto">
+            {savingGoalList.data.map((goal) => (
               <SavingGoalsItem
-                key={idx}
+                key={goal.id}
                 id={goal.id}
                 name={goal.name}
                 targetAmount={goal.target_amount}
