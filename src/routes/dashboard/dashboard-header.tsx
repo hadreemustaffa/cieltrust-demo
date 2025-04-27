@@ -67,7 +67,7 @@ function DashboardHeader() {
         <button
           ref={buttonRef}
           type="button"
-          className="flex flex-nowrap items-center gap-2 text-nowrap hover:underline"
+          className="flex flex-nowrap items-center gap-2 text-nowrap rounded-md border border-accent/30 p-2 hover:border-accent/50"
           onClick={() => setIsOpen(!isOpen)}
           onBlur={handleBlur}
         >
