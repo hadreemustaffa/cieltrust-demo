@@ -20,6 +20,7 @@ import Icon from '@/components/icon';
 import { useTransactionHistory } from '@/hooks/use-transaction-history';
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 import { PERIODS, TimePeriod } from '@/routes/dashboard/visual-chart/visual-chart.types';
+import formatNum from '@/utils/formatNum';
 import { generateChartData } from '@/utils/generateChartData';
 
 dayjs.extend(isBetween);
@@ -60,26 +61,21 @@ export default function VisualChart() {
     [history, chartConfig.date, chartConfig.period],
   );
 
-  const plugin = {
-    id: 'legendConfig',
-    afterInit(chart, args, plugins) {
-      const originalFit = chart.legend.fit;
-      const margin = plugins.margin || 0;
-      chart.legend.fit = function fit() {
-        if (originalFit) {
-          originalFit.call(this);
-        }
-        return (this.height += margin);
-      };
-    },
-  };
+  const staticYWidth = 32;
+  const staticYWidthClass = `w-[32px]`;
 
   const options = {
-    responsive: true,
-    maintainAspectRatio: true,
+    responsive: false,
+    maintainAspectRatio: false,
+    layout: {
+      padding: {
+        top: 10,
+        bottom: 10,
+      },
+    },
     plugins: {
-      legendConfig: {
-        margin: 20,
+      legend: {
+        display: false,
       },
       tooltip: {
         intersect: false,
@@ -94,29 +90,63 @@ export default function VisualChart() {
     scales: {
       y: {
         beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Amount',
+        ticks: {
+          display: false,
+        },
+        grid: {
+          drawTicks: false,
+          drwaBorder: false,
+        },
+      },
+    },
+  };
+
+  const staticYOptions = {
+    maintainAspectRatio: false,
+    pointStyle: false,
+    tooltips: {
+      enabled: false,
+    },
+    plugins: {
+      legend: {
+        display: false,
+      },
+    },
+    scales: {
+      y: {
+        beginAtZero: true,
+        ticks: {
+          callback: (val: number | string) => {
+            return formatNum(Number(val));
+          },
+        },
+        grid: {
+          drawTicks: false,
+        },
+        afterFit: (ctx: { width: number }) => {
+          ctx.width = 32;
         },
       },
       x: {
-        title: {
-          display: true,
-          text: `Time Period (${chartConfig.period})`,
+        ticks: {
+          display: false,
+        },
+        grid: {
+          drawTicks: false,
         },
       },
     },
   };
 
   const formatChartLabels = (labels: string[]) => {
-    if (chartConfig.period === '1M') return labels;
-
     return labels.map((label) => {
       const date = dayjs(label + '-01');
       switch (chartConfig.period) {
+        case '1M':
+          return dayjs(label).format('DD MMM');
         case '6M':
         case '1Y':
-          return date.format('MMM YYYY');
+          return date.format(`MMM 'YY`);
         case 'YTD':
           return date.format('MMM');
         default:
@@ -145,6 +175,20 @@ export default function VisualChart() {
     ],
   };
 
+  const staticYData = {
+    labels: formatChartLabels(chartState.labels),
+    datasets: [
+      {
+        label: 'Income',
+        data: chartState.incomeData,
+      },
+      {
+        label: 'Expenses',
+        data: chartState.expensesData,
+      },
+    ],
+  };
+
   const handlePeriodChange = (period: TimePeriod) => {
     setChartConfig((prev) => ({ ...prev, period }));
   };
@@ -169,7 +213,7 @@ export default function VisualChart() {
   const hasData = history.length > 0;
 
   return (
-    <div className="flex items-center justify-center rounded-md border border-accent/10 p-4 md:col-span-full lg:col-span-2">
+    <div className="flex justify-center rounded-md border border-accent/10 p-4 md:col-span-full lg:col-span-2">
       <div className="flex w-full flex-col gap-4">
         {!hasData && <div className="py-8 text-center text-gray-500">No transaction data available to display</div>}
 
@@ -242,7 +286,16 @@ export default function VisualChart() {
               )}
             </div>
 
-            <Line data={chartData} options={options} plugins={[plugin]} />
+            <div className="relative flex flex-row items-center">
+              <div
+                className={`absolute left-0 top-0 hover:pointer-events-none ${staticYWidthClass} ${chartConfig.period === '1M' ? 'h-[calc(100%-62px)]' : 'h-[calc(100%-42px)]'} rounded-md border border-accent/10 bg-card`}
+              >
+                <Line data={staticYData} height={300} options={staticYOptions} />
+              </div>
+              <div className="w-[800px] overflow-x-scroll pl-2">
+                <Line data={chartData} width={800 - staticYWidth} height={300} options={options} />
+              </div>
+            </div>
           </>
         )}
       </div>
