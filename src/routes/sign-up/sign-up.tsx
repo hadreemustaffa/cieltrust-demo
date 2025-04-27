@@ -1,18 +1,25 @@
-import FormDisclaimerBanner from '@/components/disclaimer-banner';
+import { Link } from 'react-router-dom';
+
 import Testimonials from '@/components/testimonials';
 import SignUpForm from '@/routes/sign-up/sign-up-form';
 
 export default function SignUp() {
   return (
     <>
-      <div className="flex flex-col items-center gap-8 rounded-md border border-accent/10 p-8">
-        <FormDisclaimerBanner />
-        <div className="flex max-w-4xl flex-col gap-4">
-          <h1 className="text-3xl font-medium lg:text-5xl">Sign Up</h1>
-          <p>Join our community today! Create an account to unlock exclusive features and personalized experiences.</p>
-        </div>
+      <div className="flex h-[80vh] flex-col items-center justify-center gap-8 rounded-md border border-accent/10 p-8">
+        <div className="flex w-full max-w-96 flex-col gap-8 md:w-96">
+          <div className="flex flex-col gap-2">
+            <h1 className="text-3xl font-medium">Create your account</h1>
+            <p className="mx-auto text-sm text-copy/50">
+              Already have an account?{' '}
+              <Link to="/login/" className="text-link underline transition-colors duration-300 hover:text-link-hover">
+                Login
+              </Link>
+            </p>
+          </div>
 
-        <SignUpForm />
+          <SignUpForm />
+        </div>
       </div>
 
       <Testimonials />
