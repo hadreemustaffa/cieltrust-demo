@@ -1,14 +1,20 @@
 import { ReactElement, useState } from 'react';
 import { Link } from 'react-router-dom';
 
-import { ButtonMenuToggle, LinkButtonPrimary, LinkButtonSecondary } from '@/components/button';
+import { ButtonSecondary, LinkButtonPrimary, LinkButtonSecondary } from '@/components/button';
+import Icon from '@/components/icon';
 import NavLinks from '@/components/nav-links';
 import ThemeToggle from '@/components/theme-toggle';
+import useOutsideClick from '@/hooks/use-outside-click';
 import { useSession } from '@/hooks/use-session';
+import MenuIcon from '@/images/icons/menu.svg?react';
+import XIcon from '@/images/icons/x.svg?react';
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { session } = useSession();
+
+  const ref = useOutsideClick<HTMLDivElement>(() => setIsOpen(false));
 
   const handleClick = () => {
     setIsOpen(!isOpen);
@@ -26,23 +32,18 @@ export default function Header() {
 
       <nav
         id="primary-nav"
+        ref={ref}
         className="relative col-span-full col-start-4 lg:static lg:flex lg:w-full lg:items-center lg:justify-end"
       >
-        <ButtonMenuToggle
-          className="lg:hidden"
+        <ButtonSecondary
+          className="absolute right-0 top-0 z-50 -translate-y-1/2 transform rounded-md hover:cursor-pointer lg:hidden lg:px-4"
           aria-label="navigation toggle button"
-          aria-controls="HeaderNavMenu"
+          aria-controls="headerNavMenu"
           aria-expanded="false"
           onClick={handleClick}
         >
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" className="size-6 fill-background">
-            <path
-              fillRule="evenodd"
-              d="M3 6.75A.75.75 0 0 1 3.75 6h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 6.75ZM3 12a.75.75 0 0 1 .75-.75h16.5a.75.75 0 0 1 0 1.5H3.75A.75.75 0 0 1 3 12Zm8.25 5.25a.75.75 0 0 1 .75-.75h8.25a.75.75 0 0 1 0 1.5H12a.75.75 0 0 1-.75-.75Z"
-              clipRule="evenodd"
-            />
-          </svg>
-        </ButtonMenuToggle>
+          <Icon SvgIcon={isOpen ? XIcon : MenuIcon} width={16} height={16} isBorderless />
+        </ButtonSecondary>
 
         <HeaderNavMenu isOpen={isOpen}>
           <ul className="flex flex-col gap-8 lg:flex-row">
@@ -76,7 +77,8 @@ export default function Header() {
 const HeaderNavMenu = ({ children, isOpen }: { children: ReactElement[]; isOpen: boolean }) => {
   return (
     <div
-      className={`fixed right-0 top-0 z-40 flex h-screen w-1/2 transform justify-between ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex-col gap-16 border-l border-l-accent/10 bg-background p-6 pt-24 duration-300 ease-in-out lg:static lg:h-fit lg:w-fit lg:translate-x-0 lg:transform-none lg:flex-row lg:items-center lg:border-none lg:p-0 lg:pt-0 lg:duration-0`}
+      id="headerNavMenu"
+      className={`fixed right-0 top-0 z-40 flex h-dvh w-[300px] transform justify-between shadow-sm shadow-black/20 ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex-col gap-8 border-l border-l-accent/10 bg-background px-4 pb-16 pt-24 duration-300 ease-in-out sm:px-8 md:px-12 lg:static lg:h-fit lg:w-fit lg:translate-x-0 lg:transform-none lg:flex-row lg:items-center lg:border-none lg:p-0 lg:pt-0 lg:shadow-none lg:duration-0`}
     >
       {children}
     </div>
