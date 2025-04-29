@@ -8,10 +8,10 @@ import supabase from '@/utils/supabase';
 export default function BudgetTableCategory({ category }: BudgetTableCategoryProps) {
   const [budgetAmount, setBudgetAmount] = useState(category.amount);
 
-  const { register, handleSubmit, getValues } = useForm<BudgetTableCategoryProps>({
+  const { register, handleSubmit, setValue, getValues } = useForm<BudgetTableCategoryProps>({
     defaultValues: {
       category: {
-        amount: category.amount,
+        amount: category.amount && category.amount,
       },
     },
   });
@@ -22,11 +22,20 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
   const remaining = budgetAmount - spent;
 
   const onSubmit: SubmitHandler<BudgetTableCategoryProps> = async () => {
+    const amountVal = getValues('category.amount');
+
+    if (!amountVal || amountVal === category.amount || amountVal === 0) {
+      if (amountVal === category.amount) {
+        setValue('category.amount', category.amount);
+      }
+      return;
+    }
+
     try {
       const { data, error } = await supabase
         .from('budget_categories')
         .update({
-          amount: getValues('category.amount'),
+          amount: amountVal,
         })
         .eq('id', category.id)
         .select();
@@ -37,7 +46,7 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
       }
 
       if (data) {
-        setBudgetAmount(getValues('category.amount'));
+        setBudgetAmount(amountVal);
 
         // Update the upcoming payments context
         setBudgetTables((prevTables) =>
@@ -46,7 +55,7 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
               ? {
                   ...table,
                   budget_categories: table.budget_categories.map((cat) =>
-                    cat.id === category.id ? { ...cat, amount: getValues('category.amount') } : cat,
+                    cat.id === category.id ? { ...cat, amount: amountVal } : cat,
                   ),
                 }
               : table,
@@ -69,10 +78,15 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
           <input
             type="number"
             min={0}
-            className="w-full max-w-40 rounded-md border border-accent/10 bg-transparent p-1 text-right [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            className={`w-full max-w-40 rounded-md border border-accent/10 bg-transparent p-1 text-right [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
             placeholder="0"
-            {...register('category.amount')}
+            {...register('category.amount', {
+              onBlur: handleSubmit(onSubmit),
+            })}
           />
+          <button type="submit" className="hidden">
+            Save
+          </button>
         </form>
       </td>
 
