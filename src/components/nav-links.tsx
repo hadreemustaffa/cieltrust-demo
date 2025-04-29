@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
 
 function NavLinks() {
   const links = [
@@ -23,9 +23,18 @@ function NavLinks() {
     <>
       {links.map((link) => (
         <li key={link.to}>
-          <Link to={link.to} className="text-link hover:text-link-hover">
+          <NavLink
+            to={link.to}
+            className={({ isActive, isPending }) =>
+              isPending
+                ? 'animate-pulse'
+                : isActive
+                  ? 'relative after:absolute after:bottom-[-3px] after:left-0 after:h-[2px] after:w-full after:bg-brand'
+                  : 'text-copy/80 transition-colors duration-300 hover:text-copy'
+            }
+          >
             {link.label}
-          </Link>
+          </NavLink>
         </li>
       ))}
     </>
