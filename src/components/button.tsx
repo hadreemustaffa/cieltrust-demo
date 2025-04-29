@@ -97,21 +97,6 @@ export const LinkButtonTertiary = ({ children, to, className, ...props }: LinkPr
   );
 };
 
-export const ButtonMenuToggle = ({ children, className, ...props }: ButtonProps) => {
-  return (
-    <button
-      type="button"
-      className={cn(
-        `absolute -top-10 right-0 z-50 translate-y-1/2 transform rounded-md bg-brand px-2 py-2 hover:cursor-pointer hover:bg-brand-hover lg:px-4`,
-        className,
-      )}
-      {...props}
-    >
-      {children}
-    </button>
-  );
-};
-
 export const ButtonDelete = ({ children, className, ...props }: ButtonProps) => {
   return (
     <button
