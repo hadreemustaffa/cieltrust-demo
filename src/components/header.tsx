@@ -1,4 +1,4 @@
-import { ReactElement, useState } from 'react';
+import { ReactElement, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
 import { ButtonSecondary, LinkButtonPrimary, LinkButtonSecondary } from '@/components/button';
@@ -19,6 +19,15 @@ export default function Header() {
   const handleClick = () => {
     setIsOpen(!isOpen);
   };
+
+  useEffect(() => {
+    if (isOpen) {
+      document.body.style.overflow = 'hidden';
+      return () => {
+        document.body.removeAttribute('style');
+      };
+    }
+  }, [isOpen]);
 
   return (
     <header className="sticky top-0 z-50 col-span-3 col-start-1 flex h-fit flex-row items-center justify-between border-b border-b-accent/10 bg-background px-4 py-3 text-center sm:px-8 md:px-12 lg:px-24 xl:px-40">
