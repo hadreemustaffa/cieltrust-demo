@@ -41,6 +41,7 @@ export const PasswordInput = ({ label, id, isRequired }: PasswordInputProps) => 
           <Input
             id={id}
             type={isPasswordVisible ? 'text' : 'password'}
+            autoComplete="new-password"
             aria-invalid={isPasswordError ? 'true' : 'false'}
             {...register(id, {
               required: {
