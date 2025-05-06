@@ -37,23 +37,23 @@ export default function Settings({ firstName, lastName, handleClose }: SettingsP
   } = methods;
 
   const onSubmit: SubmitHandler<SettingsProps> = async () => {
-    if (
-      firstName === getValues('firstName') &&
-      lastName === getValues('lastName') &&
-      getValues('password') === '' &&
-      getValues('confirmPassword') === ''
-    ) {
-      handleClose();
-      return;
-    }
-
-    const { error } = await supabase.auth.updateUser({
+    const updatedData: { data: { first_name: string; last_name: string }; password?: string } = {
       data: {
         first_name: getValues('firstName'),
         last_name: getValues('lastName'),
       },
-      password: getValues('password'),
-    });
+    };
+
+    if (getValues('password') !== '') {
+      updatedData.password = getValues('password');
+    }
+
+    if (firstName === updatedData.data.first_name && lastName === updatedData.data.last_name && !updatedData.password) {
+      handleClose();
+      return;
+    }
+
+    const { error } = await supabase.auth.updateUser(updatedData);
 
     if (error) {
       console.log(error);
