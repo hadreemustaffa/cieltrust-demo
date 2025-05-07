@@ -1,28 +1,23 @@
-import Card, { CardImage, CardText } from '@/components/card';
+import AboutDesktopImg from '/images/illustrations/about-illustration-desktop.png';
+import AboutMobileImg from '/images/illustrations/about-illustration-mobile.png';
+import AboutLaptopImg from '/images/illustrations/about-illustration-laptop.png';
+
 import PressReleases from '@/components/press-releases';
+import Image from '@/components/image';
 
 export default function About() {
   return (
     <>
-      <div className="relative flex flex-col border border-accent/10 lg:text-left">
-        <picture>
-          <source
-            media="(min-width: 1440px)"
-            srcSet="../images/illustrations/about-illustration-desktop.png"
-            type="image/png"
-          />
-          <source
-            media="(min-width: 768px)"
-            srcSet="../images/illustrations/about-illustration-laptop.png"
-            type="image/png"
-          />
-          <img
-            className="aspect-4/3 w-screen object-cover md:max-h-[500px]"
-            src="../images/illustrations/about-illustration-mobile.png"
-            alt="shot of a sunflower and a bright sky"
-          />
-        </picture>
-        <div className="bottom-0 left-0 flex flex-col gap-4 bg-background p-8 md:absolute xl:max-w-[85ch]">
+      <div className="relative flex flex-col lg:text-left">
+        <Image
+          mobile={AboutMobileImg}
+          laptop={AboutLaptopImg}
+          desktop={AboutDesktopImg}
+          alt="shot of a sunflower and a bright sky"
+          className="md:max-h-[500px]"
+        />
+
+        <div className="bottom-0 left-0 flex flex-col gap-4 border border-accent/10 bg-background p-8 md:absolute xl:max-w-[85ch]">
           <h1 className="text-3xl font-medium lg:text-5xl">Building a simpler, brighter financial journey for you.</h1>
           <p>
             At CielTrust, we believe in removing barriers to financial success, offering tools and support that make
@@ -31,8 +26,8 @@ export default function About() {
         </div>
       </div>
 
-      <div className="flex flex-col items-center gap-16 lg:items-start lg:text-left">
-        <div className="flex flex-col gap-8 lg:flex-row lg:text-left">
+      <div className="flex flex-col items-center gap-8 lg:items-start lg:text-left">
+        <div className="flex flex-col items-center gap-8 lg:flex-row lg:text-left">
           <h1 className="basis-1/2 text-3xl font-medium lg:text-5xl">
             <span className="text-brand">Mission & Vision</span>
           </h1>
@@ -42,36 +37,22 @@ export default function About() {
             customer satisfaction and community development
           </p>
         </div>
-        <div className="flex flex-col gap-8 md:grid md:grid-cols-2">
-          <Card>
-            <CardImage
-              imgPath="about-mission-illustration"
-              imgFormat="png"
-              imgAlt="two women looking at mobile phone smiling"
-            />
+        <div className="flex w-full flex-col gap-8 md:grid md:grid-cols-2">
+          <div className="flex flex-col gap-4 rounded-sm border border-accent/10 p-4 shadow-sm lg:text-left">
+            <h3 className="text-xl font-semibold">Mission</h3>
+            <p>
+              Empowering individuals to take control of their finances by providing intuitive tools and insights that
+              simplify budgeting, promote savings, and foster financial well-being.
+            </p>
+          </div>
 
-            <CardText title="Effortless banking, lasting rewards">
-              <p>
-                We’re here to make managing your finances effortless and rewarding, transforming banking into a reliable
-                and supportive experience that fits seamlessly into your life
-              </p>
-            </CardText>
-          </Card>
-
-          <Card>
-            <CardImage
-              imgPath="about-vision-illustration"
-              imgFormat="png"
-              imgAlt="group of people having a meeting in the office"
-            />
-
-            <CardText title="Simplifying banking, inspiring confidence">
-              <p>
-                We see a world where banking is simple, supportive, and accessible to all, inspiring confidence and
-                guiding every client on their unique path to financial success
-              </p>
-            </CardText>
-          </Card>
+          <div className="flex flex-col gap-4 rounded-sm border border-accent/10 p-4 shadow-sm lg:text-left">
+            <h3 className="text-xl font-semibold">Vision</h3>
+            <p>
+              To create a world where everyone has the confidence and resources to achieve financial freedom, enabling a
+              life of stability, security, and opportunity.
+            </p>
+          </div>
         </div>
       </div>
 
