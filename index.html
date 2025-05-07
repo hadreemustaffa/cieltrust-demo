@@ -4,20 +4,60 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1" />
+
   <title>Cieltrust</title>
+  <meta name="title" content="Cieltrust">
+  <meta name="description" content="Demo website for a Personal Budgeting App featuring a working dashboard.">
+  <meta name="keywords" content="Cieltrust, Personal Budgeting App, React, Vite, Tailwind CSS, Dashboard">
+
+  <link rel="canonical" href="https://cieltrust-demo.vercel.app" />
+
+  <meta name="fragment" content="!">
+  <meta name="robots" content="index, follow">
+
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png">
+
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link rel="preload stylesheet"
-    href="https://fonts.googleapis.com/css2?family=Lexend:wght@300..700&family=Montserrat+Subrayada:wght@400;700&display=swap"
-    as="style" type="text/css" crossorigin>
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" />
+  <link rel="preload" as="style"
+    href="https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@400;700&display=swap" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap"
+    media="print" onload="this.media='all'" />
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@400;700&display=swap"
+    media="print" onload="this.media='all'" />
+  <noscript>
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Lexend:wght@300;400;500;600;700&display=swap" />
+    <link rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Montserrat+Subrayada:wght@400;700&display=swap" />
+  </noscript>
+
+  <script type="module" src="/src/main.tsx" defer></script>
+
+  <link rel="dns-prefetch" href="https://www.google-analytics.com">
+  <link rel="dns-prefetch" href="https://va.vercel-scripts.com">
+  <link rel="preconnect" href="https://va.vercel-scripts.com" crossorigin>
+
+  <meta http-equiv="Content-Security-Policy"
+    content="default-src 'self'; frame-src https://vercel.live; connect-src 'self' https://*.supabase.co https://*.supabase.in; font-src 'self' https://fonts.googleapis.com https://fonts.gstatic.com; img-src 'self' data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://va.vercel-scripts.com https://vercel.live; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;">
+
+
+  <meta name="theme-color" content="#000000">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="mobile-web-app-status-bar-style" content="black-translucent">
+
+  <script defer src="https://va.vercel-scripts.com/v1/speed-insights/script.debug.js"></script>
 </head>
 
 <body>
   <div id="root"
     class="min-h-screen bg-background grid grid-cols-base sm:grid-cols-sm md:grid-cols-md lg:grid-cols-lg xl:grid-cols-xl grid-rows-base gap-y-16 font-lexend text-sm sm:text-base text-copy font-light">
   </div>
-  <script type="module" src="/src/main.tsx"></script>
 </body>
 
 </html>
