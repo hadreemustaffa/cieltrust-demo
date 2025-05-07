@@ -1,5 +1,6 @@
 import FaqSection from '@/components/faq';
 import Icon from '@/components/icon';
+import Image from '@/components/image';
 import JobOpenings from '@/components/job-openings';
 import OpenAccountBanner from '@/components/open-account-banner';
 import Testimonials from '@/components/testimonials';
@@ -7,6 +8,13 @@ import ArchiveIcon from '@/images/icons/archive.svg?react';
 import ClockIcon from '@/images/icons/clock.svg?react';
 import DollarSignIcon from '@/images/icons/dollar-sign.svg?react';
 import HeartIcon from '@/images/icons/heart.svg?react';
+
+import CareersDesktopImg1 from '/images/illustrations/careers-illustration-desktop.png';
+import CareersLaptopImg1 from '/images/illustrations/careers-illustration-laptop.png';
+import CareersMobileImg1 from '/images/illustrations/careers-illustration-mobile.png';
+import CareersDesktopImg2 from '/images/illustrations/careers-illustration-2-desktop.png';
+import CareersLaptopImg2 from '/images/illustrations/careers-illustration-2-laptop.png';
+import CareersMobileImg2 from '/images/illustrations/careers-illustration-2-mobile.png';
 
 export default function Careers() {
   return (
@@ -25,43 +33,19 @@ export default function Careers() {
         </div>
 
         <div className="flex flex-col gap-4 md:flex-row">
-          <picture className="border border-accent/10">
-            <source
-              media="(min-width: 992px)"
-              srcSet="../images/illustrations/careers-illustration-2-desktop.png"
-              type="image/png"
-            />
-            <source
-              media="(min-width: 576px)"
-              srcSet="../images/illustrations/careers-illustration-2-laptop.png"
-              type="image/png"
-            />
-            <img
-              src="../images/illustrations/careers-illustration-2-mobile.png"
-              className=""
-              alt="A person being interviewed for a job"
-              loading="lazy"
-            />
-          </picture>
+          <Image
+            mobile={CareersMobileImg1}
+            laptop={CareersLaptopImg1}
+            desktop={CareersDesktopImg1}
+            alt="Group photo of office employees"
+          />
 
-          <picture className="border border-accent/10">
-            <source
-              media="(min-width: 992px)"
-              srcSet="../images/illustrations/careers-illustration-desktop.png"
-              type="image/png"
-            />
-            <source
-              media="(min-width: 576px)"
-              srcSet="../images/illustrations/careers-illustration-laptop.png"
-              type="image/png"
-            />
-            <img
-              src="../images/illustrations/careers-illustration-mobile.png"
-              className=""
-              alt="Group photo of office employees"
-              loading="lazy"
-            />
-          </picture>
+          <Image
+            mobile={CareersMobileImg2}
+            laptop={CareersLaptopImg2}
+            desktop={CareersDesktopImg2}
+            alt="A person being interviewed for a job"
+          />
         </div>
       </div>
 

@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { LinkButtonTertiary } from '@/components/button';
-import { CardImage } from '@/components/card';
+import Image from '@/components/image';
 import { pressReleases } from '@/data/pressReleases';
 
 type PressReleasesArticleProps = {
@@ -10,6 +10,9 @@ type PressReleasesArticleProps = {
   location: string;
   date: string;
   text: string;
+  imageDesktop: string;
+  imageLaptop: string;
+  imageMobile: string;
 };
 
 export default function PressReleases() {
@@ -31,6 +34,9 @@ export default function PressReleases() {
             location={release.location}
             date={release.date}
             text={release.text}
+            imageDesktop={release.imageDesktop}
+            imageLaptop={release.imageLaptop}
+            imageMobile={release.imageMobile}
           />
         ))}
       </div>
@@ -38,11 +44,21 @@ export default function PressReleases() {
   );
 }
 
-const PressReleasesArticle: React.FC<PressReleasesArticleProps> = ({ id, title, location, date, text }) => {
+const PressReleasesArticle: React.FC<PressReleasesArticleProps> = ({
+  id,
+  title,
+  location,
+  date,
+  text,
+  imageDesktop,
+  imageLaptop,
+  imageMobile,
+}) => {
   return (
     <article className="flex flex-col items-start justify-between gap-8 rounded-md text-left">
       <div className="flex flex-col gap-4">
-        <CardImage imgPath={`about-press-article-${id}`} imgFormat="png" imgAlt="" />
+        <Image mobile={imageMobile} laptop={imageLaptop} desktop={imageDesktop} alt={title} loading="lazy" />
+
         <header className="flex flex-col gap-4">
           <h3 className="text-xl font-semibold">
             <LinkButtonTertiary to={`/press-releases/${id}`}>{title}</LinkButtonTertiary>

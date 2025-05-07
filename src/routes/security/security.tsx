@@ -1,31 +1,27 @@
 import { Fragment } from 'react/jsx-runtime';
 
+import SecurityDesktopImg from '/images/illustrations/security-illustration-desktop.png';
+import SecurityLaptopImg from '/images/illustrations/security-illustration-laptop.png';
+import SecurityMobileImg from '/images/illustrations/security-illustration-mobile.png';
+
 import FaqSection from '@/components/faq';
 import Icon from '@/components/icon';
+import Image from '@/components/image';
 import { security } from '@/data/security';
 
 export default function Security() {
   return (
     <>
-      <div className="relative flex flex-col border border-accent/10 lg:text-left">
-        <picture>
-          <source
-            media="(min-width: 1440px)"
-            srcSet="../images/illustrations/security-illustration-desktop.png"
-            type="image/png"
-          />
-          <source
-            media="(min-width: 768px)"
-            srcSet="../images/illustrations/security-illustration-laptop.png"
-            type="image/png"
-          />
-          <img
-            className="aspect-4/3 w-screen object-cover md:max-h-[500px]"
-            src="../images/illustrations/security-illustration-mobile.png"
-            alt="two elderly person smiling"
-          />
-        </picture>
-        <div className="bottom-0 left-0 flex flex-col gap-4 bg-background p-8 md:absolute xl:max-w-[85ch]">
+      <div className="relative flex flex-col lg:text-left">
+        <Image
+          mobile={SecurityMobileImg}
+          laptop={SecurityLaptopImg}
+          desktop={SecurityDesktopImg}
+          alt="two elderly person smiling"
+          className="md:max-h-[500px]"
+        />
+
+        <div className="flex flex-col gap-4 border border-accent/10 bg-background p-8 md:absolute md:bottom-0 md:left-0 xl:max-w-[85ch]">
           <h1 className="text-3xl font-medium lg:text-5xl">
             Empowering You with <span className="text-brand">Safety</span> and{' '}
             <span className="text-brand">Confidence</span>
