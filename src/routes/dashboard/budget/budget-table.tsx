@@ -26,33 +26,34 @@ export default function BudgetTable({ table, children, ...props }: BudgetTablePr
   };
 
   return (
-    <div {...props} className="flex flex-col items-start gap-4 rounded-md border border-accent/10 p-4 text-left">
-      <table className="flex w-full flex-col items-center justify-between gap-4">
-        <caption className="flex w-full flex-row items-center justify-between gap-2 rounded-md border border-accent/10 bg-accent/5 p-2">
+    <div {...props} className="flex flex-col items-start gap-4 rounded-sm border border-accent/10 text-left">
+      <table className="flex w-full flex-col items-center justify-between">
+        <caption className="flex w-full flex-row items-center justify-between gap-2 bg-accent/5 p-2">
           <h3 className="font-bold">{table.name}</h3>
           <div className="flex gap-2">
             <p className={`text-sm font-bold ${sumOfCategoriesAmount > table.amount ? 'text-red-500' : ''}`}>
               ${table.amount}
             </p>
             <MoreMenu
+              variant="horizontal"
               onEdit={() => openModal(`editBudgetTableModal-${table.id}`)}
               onDelete={() => openModal(`deleteBudgetTableModal-${table.id}`)}
             />
           </div>
         </caption>
 
-        <tbody className="flex w-full flex-col gap-4 overflow-x-auto text-sm">
-          <tr className="grid w-[440px] grid-cols-4 justify-between gap-2 sm:w-full">
-            <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1">
+        <tbody className="flex w-full flex-col overflow-x-auto text-sm">
+          <tr className="grid min-w-[500px] grid-cols-4 justify-between sm:w-full">
+            <th scope="col" className="border border-x-0 border-accent/10 px-2 py-1 text-copy/70">
               Category
             </th>
-            <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1 text-right">
+            <th scope="col" className="border border-accent/10 px-2 py-1 text-right text-copy/70">
               Budget
             </th>
-            <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1 text-right">
+            <th scope="col" className="border border-l-0 border-accent/10 px-2 py-1 text-right text-copy/70">
               Spent
             </th>
-            <th scope="col" className="rounded-sm border border-accent/10 px-2 py-1 text-right">
+            <th scope="col" className="border border-x-0 border-accent/10 px-2 py-1 text-right text-copy/70">
               Remaining
             </th>
           </tr>
