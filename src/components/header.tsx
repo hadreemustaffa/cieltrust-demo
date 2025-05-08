@@ -64,7 +64,9 @@ export default function Header() {
 
             {session ? (
               <>
-                <LinkButtonPrimary to="/dashboard/">Dashboard</LinkButtonPrimary>
+                <LinkButtonPrimary to="/dashboard/" className="w-full">
+                  Dashboard
+                </LinkButtonPrimary>
               </>
             ) : (
               <>

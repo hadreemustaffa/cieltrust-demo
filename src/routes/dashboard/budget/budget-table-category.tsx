@@ -1,98 +1,131 @@
-import { useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { useEffect, useRef, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { BudgetTableCategoryProps } from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
 export default function BudgetTableCategory({ category }: BudgetTableCategoryProps) {
-  const [budgetAmount, setBudgetAmount] = useState(category.amount);
+  const [budgetAmount, setBudgetAmount] = useState(category.amount || 0);
+  const [isOverflowing, setIsOverflowing] = useState(false);
+  const nameRef = useRef<HTMLParagraphElement>(null);
+  const thRef = useRef<HTMLTableCellElement>(null);
+  const { setBudgetTables } = useBudgetTables();
 
-  const { register, handleSubmit, setValue, getValues } = useForm<BudgetTableCategoryProps>({
+  const spent = category.spent || 0;
+  const remaining = budgetAmount - spent;
+  const isOverBudget = spent > budgetAmount;
+
+  const { register, handleSubmit } = useForm({
     defaultValues: {
-      category: {
-        amount: category.amount && category.amount,
-      },
+      amount: budgetAmount,
     },
   });
 
-  const { setBudgetTables } = useBudgetTables();
-
-  const spent = category.spent;
-  const remaining = budgetAmount - spent;
-
-  const onSubmit: SubmitHandler<BudgetTableCategoryProps> = async () => {
-    const amountVal = getValues('category.amount');
-
-    if (!amountVal || amountVal === category.amount || amountVal === 0) {
-      if (amountVal === category.amount) {
-        setValue('category.amount', category.amount);
-      }
-      return;
+  const checkOverflow = () => {
+    if (nameRef.current && thRef.current) {
+      setIsOverflowing(nameRef.current.scrollWidth > thRef.current.offsetWidth - 10);
     }
+  };
+
+  const onSubmit = async (data: { amount: number }) => {
+    const newAmount = Number(data.amount);
+
+    if (newAmount === budgetAmount) return;
 
     try {
-      const { data, error } = await supabase
+      const { data: updatedData, error } = await supabase
         .from('budget_categories')
-        .update({
-          amount: amountVal,
-        })
+        .update({ amount: newAmount })
         .eq('id', category.id)
         .select();
 
       if (error) {
-        console.log('Error updating category amount:', error);
-        throw error;
+        console.error('Error updating category amount:', error);
+        return;
       }
 
-      if (data) {
-        setBudgetAmount(amountVal);
+      if (updatedData) {
+        setBudgetAmount(newAmount);
 
-        // Update the upcoming payments context
         setBudgetTables((prevTables) =>
-          prevTables.map((table) =>
-            table.budget_categories.some((cat) => cat.id === category.id)
-              ? {
-                  ...table,
-                  budget_categories: table.budget_categories.map((cat) =>
-                    cat.id === category.id ? { ...cat, amount: amountVal } : cat,
-                  ),
-                }
-              : table,
-          ),
+          prevTables.map((table) => {
+            if (!table.budget_categories.some((cat) => cat.id === category.id)) {
+              return table;
+            }
+
+            return {
+              ...table,
+              budget_categories: table.budget_categories.map((cat) =>
+                cat.id === category.id ? { ...cat, amount: newAmount } : cat,
+              ),
+            };
+          }),
         );
       }
     } catch (error) {
-      console.log(error);
+      console.error('Unexpected error:', error);
     }
   };
 
+  useEffect(() => {
+    checkOverflow();
+
+    let timeoutId: ReturnType<typeof setTimeout>;
+    const handleResize = () => {
+      clearTimeout(timeoutId);
+      timeoutId = setTimeout(checkOverflow, 100);
+    };
+
+    window.addEventListener('resize', handleResize);
+
+    return () => {
+      window.removeEventListener('resize', handleResize);
+      clearTimeout(timeoutId);
+    };
+  }, [category.name]);
+
   return (
-    <tr key={category.id} className="grid w-[440px] grid-cols-4 items-center justify-between gap-2 sm:w-full">
-      <th scope="row" className="break-words font-normal">
-        {category.name}
+    <tr
+      key={category.id}
+      className="grid min-w-[500px] grid-cols-4 items-center justify-between border-b border-accent/10 last:border-b-0 last-of-type:last:border-r-0 sm:w-full"
+    >
+      <th
+        scope="row"
+        ref={thRef}
+        className="relative overflow-hidden text-nowrap p-2 font-normal hover:overflow-visible"
+      >
+        <p
+          ref={nameRef}
+          className={
+            isOverflowing
+              ? 'hover:absolute hover:left-1 hover:top-1/2 hover:w-max hover:-translate-y-1/2 hover:bg-copy hover:p-1 hover:text-background'
+              : ''
+          }
+        >
+          {category.name}
+        </p>
       </th>
 
-      <td className="text-right">
+      <td className="border-l border-r border-accent/10">
         <form onSubmit={handleSubmit(onSubmit)}>
           <input
             type="number"
             min={0}
-            className={`w-full max-w-40 rounded-md border border-accent/10 bg-transparent p-1 text-right [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none`}
-            placeholder="0"
-            {...register('category.amount', {
+            className="h-[calc(100%-1px)] w-full bg-transparent p-2 text-right [appearance:textfield] hover:cursor-pointer focus:bg-accent/10 [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+            placeholder="Insert amount"
+            {...register('amount', {
+              valueAsNumber: true,
               onBlur: handleSubmit(onSubmit),
             })}
           />
-          <button type="submit" className="hidden">
-            Save
-          </button>
         </form>
       </td>
 
-      <td className="text-right">${spent}</td>
-      <td className="text-right font-semibold">
-        {spent > budgetAmount ? (
+      <td className="border-r border-accent/10 p-2 text-right">${spent}</td>
+
+      <td className="p-2 text-right font-semibold">
+        {isOverBudget ? (
           <span className="rounded-md bg-accent/10 px-2 py-1 text-red-500">-${Math.abs(remaining)}</span>
         ) : (
           <span className="rounded-md bg-accent/10 px-2 py-1 text-green-500">${remaining}</span>

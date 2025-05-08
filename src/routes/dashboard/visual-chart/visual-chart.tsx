@@ -214,7 +214,7 @@ export default function VisualChart() {
 
   return (
     <div className="flex justify-center rounded-md border border-accent/10 p-4 md:col-span-full lg:col-span-2">
-      <div className="flex w-full flex-col gap-4">
+      <div className="flex w-full flex-col justify-center gap-4">
         {!hasData && <div className="py-8 text-center text-gray-500">No transaction data available to display</div>}
 
         {hasData && (
