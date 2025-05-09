@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { ButtonSecondary } from '@/components/button';
+import { ButtonDelete, ButtonSecondary } from '@/components/button';
+import ErrorMessage from '@/components/error-message';
 import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
@@ -9,10 +10,12 @@ import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useCategories } from '@/hooks/use-categories';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
+import CheckIcon from '@/images/icons/check.svg?react';
 import EditIcon from '@/images/icons/edit.svg?react';
 import ListIcon from '@/images/icons/list.svg?react';
 import PlusIcon from '@/images/icons/plus.svg?react';
 import TrashIcon from '@/images/icons/trash.svg?react';
+import XIcon from '@/images/icons/x.svg?react';
 import { Category } from '@/routes/dashboard/budget/budget.types';
 import {
   addNewCategory,
@@ -28,11 +31,17 @@ export default function ManageCategories() {
   const { activeModal, openModal, closeModal } = useModal();
 
   const [currentPage, setCurrentPage] = useState(1);
+  const [checkedCategories, setCheckedCategories] = useState<Record<string, boolean>>({});
+  const [selectAll, setSelectAll] = useState(false);
   const itemsPerPage = 5;
 
   const paginatedCategories = categories.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage);
   const totalPages = Math.ceil(categories.length / itemsPerPage);
   const startItem = (currentPage - 1) * itemsPerPage + 1;
+  const endItem = Math.min(currentPage * itemsPerPage, categories.length);
+
+  const checkedCount = Object.values(checkedCategories).filter(Boolean).length;
+  const hasCheckedItems = checkedCount > 0;
 
   const {
     register,
@@ -44,6 +53,13 @@ export default function ManageCategories() {
 
   const onNewCategorySubmit: SubmitHandler<Category> = async () => {
     await addNewCategory({ name: getValues('name'), dashboardId, setState: setCategories });
+  };
+
+  const handleCloseModal = () => {
+    setCheckedCategories({});
+    setSelectAll(false);
+    reset();
+    closeModal();
   };
 
   const handleDeleteCategory = async (category: Category) => {
@@ -59,6 +75,60 @@ export default function ManageCategories() {
     });
   };
 
+  const handleDeleteSelected = async () => {
+    if (!window.confirm(`Are you sure you want to delete ${checkedCount} selected categories?`)) {
+      return;
+    }
+
+    // Get categories to delete
+    const categoriesToDelete = categories.filter(
+      (category) => category.id && checkedCategories[category.id.toString()],
+    );
+
+    // Delete each selected category
+    for (const category of categoriesToDelete) {
+      await deleteCategory({ category, dashboardId, tables: budgetTables });
+    }
+
+    // Update state
+    setCategories((prev) => prev.filter((cat) => cat.id && !checkedCategories[cat.id.toString()]));
+    setBudgetTables((prev) => {
+      const updatedTables = prev.map((table) => ({
+        ...table,
+        budget_categories: table.budget_categories.filter(
+          (cat) => !categoriesToDelete.some((selCat) => selCat.name === cat.name),
+        ),
+      }));
+      return [...updatedTables];
+    });
+
+    setCheckedCategories({});
+    setSelectAll(false);
+  };
+
+  const handleCheckCategory = (categoryId: string, isChecked: boolean) => {
+    setCheckedCategories((prev) => ({
+      ...prev,
+      [categoryId]: isChecked,
+    }));
+  };
+
+  const handleSelectAll = (isChecked: boolean) => {
+    setSelectAll(isChecked);
+
+    const newCheckedState: Record<string, boolean> = {};
+    paginatedCategories.forEach((category) => {
+      if (category.id) {
+        newCheckedState[category.id.toString()] = isChecked;
+      }
+    });
+
+    setCheckedCategories((prev) => ({
+      ...prev,
+      ...newCheckedState,
+    }));
+  };
+
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset();
@@ -70,6 +140,14 @@ export default function ManageCategories() {
       setCurrentPage((prev) => prev - 1);
     }
   }, [categories, currentPage, paginatedCategories.length]);
+
+  // Update selectAll state when pagination changes
+  useEffect(() => {
+    const allCurrentChecked = paginatedCategories.every(
+      (category) => category.id && checkedCategories[category.id.toString()],
+    );
+    setSelectAll(paginatedCategories.length > 0 && allCurrentChecked);
+  }, [paginatedCategories, checkedCategories]);
 
   return (
     <>
@@ -83,49 +161,84 @@ export default function ManageCategories() {
           id="manageCategoriesModal"
           title="Manage Categories"
           isOpen={activeModal === 'manageCategoriesModal'}
-          handleClose={() => closeModal()}
+          handleClose={handleCloseModal}
         >
-          <div className="flex flex-col gap-4">
+          <div className="flex flex-col">
             <form onSubmit={handleSubmit(onNewCategorySubmit)} className="flex flex-row items-center gap-2">
               <div className="relative flex w-full flex-col gap-2">
-                <label htmlFor={'addNewCategory'} className="sr-only">
-                  Add Category
-                </label>
-                <Input
-                  id="addNewCategory"
-                  type="text"
-                  placeholder="Enter category name"
-                  defaultValue=""
-                  autoComplete="off"
-                  {...register('name', {
-                    required: {
-                      value: true,
-                      message: 'Category name is required',
-                    },
-                    validate: (value) => {
-                      if (categories.some((cat) => cat.name === value)) {
-                        return 'Category already exists';
-                      }
-                      return true;
-                    },
-                  })}
-                />
-                {errors.name && (
-                  <p className="absolute top-full pl-2 pt-1 text-xs text-red-500">{errors.name.message}</p>
-                )}
+                <div className="flex flex-row justify-between gap-2">
+                  <label htmlFor={'addNewCategory'} className="sr-only">
+                    Add Category
+                  </label>
+                  <Input
+                    id="addNewCategory"
+                    type="text"
+                    placeholder="Enter category name"
+                    defaultValue=""
+                    autoComplete="off"
+                    {...register('name', {
+                      required: {
+                        value: true,
+                        message: 'Category name is required',
+                      },
+                      validate: (value) => {
+                        if (categories.some((cat) => cat.name === value)) {
+                          return 'Category already exists';
+                        }
+                        return true;
+                      },
+                    })}
+                  />
+                  <ButtonSecondary type="submit">
+                    <Icon SvgIcon={PlusIcon} isBorderless />
+                  </ButtonSecondary>
+                </div>
+                {errors.name && <ErrorMessage error={errors.name.message} />}
               </div>
-
-              <ButtonSecondary type="submit">
-                <Icon SvgIcon={PlusIcon} isBorderless />
-              </ButtonSecondary>
             </form>
 
             {categories.length > 0 ? (
               <>
-                <ul className="flex flex-col gap-2">
-                  {paginatedCategories.map((category, index) => (
-                    <li key={category.id} className="flex flex-row items-center gap-2">
-                      <span>{startItem + index}.</span>
+                <div className="flex items-center justify-between">
+                  <ButtonDelete
+                    onClick={handleDeleteSelected}
+                    className={`transition-[margin] ${hasCheckedItems ? 'mt-4 py-1 opacity-100' : 'pointer-events-none h-0 border-0 bg-transparent py-0 opacity-0'}`}
+                    disabled={!hasCheckedItems}
+                  >
+                    <Icon SvgIcon={TrashIcon} isBorderless />
+                    <span className="hidden pl-2 font-semibold md:inline">
+                      Delete {checkedCount} {checkedCount === 1 ? 'item' : 'items'}
+                    </span>
+                    <span className="pl-2 font-semibold md:hidden">
+                      {checkedCount} {checkedCount === 1 ? 'item' : 'items'}
+                    </span>
+                  </ButtonDelete>
+                </div>
+
+                <ul className={`mt-4 flex flex-col overflow-hidden transition-all ${checkedCount === 0 && 'mt-4'}`}>
+                  <li className="flex flex-row items-center justify-start border border-accent/10 bg-accent/5">
+                    <div className="h-full w-fit p-2">
+                      <Input
+                        type="checkbox"
+                        id="select-all-checkbox"
+                        name="select-all-checkbox"
+                        checked={selectAll}
+                        onChange={(e) => handleSelectAll(e.target.checked)}
+                      />
+                    </div>
+                    <div className="w-full border-l border-accent/10 p-2 font-medium">Name</div>
+                  </li>
+                  {paginatedCategories.map((category) => (
+                    <li key={category.id} className="flex flex-row items-center justify-start border border-accent/10">
+                      <div className="h-full w-fit p-2">
+                        <Input
+                          type="checkbox"
+                          id={`category-${category.id}-checkbox`}
+                          name={`category-${category.id}-checkbox`}
+                          checked={category.id ? checkedCategories[category.id.toString()] || false : false}
+                          onChange={(e) => handleCheckCategory(category.id?.toString() || '', e.target.checked)}
+                        />
+                      </div>
                       <CategoryItem
                         category={category}
                         tables={budgetTables}
@@ -135,7 +248,7 @@ export default function ManageCategories() {
                     </li>
                   ))}
                 </ul>
-                <div className="flex items-center justify-between text-xs">
+                <div className="mt-4 flex items-center justify-between text-xs">
                   <button
                     onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
                     className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
@@ -144,7 +257,7 @@ export default function ManageCategories() {
                     Previous
                   </button>
                   <span>
-                    Showing {startItem} of {categories.length} categories
+                    Showing {startItem} - {endItem} of {categories.length} categories
                   </span>
                   <button
                     onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
@@ -165,7 +278,7 @@ export default function ManageCategories() {
   );
 }
 
-const CategoryItem = ({ category, dashboardId, onDelete }: CategoryItemProps) => {
+const CategoryItem = ({ category, dashboardId }: CategoryItemProps) => {
   const [isEditting, setIsEditting] = useState(false);
   const [name, setName] = useState(category.name);
 
@@ -216,16 +329,6 @@ const CategoryItem = ({ category, dashboardId, onDelete }: CategoryItemProps) =>
     });
   };
 
-  const handleDeleteCategory = async () => {
-    if (
-      !window.confirm('This will delete all instances of the category.\nAre you sure you want to delete this category?')
-    ) {
-      return;
-    }
-
-    onDelete(category);
-  };
-
   useEffect(() => {
     if (isSubmitSuccessful) {
       setIsEditting(false);
@@ -233,11 +336,11 @@ const CategoryItem = ({ category, dashboardId, onDelete }: CategoryItemProps) =>
   }, [isSubmitSuccessful]);
 
   return (
-    <div className="w-full items-center justify-between rounded-sm py-1">
+    <div className="w-full items-center justify-between rounded-sm border-l border-accent/10">
       {isEditting ? (
         <form
           onSubmit={handleSubmit(onEditSubmit)}
-          className="flex flex-row flex-wrap items-center justify-between gap-2"
+          className="flex flex-row flex-wrap items-center justify-between gap-2 p-2"
         >
           <label htmlFor={`category-${category.id?.toString()}`} className="sr-only">
             {category.name}
@@ -245,7 +348,8 @@ const CategoryItem = ({ category, dashboardId, onDelete }: CategoryItemProps) =>
           <input
             id={`category-${category.id?.toString()}`}
             type="text"
-            className="w-fit rounded-sm border border-accent/10 bg-transparent px-1 hover:cursor-pointer"
+            className="w-fit rounded-sm bg-accent/10 px-1 hover:cursor-pointer"
+            autoComplete="off"
             defaultValue={category.name}
             {...register('name', {
               required: {
@@ -255,25 +359,22 @@ const CategoryItem = ({ category, dashboardId, onDelete }: CategoryItemProps) =>
             })}
           />
 
-          <div className="flex flex-row flex-wrap items-center gap-2">
-            <button type="submit">Save</button>
-            <button type="button" className="text-red-500" onClick={() => setIsEditting(false)}>
-              Cancel
+          <div className="flex flex-row flex-wrap items-center gap-1">
+            <button type="submit" className="p-1 hover:bg-accent/10">
+              <Icon SvgIcon={CheckIcon} width={16} height={16} isBorderless />
+            </button>
+            <button type="button" className="p-1 hover:bg-accent/10" onClick={() => setIsEditting(false)}>
+              <Icon SvgIcon={XIcon} width={16} height={16} isBorderless />
             </button>
           </div>
         </form>
       ) : (
         <div className="flex flex-row flex-wrap items-center justify-between gap-2">
-          <p className="w-fit">{name}</p>
+          <p className="w-fit p-2">{name}</p>
 
-          <div className="flex flex-row flex-wrap items-center gap-2">
-            <button type="button" onClick={() => setIsEditting(!isEditting)}>
-              <Icon SvgIcon={EditIcon} isBorderless />
-            </button>
-            <button type="button" className="text-red-500" onClick={handleDeleteCategory}>
-              <Icon SvgIcon={TrashIcon} isBorderless />
-            </button>
-          </div>
+          <button type="button" className="h-full p-2" onClick={() => setIsEditting(true)}>
+            <Icon SvgIcon={EditIcon} width={16} height={16} isBorderless />
+          </button>
         </div>
       )}
     </div>
