@@ -154,7 +154,7 @@ export default function UpcomingPayments({ initialUpcomingPayments }: { initialU
               <p className="text-sm text-copy/70">Estimated payments for the upcoming month</p>
             </div>
 
-            <ul className="grid max-h-[300px] grid-cols-1 gap-2 overflow-y-auto md:grid-cols-2">
+            <ul className="grid max-h-[300px] grid-cols-1 gap-2 overflow-y-auto md:grid-cols-2 xl:grid-cols-1">
               {sortedUpcomingPayments.map((payment) => {
                 const nextPaymentDate = calculateNextPaymentDate(payment.date ?? '', payment.recurrence);
 
