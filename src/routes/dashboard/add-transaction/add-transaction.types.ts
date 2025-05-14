@@ -1,6 +1,6 @@
 export interface FormData {
   transactionType: 'income' | 'expenses';
-  id: number | null;
+  id: number;
   date: string;
   reference?: string;
 }
@@ -8,11 +8,11 @@ export interface FormData {
 export interface IncomeFormData {
   from: string;
   amount: number;
-  savings?: number;
+  percent_saved?: number;
 }
 
 export interface ExpensesFormData {
-  budget: string;
-  category: string;
+  budget_id?: number;
+  category_id?: number;
   amount: number;
 }

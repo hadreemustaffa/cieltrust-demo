@@ -3,11 +3,8 @@ import React from 'react';
 export interface AddBudgetFormProps {
   id: number | null;
   name: string;
-  is_recurring?: boolean;
-  recurrence: string;
-  start_date: string | null;
   amount: number;
-  fields?: Category[];
+  categories?: Category[];
   new_category?: string;
   addCategories?: Category[];
   state?: Table[];
@@ -17,9 +14,6 @@ export interface EditBudgetFormProps {
   id: number | null;
   name: string;
   amount: number;
-  is_recurring?: boolean;
-  recurrence: string;
-  start_date: string | null;
   editCategories?: Category[];
   state: Table[];
 }
@@ -34,9 +28,6 @@ export type Table = {
   budget_categories: CategoryWithAmount[];
   amount: number;
   remaining?: number;
-  is_recurring: boolean;
-  recurrence: string;
-  start_date: string | null;
 };
 
 export interface BudgetTableProps {
@@ -65,12 +56,14 @@ export interface DeleteBudgetTableProps {
 }
 
 export type Category = {
-  id?: number;
+  id: number;
   name: string;
   selected?: boolean;
 };
 
 export type CategoryWithAmount = Category & {
+  budget_id: number;
+  category_id: number;
   amount: number;
   spent: number;
 };

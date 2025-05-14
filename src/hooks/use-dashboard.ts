@@ -1,7 +1,7 @@
 import { createContext, useContext } from 'react';
 
 export interface DashboardContextProps {
-  dashboardId: number | null;
+  dashboardId: number;
   setDashboardId: (id: number) => void;
 }
 

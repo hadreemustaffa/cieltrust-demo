@@ -6,7 +6,7 @@ import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 
 interface CategoriesProps {
   children: React.ReactNode;
-  selectedCategories: string[];
+  selectedCategories: number[];
   handleNewCategoryModal: () => void;
 }
 

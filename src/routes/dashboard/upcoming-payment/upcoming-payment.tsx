@@ -1,65 +1,67 @@
 import dayjs from 'dayjs';
-import { useCallback, useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import MoreMenu from '@/components/more-menu';
-import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
 import PlusIcon from '@/images/icons/plus.svg?react';
-import UpcomingPaymentForm from '@/routes/dashboard/upcoming-payment/upcoming-payment-form';
+import { EditUpcomingPaymentForm } from '@/routes/dashboard/upcoming-payment/upcoming-payment-form';
+import AddUpcomingPaymentForm from '@/routes/dashboard/upcoming-payment/upcoming-payment-form';
 import {
   addUpcomingPayment,
   deleteUpcomingPayment,
   editUpcomingPayment,
 } from '@/routes/dashboard/upcoming-payment/upcoming-payment.api';
 import {
-  AddUpcomingPaymentFormProps,
-  EditUpcomingPaymentFormProps,
+  AddUpcomingPaymentFormData,
+  EditUpcomingPaymentFormData,
+  UpcomingPayment,
 } from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
 
-export default function UpcomingPayment() {
-  const { budgetTables, setBudgetTables } = useBudgetTables();
+export default function UpcomingPayments({ initialUpcomingPayments }: { initialUpcomingPayments: UpcomingPayment[] }) {
+  const [upcomingPayments, setUpcomingPayments] = useState<UpcomingPayment[]>(initialUpcomingPayments);
   const { activeModal, openModal, closeModal } = useModal();
   const { dashboardId } = useDashboard();
 
-  const methods = useForm<AddUpcomingPaymentFormProps>();
-  const editMethods = useForm<EditUpcomingPaymentFormProps>();
+  const methods = useForm<AddUpcomingPaymentFormData>();
+  const editMethods = useForm<EditUpcomingPaymentFormData>();
 
-  const onAddSubmit: SubmitHandler<AddUpcomingPaymentFormProps> = async () => {
+  const onAddSubmit: SubmitHandler<AddUpcomingPaymentFormData> = async () => {
     await addUpcomingPayment({
-      id: dashboardId,
+      dashboard_id: dashboardId,
       name: methods.getValues('name'),
       amount: methods.getValues('amount'),
       recurrence: methods.getValues('recurrence'),
-      start_date: new Date(methods.getValues('start_date')).toISOString().split('T')[0],
-      setBudgetTablesProvider: setBudgetTables,
+      date: methods.getValues('date'),
+      state: setUpcomingPayments,
     });
   };
 
   const onEditSubmit = useCallback(
-    (budgetId: number): SubmitHandler<EditUpcomingPaymentFormProps> => {
+    (id: number): SubmitHandler<EditUpcomingPaymentFormData> => {
       return async () => {
         await editUpcomingPayment({
-          id: budgetId,
+          dashboard_id: dashboardId,
+          id: id,
           name: editMethods.getValues('name'),
           amount: editMethods.getValues('amount'),
           recurrence: editMethods.getValues('recurrence'),
-          start_date: editMethods.getValues('start_date'),
-          setBudgetTablesProvider: setBudgetTables,
+          date: editMethods.getValues('date'),
+          state: setUpcomingPayments,
         });
       };
     },
-    [editMethods, setBudgetTables],
+    [dashboardId, editMethods, setUpcomingPayments],
   );
 
   const handleDeleteUpcomingPayment = async (id: number) => {
     await deleteUpcomingPayment({
       id,
-      setBudgetTablesProvider: setBudgetTables,
+      state: setUpcomingPayments,
     });
 
     closeModal();
@@ -125,19 +127,15 @@ export default function UpcomingPayment() {
     return nextDate;
   };
 
-  const totalExpectedPayments = budgetTables
-    .filter((table) => table.is_recurring)
-    .reduce((total, table) => {
-      return Number(total) + Number(table.amount);
-    }, 0);
+  const totalExpectedPayments = upcomingPayments.reduce((total, payment) => {
+    return Number(total) + Number(payment.amount);
+  }, 0);
 
-  const sortedUpcomingPayments = [...budgetTables]
-    .filter((table) => table.is_recurring)
-    .sort((a, b) => {
-      const nextDateA = calculateNextPaymentDate(a.start_date ?? '', a.recurrence);
-      const nextDateB = calculateNextPaymentDate(b.start_date ?? '', b.recurrence);
-      return nextDateA.unix() - nextDateB.unix();
-    });
+  const sortedUpcomingPayments = [...upcomingPayments].sort((a, b) => {
+    const nextDateA = calculateNextPaymentDate(a.date ?? '', a.recurrence);
+    const nextDateB = calculateNextPaymentDate(b.date ?? '', b.recurrence);
+    return nextDateA.unix() - nextDateB.unix();
+  });
 
   return (
     <div className="col-span-full rounded-md sm:border sm:border-accent/10 sm:p-4 xl:col-span-2 xl:col-start-3">
@@ -149,16 +147,16 @@ export default function UpcomingPayment() {
             <Icon SvgIcon={PlusIcon} isBorderless />
           </ButtonSecondary>
         </div>
-        {budgetTables.filter((table) => table.is_recurring).length > 0 ? (
+        {upcomingPayments.length > 0 ? (
           <div className="flex flex-col gap-4">
             <div className="flex flex-col items-center justify-center rounded-md border border-accent/10 bg-card p-4 text-center">
               <p className="text-lg font-medium">{`$ ${totalExpectedPayments}`}</p>
               <p className="text-sm text-copy/70">Estimated payments for the upcoming month</p>
             </div>
 
-            <ul className="flex max-h-[300px] flex-col gap-4 overflow-y-auto">
+            <ul className="grid max-h-[300px] grid-cols-1 gap-2 overflow-y-auto md:grid-cols-2">
               {sortedUpcomingPayments.map((payment) => {
-                const nextPaymentDate = calculateNextPaymentDate(payment.start_date ?? '', payment.recurrence);
+                const nextPaymentDate = calculateNextPaymentDate(payment.date ?? '', payment.recurrence);
 
                 return (
                   <li
@@ -185,15 +183,14 @@ export default function UpcomingPayment() {
                     {activeModal === `editUpcomingPaymentModal-${payment.id}` && (
                       <Modal
                         id={`editUpcomingPaymentModal-${payment.id}`}
-                        title="Edit this payment?"
+                        title="Edit payment details?"
                         isOpen={activeModal === `editUpcomingPaymentModal-${payment.id}`}
                         handleClose={() => closeModal()}
                       >
                         <FormProvider {...editMethods}>
-                          <UpcomingPaymentForm
-                            variant="edit"
-                            table={payment}
-                            tables={budgetTables}
+                          <EditUpcomingPaymentForm
+                            upcomingPayment={payment}
+                            upcomingPayments={upcomingPayments}
                             onSubmit={onEditSubmit(payment.id)}
                           />
                         </FormProvider>
@@ -239,7 +236,7 @@ export default function UpcomingPayment() {
           handleClose={() => closeModal()}
         >
           <FormProvider {...methods}>
-            <UpcomingPaymentForm variant="add" tables={budgetTables} onSubmit={onAddSubmit} />
+            <AddUpcomingPaymentForm upcomingPayments={upcomingPayments} onSubmit={onAddSubmit} />
           </FormProvider>
         </Modal>
       )}

@@ -3,7 +3,7 @@ export type Transaction =
       type: 'income';
       id: number | null;
       transaction_date: string;
-      from_source: string;
+      from: string;
       savings: number;
       amount: number;
       reference?: string;

@@ -26,7 +26,7 @@ export default function BudgetTable({ table, children, ...props }: BudgetTablePr
   };
 
   return (
-    <div {...props} className="flex flex-col items-start gap-4 rounded-sm border border-accent/10 text-left">
+    <div {...props} className="flex flex-col items-start gap-4 rounded-md border border-accent/10 text-left">
       <table className="flex w-full flex-col items-center justify-between">
         <caption className="flex w-full flex-row items-center justify-between gap-2 bg-accent/5 p-2">
           <h3 className="font-bold">{table.name}</h3>
@@ -59,7 +59,7 @@ export default function BudgetTable({ table, children, ...props }: BudgetTablePr
           </tr>
 
           {table.budget_categories.map((category: CategoryWithAmount) => (
-            <BudgetTableCategory key={category.id} category={category} />
+            <BudgetTableCategory key={category.category_id} category={category} />
           ))}
         </tbody>
       </table>

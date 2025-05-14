@@ -62,14 +62,12 @@ export default function ManageCategories() {
     closeModal();
   };
 
-  const handleDeleteCategory = async (category: Category) => {
-    await deleteCategory({ category, dashboardId, tables: budgetTables });
-
-    setCategories((prev) => prev.filter((cat) => cat.id !== category.id));
+  const updateStateAfterDelete = async (category: Category) => {
+    setCategories((prev) => prev.filter((cat) => Number(cat.id) !== Number(category.id)));
     setBudgetTables((prev) => {
       const updatedTables = prev.map((table) => ({
         ...table,
-        budget_categories: table.budget_categories.filter((cat) => cat.name !== category.name),
+        budget_categories: table.budget_categories.filter((cat) => Number(cat.category_id) !== Number(category.id)),
       }));
       return [...updatedTables];
     });
@@ -88,19 +86,8 @@ export default function ManageCategories() {
     // Delete each selected category
     for (const category of categoriesToDelete) {
       await deleteCategory({ category, dashboardId, tables: budgetTables });
+      updateStateAfterDelete(category);
     }
-
-    // Update state
-    setCategories((prev) => prev.filter((cat) => cat.id && !checkedCategories[cat.id.toString()]));
-    setBudgetTables((prev) => {
-      const updatedTables = prev.map((table) => ({
-        ...table,
-        budget_categories: table.budget_categories.filter(
-          (cat) => !categoriesToDelete.some((selCat) => selCat.name === cat.name),
-        ),
-      }));
-      return [...updatedTables];
-    });
 
     setCheckedCategories({});
     setSelectAll(false);
@@ -239,12 +226,7 @@ export default function ManageCategories() {
                           onChange={(e) => handleCheckCategory(category.id?.toString() || '', e.target.checked)}
                         />
                       </div>
-                      <CategoryItem
-                        category={category}
-                        tables={budgetTables}
-                        dashboardId={dashboardId}
-                        onDelete={() => handleDeleteCategory(category)}
-                      />
+                      <CategoryItem category={category} tables={budgetTables} dashboardId={dashboardId} />
                     </li>
                   ))}
                 </ul>
@@ -283,7 +265,6 @@ const CategoryItem = ({ category, dashboardId }: CategoryItemProps) => {
   const [name, setName] = useState(category.name);
 
   const { setCategories } = useCategories();
-  const { budgetTables, setBudgetTables } = useBudgetTables();
 
   const {
     register,
@@ -294,31 +275,15 @@ const CategoryItem = ({ category, dashboardId }: CategoryItemProps) => {
 
   const onEditSubmit: SubmitHandler<Category> = async () => {
     try {
-      await updateCategory({ category, dashboardId, tables: budgetTables, name: getValues('name'), setState: setName });
+      await updateCategory({ category, dashboardId, name: getValues('name'), setState: setName });
 
-      updateBudgetTables();
-      updateCategories();
+      updateCategoriesState();
     } catch (error) {
       console.error('Failed to update category:', error);
     }
   };
 
-  const updateBudgetTables = () => {
-    setBudgetTables((prev) => {
-      const updatedTables = prev.map((table) => ({
-        ...table,
-        budget_categories: table.budget_categories.map((cat) => {
-          if (cat.name === category.name) {
-            return { ...cat, name: getValues('name') };
-          }
-          return cat;
-        }),
-      }));
-      return updatedTables;
-    });
-  };
-
-  const updateCategories = () => {
+  const updateCategoriesState = () => {
     setCategories((prevCategories) => {
       return prevCategories.map((cat) => {
         if (cat.id === category.id) {
