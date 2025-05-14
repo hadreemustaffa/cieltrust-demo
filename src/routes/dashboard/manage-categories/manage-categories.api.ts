@@ -29,7 +29,7 @@ export const addNewCategory = async ({ name, dashboardId, setState }: addCategor
   }
 };
 
-export const updateCategory = async ({ category, dashboardId, tables, name, setState }: updateCategoryProps) => {
+export const updateCategory = async ({ category, dashboardId, name, setState }: updateCategoryProps) => {
   try {
     const { data: categoryData, error: categoryError } = await supabase
       .from('categories')
@@ -44,22 +44,6 @@ export const updateCategory = async ({ category, dashboardId, tables, name, setS
       console.log('Error updating category:', categoryError);
       throw categoryError;
     }
-
-    tables.forEach(async (table) => {
-      const { error } = await supabase
-        .from('budget_categories')
-        .update({
-          name: name,
-        })
-        .eq('name', category.name)
-        .eq('budget_id', table.id)
-        .select();
-
-      if (error) {
-        console.log('Error updating budget category:', error);
-        throw error;
-      }
-    });
 
     if (categoryData) {
       setState(name);
@@ -86,8 +70,8 @@ export const deleteCategory = async ({ category, dashboardId, tables }: deleteCa
       const { error } = await supabase
         .from('budget_categories')
         .delete()
-        .eq('name', category.name)
-        .eq('budget_id', table.id);
+        .eq('budget_id', table.id)
+        .eq('category_id', category.id);
 
       if (error) {
         console.log('Error deleting budget category:', error);

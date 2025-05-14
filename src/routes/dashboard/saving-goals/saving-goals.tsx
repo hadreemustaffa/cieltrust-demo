@@ -192,7 +192,7 @@ export default function SavingGoals(data: SavingGoalsProps) {
           </Modal>
         )}
 
-        {savingGoalList && savingGoalList.data.length > 0 ? (
+        {savingGoalList.data.length > 0 ? (
           <ul className="flex max-h-[282px] flex-col gap-4 overflow-y-auto">
             {savingGoalList.data.map((goal) => (
               <SavingGoalsItem

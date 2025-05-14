@@ -7,6 +7,7 @@ import { Input, Select } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import { ERROR_MSG } from '@/data/errorMessages';
 import { useBudgetTables } from '@/hooks/use-budget-tables';
+import { useCategories } from '@/hooks/use-categories';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
 import { useOverview } from '@/hooks/use-overview';
@@ -20,8 +21,10 @@ export default function AddTransactionForm() {
   const { closeModal } = useModal();
   const { dashboardId } = useDashboard();
   const { budgetTables, setBudgetTables } = useBudgetTables();
+  const { categories } = useCategories();
   const { setOverview } = useOverview();
   const { setHistory } = useTransactionHistory();
+
   const methods = useForm<FormData & IncomeFormData & ExpensesFormData>();
 
   const {
@@ -37,16 +40,17 @@ export default function AddTransactionForm() {
       dashboardId: dashboardId,
       transactionType: transactionType,
       budgetTables: budgetTables,
+      categories: categories,
       setBudgetTables: setBudgetTables,
       setOverview: setOverview,
       setHistory: setHistory,
       date: getValues('date'),
       from: getValues('from'),
-      savings: getValues('savings'),
+      percent_saved: getValues('percent_saved'),
       amount: getValues('amount'),
       reference: getValues('reference'),
-      budget: getValues('budget'),
-      category: getValues('category'),
+      budget_id: getValues('budget_id'),
+      category_id: getValues('category_id'),
     });
   };
 
@@ -154,9 +158,9 @@ const IncomeForm = () => {
             step={5}
             defaultValue={0}
             placeholder="0-100"
-            {...register('savings')}
+            {...register('percent_saved')}
           />
-          {errors.savings && <ErrorMessage error={errors.savings.message} />}
+          {errors.percent_saved && <ErrorMessage error={errors.percent_saved.message} />}
         </div>
       </div>
     </>
@@ -165,6 +169,7 @@ const IncomeForm = () => {
 
 const ExpensesForm = () => {
   const { budgetTables } = useBudgetTables();
+  const { categories } = useCategories();
   const NO_BUDGET_FOUND = 'No budget found';
   const isBudgetFound = budgetTables.length > 0;
 
@@ -175,12 +180,12 @@ const ExpensesForm = () => {
     setValue,
   } = useFormContext<ExpensesFormData>();
 
-  const selectedBudgetName = watch('budget');
-  const activeBudget = budgetTables.find((table) => table.name === selectedBudgetName) || budgetTables[0];
+  const selectedBudgetId = watch('budget_id');
+  const activeBudget = budgetTables.find((table) => table.id === selectedBudgetId) || budgetTables[0];
 
   useEffect(() => {
     if (activeBudget?.budget_categories?.length) {
-      setValue('category', '');
+      setValue('category_id', undefined);
     }
   }, [activeBudget, setValue]);
 
@@ -193,20 +198,20 @@ const ExpensesForm = () => {
             id="expenses-budget"
             options={
               isBudgetFound
-                ? budgetTables.map((table) => ({ label: table.name, value: table.name }))
+                ? budgetTables.map((table) => ({ label: table.name, value: table.id }))
                 : [{ label: NO_BUDGET_FOUND, value: NO_BUDGET_FOUND }]
             }
-            defaultValue={isBudgetFound ? budgetTables[0].name : NO_BUDGET_FOUND}
-            {...register('budget', {
+            defaultValue={isBudgetFound ? budgetTables[0].id : NO_BUDGET_FOUND}
+            {...register('budget_id', {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
-              validate: (value) => value !== NO_BUDGET_FOUND || 'Please create a budget first',
+              validate: (value) => value !== null || 'Please create a budget first',
             })}
           />
           <span aria-hidden className="absolute right-2 top-1/2 -translate-y-1/2">
             <Icon SvgIcon={ChevronDownIcon} isBorderless />
           </span>
         </div>
-        {errors.budget && <ErrorMessage error={errors.budget.message} />}
+        {errors.budget_id && <ErrorMessage error={errors.budget_id.message} />}
       </div>
 
       {isBudgetFound && activeBudget && (
@@ -218,12 +223,12 @@ const ExpensesForm = () => {
                 id="expenses-category"
                 options={[
                   { label: 'Select category', value: '' },
-                  ...activeBudget.budget_categories.map(({ name }) => ({
-                    label: name,
-                    value: name,
+                  ...activeBudget.budget_categories.map((category) => ({
+                    label: categories.find((cat) => cat.id === category.category_id)?.name || '',
+                    value: categories.find((cat) => cat.id === category.category_id)?.id || '',
                   })),
                 ]}
-                {...register('category', {
+                {...register('category_id', {
                   required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
                 })}
               />
@@ -231,7 +236,7 @@ const ExpensesForm = () => {
                 <Icon SvgIcon={ChevronDownIcon} isBorderless />
               </span>
             </div>
-            {errors.category && <ErrorMessage error={errors.category.message} />}
+            {errors.category_id && <ErrorMessage error={errors.category_id.message} />}
           </div>
           <div className="flex w-full flex-col gap-2">
             <label htmlFor="expenses-amount">Amount:</label>

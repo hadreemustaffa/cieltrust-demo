@@ -1,8 +1,3 @@
-import 'react-loading-skeleton/dist/skeleton.css';
-
-import { useEffect, useState } from 'react';
-import Skeleton from 'react-loading-skeleton';
-
 import AccountOverviewCard from './account-overview-card';
 
 import { useOverview } from '@/hooks/use-overview';
@@ -11,7 +6,6 @@ import { Overview } from '@/routes/dashboard/account-overview/account-overview.t
 
 export default function AccountOverview() {
   const { overview } = useOverview();
-  const [isLoading, setIsLoading] = useState(true);
   const { session } = useSession();
 
   const isAnonymousUser = session?.user?.is_anonymous;
@@ -23,23 +17,6 @@ export default function AccountOverview() {
 
     return overview.previous_month?.[value] || 0;
   };
-
-  useEffect(() => {
-    if (overview) {
-      setIsLoading(false);
-    }
-  }, [overview]);
-
-  if (isLoading) {
-    return (
-      <div className="grid grid-cols-1 gap-4 rounded-md border border-accent/10 p-4 text-left md:grid-cols-2 2xl:grid-cols-4">
-        <Skeleton height={125} containerClassName="rounded-md" />
-        <Skeleton height={125} containerClassName="rounded-md" />
-        <Skeleton height={125} containerClassName="rounded-md" />
-        <Skeleton height={125} containerClassName="rounded-md" />
-      </div>
-    );
-  }
 
   return (
     <div className="grid grid-cols-1 rounded-md text-left sm:border sm:border-accent/10 sm:p-4">

@@ -9,34 +9,39 @@ import supabase from '@/utils/supabase';
 interface AddTransactionProps {
   dashboardId: number | null;
   budgetTables: Table[];
+  categories: Category[];
   setBudgetTables: React.Dispatch<React.SetStateAction<Table[]>>;
   setOverview: React.Dispatch<React.SetStateAction<Overview>>;
   setHistory: React.Dispatch<React.SetStateAction<Transaction[]>>;
   transactionType: FormData['transactionType'];
   date: FormData['date'];
   from: IncomeFormData['from'];
-  savings: IncomeFormData['savings'];
+  percent_saved: IncomeFormData['percent_saved'];
   amount: IncomeFormData['amount'] | ExpensesFormData['amount'];
   reference?: FormData['reference'];
-  budget?: ExpensesFormData['budget'];
-  category?: ExpensesFormData['category'];
+  budget_id?: ExpensesFormData['budget_id'];
+  category_id?: ExpensesFormData['category_id'];
 }
 
 export const addTransaction = async ({
   dashboardId,
   transactionType,
   budgetTables,
+  categories,
   setBudgetTables,
   setOverview,
   setHistory,
   date,
   from,
-  savings,
+  percent_saved,
   amount,
   reference,
-  budget,
-  category,
+  budget_id,
+  category_id,
 }: AddTransactionProps) => {
+  const budgetTableName = budgetTables.find((table) => table.id === Number(budget_id))?.name;
+  const categoryName = categories.find((cat) => cat.id === Number(category_id))?.name;
+
   try {
     const { data, error } = await supabase
       .from('transactions')
@@ -45,12 +50,12 @@ export const addTransaction = async ({
           dashboard_id: dashboardId,
           type: transactionType,
           transaction_date: date,
-          from_source: from,
-          savings: savings,
+          from: from,
+          percent_saved: percent_saved,
           amount: amount,
           reference: reference,
-          budget: budget,
-          category: category,
+          budget: budgetTableName,
+          category: categoryName,
         },
       ])
       .select()
@@ -60,9 +65,9 @@ export const addTransaction = async ({
       if (transactionType === 'income') {
         setOverview((prevOverview) => ({
           ...prevOverview,
-          balance: prevOverview.balance + Number(amount) - (Number(savings) / 100) * Number(amount),
+          balance: prevOverview.balance + Number(amount) - (Number(percent_saved) / 100) * Number(amount),
           income: prevOverview.income + Number(amount),
-          savings: prevOverview.savings + (Number(savings) / 100) * Number(amount),
+          savings: prevOverview.savings + (Number(percent_saved) / 100) * Number(amount),
         }));
 
         setHistory((prevHistory) => [
@@ -71,8 +76,8 @@ export const addTransaction = async ({
             type: 'income',
             id: data.id,
             transaction_date: date,
-            from_source: from,
-            savings: Number(savings),
+            from: from,
+            savings: Number(percent_saved),
             amount: Number(amount),
             reference: reference,
           },
@@ -80,11 +85,9 @@ export const addTransaction = async ({
       }
 
       if (transactionType === 'expenses') {
-        const foundCategory = budgetTables
-          .flatMap((table: Table) => table.budget_categories)
-          .find((cat: Category) => cat.name === category);
-
-        const categoryId = foundCategory?.id;
+        const foundTable = budgetTables.find((table) => table.id === Number(budget_id));
+        const foundCategory = foundTable?.budget_categories.find((cat) => cat.category_id === Number(category_id));
+        const categoryId = foundCategory?.category_id;
         const categorySpent = Number(foundCategory?.spent || 0);
         const newAmount = Number(amount);
 
@@ -93,15 +96,21 @@ export const addTransaction = async ({
           .update({
             spent: categorySpent + newAmount,
           })
-          .eq('id', categoryId)
+          .eq('category_id', categoryId)
           .select();
 
         setBudgetTables(
           budgetTables.map((table) => ({
             ...table,
-            budget_categories: table.budget_categories.flatMap((cat) =>
-              cat.id === categoryId ? [{ ...cat, spent: Number(cat.spent || 0) + newAmount }] : [cat],
-            ),
+            budget_categories: table.budget_categories.map((cat) => {
+              if (cat.category_id === categoryId) {
+                return {
+                  ...cat,
+                  spent: Number(cat.spent) + newAmount,
+                };
+              }
+              return cat;
+            }),
           })),
         );
 
@@ -111,15 +120,15 @@ export const addTransaction = async ({
           expenses: prevOverview.expenses + Number(amount),
         }));
 
-        if (budget && category) {
+        if (budget_id && category_id) {
           setHistory((prevHistory) => [
             ...prevHistory,
             {
               type: 'expenses',
               id: data.id,
               transaction_date: date,
-              budget: budget,
-              category: category,
+              budget: budgetTableName || '',
+              category: categoryName || '',
               amount: Number(amount),
               reference: reference,
             },

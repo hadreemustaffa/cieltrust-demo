@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useBudgetTables } from '@/hooks/use-budget-tables';
+import { useCategories } from '@/hooks/use-categories';
 import { BudgetTableCategoryProps } from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
 
@@ -11,10 +12,12 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
   const nameRef = useRef<HTMLParagraphElement>(null);
   const thRef = useRef<HTMLTableCellElement>(null);
   const { setBudgetTables } = useBudgetTables();
+  const { categories } = useCategories();
 
   const spent = category.spent || 0;
   const remaining = budgetAmount - spent;
   const isOverBudget = spent > budgetAmount;
+  const categoryName = categories.find((cat) => cat.id === category.category_id)?.name || '';
 
   const { register, handleSubmit } = useForm({
     defaultValues: {
@@ -37,7 +40,8 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
       const { data: updatedData, error } = await supabase
         .from('budget_categories')
         .update({ amount: newAmount })
-        .eq('id', category.id)
+        .eq('budget_id', category.budget_id)
+        .eq('category_id', category.category_id)
         .select();
 
       if (error) {
@@ -50,14 +54,14 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
 
         setBudgetTables((prevTables) =>
           prevTables.map((table) => {
-            if (!table.budget_categories.some((cat) => cat.id === category.id)) {
+            if (table.id !== category.budget_id) {
               return table;
             }
 
             return {
               ...table,
               budget_categories: table.budget_categories.map((cat) =>
-                cat.id === category.id ? { ...cat, amount: newAmount } : cat,
+                cat.category_id === category.category_id ? { ...cat, amount: newAmount } : cat,
               ),
             };
           }),
@@ -87,7 +91,7 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
 
   return (
     <tr
-      key={category.id}
+      key={category.category_id}
       className="grid min-w-[500px] grid-cols-4 items-center justify-between border-b border-accent/10 last:border-b-0 last-of-type:last:border-r-0 sm:w-full"
     >
       <th
@@ -103,7 +107,7 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
               : ''
           }
         >
-          {category.name}
+          {categoryName}
         </p>
       </th>
 
