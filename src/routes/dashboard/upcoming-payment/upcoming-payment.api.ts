@@ -1,53 +1,47 @@
-import React from 'react';
-
-import { Table } from '@/routes/dashboard/budget/budget.types';
 import {
-  AddUpcomingPaymentFormProps,
+  AddUpcomingPaymentFormData,
   DeleteUpcomingPaymentProps,
-  EditUpcomingPaymentFormProps,
+  EditUpcomingPaymentFormData,
+  UpcomingPayment,
 } from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
 import supabase from '@/utils/supabase';
 
 export const addUpcomingPayment = async ({
-  id,
+  dashboard_id,
   name,
   amount,
+  date,
   recurrence,
-  start_date,
-  setBudgetTablesProvider,
-}: AddUpcomingPaymentFormProps & { setBudgetTablesProvider: React.Dispatch<React.SetStateAction<Table[]>> }) => {
+  state,
+}: AddUpcomingPaymentFormData) => {
   try {
-    const { data: budgetData, error: budgetError } = await supabase
-      .from('budget')
+    const { data, error } = await supabase
+      .from('upcoming_payment')
       .insert({
-        dashboard_id: id,
+        dashboard_id: dashboard_id,
         name: name,
+        date: date,
         amount: amount,
-        is_recurring: true,
         recurrence: recurrence,
-        start_date: start_date,
       })
       .select()
       .single();
 
-    if (budgetError) {
-      console.log('Error inserting budget:', budgetError);
-      throw budgetError;
+    if (error) {
+      console.log('Error inserting budget:', error);
+      throw error;
     }
 
-    if (budgetData) {
-      const newBudgetTable = {
-        id: budgetData.id,
-        name: budgetData.name,
-        budget_categories: [],
-        amount: budgetData.amount,
-        remaining: budgetData.amount,
-        is_recurring: true,
-        recurrence: budgetData.recurrence,
-        start_date: budgetData.start_date,
+    if (data) {
+      const newUpcomingPayment: UpcomingPayment = {
+        id: data.id,
+        name: data.name,
+        date: data.date,
+        amount: data.amount,
+        recurrence: data.recurrence,
       };
 
-      setBudgetTablesProvider((prevTables) => [...prevTables, newBudgetTable]);
+      state((prevPayments) => [...prevPayments, newUpcomingPayment]);
     }
   } catch (error) {
     console.error('Error inserting budget and categories:', error);
@@ -55,60 +49,56 @@ export const addUpcomingPayment = async ({
 };
 
 export const editUpcomingPayment = async ({
+  dashboard_id,
   id,
   name,
   amount,
+  date,
   recurrence,
-  start_date,
-  setBudgetTablesProvider,
-}: EditUpcomingPaymentFormProps & { setBudgetTablesProvider: React.Dispatch<React.SetStateAction<Table[]>> }) => {
+  state,
+}: EditUpcomingPaymentFormData) => {
   try {
-    const { data: budgetData, error: budgetError } = await supabase
-      .from('budget')
+    const { data, error } = await supabase
+      .from('upcoming_payment')
       .update({
         name: name,
         amount: amount,
-        is_recurring: true,
+        date: date,
         recurrence: recurrence,
-        start_date: start_date,
       })
       .select()
-      .eq('id', id);
+      .eq('id', id)
+      .eq('dashboard_id', dashboard_id);
 
-    if (budgetError) {
-      console.log('Error updating budget:', budgetError);
-      throw budgetError;
+    if (error) {
+      console.log('Error updating payment details:', error);
+      throw error;
     }
 
-    if (budgetData) {
-      setBudgetTablesProvider((prevTables) =>
-        prevTables.map((table) =>
-          table.id === id
+    if (data) {
+      state((prevPayments) =>
+        prevPayments.map((payment) =>
+          payment.id === id
             ? {
-                ...table,
+                ...payment,
                 name: name,
                 amount: amount,
-                is_recurring: true,
+                date: date,
                 recurrence: recurrence,
-                start_date: start_date,
-                budget_categories: [],
               }
-            : table,
+            : payment,
         ),
       );
     }
   } catch (error) {
-    console.error('Error updating budget:', error);
+    console.error('Error updating payment:', error);
   }
 };
 
-export const deleteUpcomingPayment = async ({
-  id,
-  setBudgetTablesProvider,
-}: DeleteUpcomingPaymentProps & { setBudgetTablesProvider: React.Dispatch<React.SetStateAction<Table[]>> }) => {
+export const deleteUpcomingPayment = async ({ id, state }: DeleteUpcomingPaymentProps) => {
   try {
-    await supabase.from('budget').delete().eq('id', id);
-    setBudgetTablesProvider((prevTables) => prevTables.filter((table) => table.id !== id));
+    await supabase.from('upcoming_payment').delete().eq('id', id);
+    state((prevPayments) => prevPayments.filter((payment) => payment.id !== id));
   } catch (error) {
     console.error('Error deleting budget:', error);
   }

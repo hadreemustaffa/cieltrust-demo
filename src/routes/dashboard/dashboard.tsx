@@ -16,30 +16,30 @@ import ManageCategories from '@/routes/dashboard/manage-categories/manage-catego
 import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
 import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 import TransactionHistory from '@/routes/dashboard/transaction-history/transaction-history';
-import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
-import UpcomingPayment from '@/routes/dashboard/upcoming-payment/upcoming-payment';
+import UpcomingPayments from '@/routes/dashboard/upcoming-payment/upcoming-payment';
+import { UpcomingPayment } from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
 import VisualChart from '@/routes/dashboard/visual-chart/visual-chart';
 import supabase from '@/utils/supabase';
 
 interface DashboardProps {
-  id: number;
+  dashboard_id: number;
   budget: Table[];
   saving_goals: SavingGoalsFormProps[];
   overview: Overview[];
   categories: Category[];
-  transactions: Transaction[];
+  upcoming_payment: UpcomingPayment[];
 }
 
-const saving_goals = 'saving_goals:saving_goals(*)';
-const budget = 'budget:budget(*, budget_categories(id, budget_id, name, spent, amount))';
-const overview = 'overview:overview(*)';
-const categories = 'categories:categories(*)';
-const transactions = 'transactions:transactions(*)';
+const saving_goals = 'saving_goals(*)';
+const budget = 'budget(*, budget_categories(*))';
+const overview = 'overview(*)';
+const categories = 'categories(*)';
+const upcoming_payment = 'upcoming_payment(*)';
 
 async function loader() {
   const { data, error } = await supabase
-    .from('dashboard')
-    .select(`id, ${saving_goals}, ${budget}, ${overview}, ${categories}, ${transactions}`)
+    .from('users')
+    .select(`dashboard_id, ${saving_goals}, ${budget}, ${overview}, ${categories}, ${upcoming_payment}`)
     .single();
 
   if (error) throw new Error('Failed to fetch dashboard data');
@@ -50,20 +50,20 @@ async function loader() {
 
 export default function Dashboard() {
   const { setDashboardId } = useDashboard();
-  const data = useLoaderData() as DashboardProps | undefined;
+  const data = useLoaderData() as DashboardProps;
 
   useEffect(() => {
-    if (data?.id) setDashboardId(data.id);
-  }, [data?.id, setDashboardId]);
-
-  if (!data) return <div>No dashboard data found.</div>;
+    if (data?.dashboard_id) {
+      setDashboardId(data.dashboard_id);
+    }
+  }, [data?.dashboard_id, setDashboardId]);
 
   return (
     <ModalProvider>
-      <CategoriesProvider initialCategories={data.categories || []}>
-        <BudgetTablesProvider initialBudgetTables={data?.budget}>
-          <OverviewProvider initialOverview={data?.overview[0]}>
-            <TransactionHistoryProvider initialHistory={data?.transactions}>
+      <CategoriesProvider initialCategories={data.categories}>
+        <BudgetTablesProvider initialBudgetTables={data.budget}>
+          <OverviewProvider initialOverview={data.overview[0]}>
+            <TransactionHistoryProvider>
               <div className="my-auto flex flex-col gap-4 text-left">
                 <div className="flex flex-row gap-2 self-end">
                   <ManageCategories />
@@ -73,10 +73,10 @@ export default function Dashboard() {
                 <AccountOverview />
 
                 <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                  <UpcomingPayment />
+                  <UpcomingPayments initialUpcomingPayments={data.upcoming_payment} />
                   <Budget />
                   <VisualChart />
-                  <SavingGoals data={data?.saving_goals} />
+                  <SavingGoals data={data.saving_goals} />
                 </div>
               </div>
             </TransactionHistoryProvider>

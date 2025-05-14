@@ -13,9 +13,7 @@ export const addBudgetTable = async ({
   id,
   name,
   amount,
-  recurrence,
   addCategories,
-  fields,
   setBudgetTablesProvider,
 }: AddBudgetFormProps & { setBudgetTablesProvider: React.Dispatch<React.SetStateAction<Table[]>> }) => {
   try {
@@ -25,8 +23,6 @@ export const addBudgetTable = async ({
         dashboard_id: id,
         name: name,
         amount: amount,
-        is_recurring: false,
-        recurrence: recurrence,
       })
       .select()
       .single();
@@ -38,16 +34,16 @@ export const addBudgetTable = async ({
 
     const selectedCategories = (addCategories ?? [])
       .filter((category) => category.selected)
-      .map((category) => category.name);
+      .map((category) => category.id);
 
     const { data: categoryData, error: categoryError } = await supabase
       .from('budget_categories')
       .insert(
-        fields
-          ?.filter((category) => selectedCategories.includes(category.name))
+        addCategories
+          ?.filter((category) => selectedCategories.includes(category.id))
           .map((category) => ({
             budget_id: budgetData.id,
-            name: category.name,
+            category_id: category.id,
           })),
       )
       .select();
@@ -64,9 +60,6 @@ export const addBudgetTable = async ({
         budget_categories: categoryData,
         amount: budgetData.amount,
         remaining: budgetData.amount,
-        is_recurring: false,
-        recurrence: budgetData.recurrence,
-        start_date: budgetData.start_date,
       };
 
       setBudgetTablesProvider((prevTables) => [...prevTables, newBudgetTable]);
@@ -80,8 +73,6 @@ export const editBudgetTable = async ({
   id,
   name,
   amount,
-  recurrence,
-  start_date,
   editCategories,
   state,
   setBudgetTablesProvider,
@@ -92,9 +83,6 @@ export const editBudgetTable = async ({
       .update({
         name: name,
         amount: amount,
-        is_recurring: false,
-        recurrence: recurrence,
-        start_date: start_date,
       })
       .select()
       .eq('id', id);
@@ -106,17 +94,17 @@ export const editBudgetTable = async ({
 
     const selectedCategories = (editCategories ?? [])
       .filter((category) => category.selected)
-      .map((category) => category.name);
+      .map((category) => category.id);
 
     const tableCategories = (state ?? [])
       .filter((table) => table.id === id)
-      .flatMap((table) => table.budget_categories.map((category) => category.name));
+      .flatMap((table) => table.budget_categories.map((category) => category.category_id));
 
     const newCategoriesMap = selectedCategories
       .filter((category) => !tableCategories?.includes(category))
       .map((category) => ({
         budget_id: id,
-        name: category,
+        category_id: category,
         amount: 0,
         spent: 0,
       }));
@@ -134,16 +122,15 @@ export const editBudgetTable = async ({
     const removedCategories = tableCategories
       .filter((category) => !selectedCategories.includes(category))
       .map((category) => ({
-        budget_id: id,
-        name: category,
+        category_id: category,
       }));
 
     const { error: removeError } = await supabase
       .from('budget_categories')
       .delete()
       .in(
-        'name',
-        removedCategories.map((category) => category.name),
+        'category_id',
+        removedCategories.map((category) => category.category_id),
       )
       .eq('budget_id', id);
 
@@ -160,11 +147,9 @@ export const editBudgetTable = async ({
                 ...table,
                 name: name,
                 amount: amount,
-                is_recurring: false,
-                recurrence: recurrence,
                 budget_categories: [
                   ...table.budget_categories.filter(
-                    (category) => !removedCategories.some((removed) => removed.name === category.name),
+                    (category) => !removedCategories.some((removed) => removed.category_id === category.category_id),
                   ),
                   ...categoryData.map((newCategory: Category) => ({
                     ...newCategory,

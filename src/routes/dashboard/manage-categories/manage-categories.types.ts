@@ -6,7 +6,6 @@ export interface CategoryItemProps {
   category: Category;
   tables: Table[];
   dashboardId: number | null;
-  onDelete: (category: Category) => void;
 }
 
 export interface addCategoryProps {
@@ -18,7 +17,6 @@ export interface addCategoryProps {
 export interface updateCategoryProps {
   category: Category;
   dashboardId: number | null;
-  tables: Table[];
   name: string;
   setState: (value: React.SetStateAction<string>) => void;
 }

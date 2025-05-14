@@ -1,10 +1,8 @@
 import { useFormContext } from 'react-hook-form';
 
 import { ButtonPrimary } from '@/components/button';
-import { Input, Select } from '@/components/forms/custom-form';
-import Icon from '@/components/icon';
+import { Input } from '@/components/forms/custom-form';
 import { ERROR_MSG } from '@/data/errorMessages';
-import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 import { AddBudgetFormProps, BudgetTableFormProps, EditBudgetFormProps } from '@/routes/dashboard/budget/budget.types';
 
 export default function BudgetTableForm({ table, tables, onSubmit, children, variant }: BudgetTableFormProps) {
@@ -72,27 +70,6 @@ export default function BudgetTableForm({ table, tables, onSubmit, children, var
             />
 
             {errors.amount && <p className="text-sm text-red-500">{errors.amount.message}</p>}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="budgetRecurrence" className="text-sm">
-              Recurrence
-            </label>
-
-            <div className="relative">
-              <Select
-                id="budgetRecurrence"
-                {...register('recurrence')}
-                defaultValue={'Monthly'}
-                options={[
-                  { label: 'Monthly', value: 'Monthly' },
-                  { label: 'Weekly', value: 'Weekly' },
-                ]}
-              />
-              <span className="absolute right-2 top-1/2 -translate-y-1/2">
-                <Icon SvgIcon={ChevronDownIcon} isBorderless />
-              </span>
-            </div>
           </div>
         </div>
 
@@ -164,27 +141,6 @@ export default function BudgetTableForm({ table, tables, onSubmit, children, var
             />
 
             {editErrors.amount && <p className="text-sm text-red-500">{editErrors.amount.message}</p>}
-          </div>
-
-          <div className="flex flex-col gap-2">
-            <label htmlFor="budgetRecurrence" className="text-sm">
-              Recurrence
-            </label>
-
-            <div className="relative">
-              <Select
-                id="budgetRecurrence"
-                {...editRegister('recurrence')}
-                defaultValue={table.recurrence}
-                options={[
-                  { label: 'Monthly', value: 'Monthly' },
-                  { label: 'Weekly', value: 'Weekly' },
-                ]}
-              />
-              <span className="absolute right-2 top-1/2 -translate-y-1/2">
-                <Icon SvgIcon={ChevronDownIcon} isBorderless />
-              </span>
-            </div>
           </div>
         </div>
 
