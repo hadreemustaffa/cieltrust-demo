@@ -1,10 +1,11 @@
 import React from 'react';
 
+import supabase from '@/utils/supabase';
+
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
 import { ExpensesFormData, FormData, IncomeFormData } from '@/routes/dashboard/add-transaction/add-transaction.types';
 import { Category, Table } from '@/routes/dashboard/budget/budget.types';
 import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
-import supabase from '@/utils/supabase';
 
 interface AddTransactionProps {
   dashboardId: number | null;

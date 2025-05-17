@@ -1,10 +1,11 @@
+import supabase from '@/utils/supabase';
+
 import {
   AddUpcomingPaymentFormData,
   DeleteUpcomingPaymentProps,
   EditUpcomingPaymentFormData,
   UpcomingPayment,
 } from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
-import supabase from '@/utils/supabase';
 
 export const addUpcomingPayment = async ({
   dashboard_id,

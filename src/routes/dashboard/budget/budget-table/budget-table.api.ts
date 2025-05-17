@@ -1,8 +1,9 @@
 import React from 'react';
 
+import supabase from '@/utils/supabase';
+
 import { DeleteBudgetTableData, EditBudgetTableFormData, Table } from '@/routes/dashboard/budget/budget.types';
 import { Category } from '@/routes/dashboard/categories/categories.types';
-import supabase from '@/utils/supabase';
 
 export const editBudgetTable = async ({
   id,

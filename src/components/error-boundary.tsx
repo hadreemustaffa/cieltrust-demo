@@ -1,8 +1,9 @@
 import { useRouteError } from 'react-router';
 
+import AlertCircleIcon from '@/images/icons/alert-circle.svg?react';
+
 import { LinkButtonPrimary } from '@/components/button';
 import Icon from '@/components/icon';
-import AlertCircleIcon from '@/images/icons/alert-circle.svg?react';
 
 export default function ErrorBoundary() {
   const error = useRouteError();

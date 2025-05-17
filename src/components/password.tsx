@@ -1,11 +1,13 @@
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import ErrorMessage from '@/components/error-message';
+import { Input } from '@/components/forms/custom-form';
+
 import EyeOffIcon from '../images/icons/eye-off.svg?react';
 import EyeIcon from '../images/icons/eye.svg?react';
 
-import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom-form';
+
 import { ERROR_MSG } from '@/data/errorMessages';
 
 export interface PasswordInputProps {

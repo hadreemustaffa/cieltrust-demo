@@ -1,12 +1,3 @@
-import { LinkButtonPrimary, LinkButtonSecondary } from '@/components/button';
-import FaqSection from '@/components/faq';
-import Icon from '@/components/icon';
-import OpenAccountBanner from '@/components/open-account-banner';
-import TabSection from '@/components/tab-section/tab-section';
-import { TabSectionTitle } from '@/components/tab-section/tab-section-title';
-import Testimonials from '@/components/testimonials';
-import { features } from '@/data/features';
-import { products } from '@/data/products';
 import ArrowUpIcon from '@/images/icons/arrow-up.svg?react';
 import BarChartIcon from '@/images/icons/bar-chart.svg?react';
 import BookOpenIcon from '@/images/icons/book-open.svg?react';
@@ -16,6 +7,17 @@ import ClockIcon from '@/images/icons/clock.svg?react';
 import CreditCardIcon from '@/images/icons/credit-card.svg?react';
 import GlobeIcon from '@/images/icons/globe.svg?react';
 import HomeIcon from '@/images/icons/home.svg?react';
+
+import { LinkButtonPrimary, LinkButtonSecondary } from '@/components/button';
+import FaqSection from '@/components/faq';
+import Icon from '@/components/icon';
+import OpenAccountBanner from '@/components/open-account-banner';
+import TabSection from '@/components/tab-section/tab-section';
+import { TabSectionTitle } from '@/components/tab-section/tab-section-title';
+import Testimonials from '@/components/testimonials';
+
+import { features } from '@/data/features';
+import { products } from '@/data/products';
 
 export default function Home() {
   return (

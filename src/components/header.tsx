@@ -1,14 +1,17 @@
 import { ReactElement, useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 
+import MenuIcon from '@/images/icons/menu.svg?react';
+import XIcon from '@/images/icons/x.svg?react';
+
+import useOutsideClick from '@/hooks/use-outside-click';
+import { useSession } from '@/hooks/use-session';
+
 import { ButtonSecondary, LinkButtonPrimary, LinkButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
 import NavLinks from '@/components/nav-links';
 import ThemeToggle from '@/components/theme-toggle';
-import useOutsideClick from '@/hooks/use-outside-click';
-import { useSession } from '@/hooks/use-session';
-import MenuIcon from '@/images/icons/menu.svg?react';
-import XIcon from '@/images/icons/x.svg?react';
+
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);

@@ -1,8 +1,9 @@
-import Icon from '@/components/icon';
-import Tooltip from '@/components/tooltip';
 import CreditCardIcon from '@/images/icons/credit-card.svg?react';
 import TrendingDownIcon from '@/images/icons/trending-down.svg?react';
 import TrendingUpIcon from '@/images/icons/trending-up.svg?react';
+
+import Icon from '@/components/icon';
+import Tooltip from '@/components/tooltip';
 import { AccountOverviewCardProps } from '@/routes/dashboard/account-overview/account-overview.types';
 
 export default function AccountOverviewCard({

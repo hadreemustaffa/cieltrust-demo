@@ -1,21 +1,23 @@
 import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { ButtonDelete, ButtonSecondary } from '@/components/button';
-import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom-form';
-import Icon from '@/components/icon';
-import Modal from '@/components/modal';
-import { useBudgetTables } from '@/hooks/use-budget-tables';
-import { useCategories } from '@/hooks/use-categories';
-import { useDashboard } from '@/hooks/use-dashboard';
-import { useModal } from '@/hooks/use-modal';
 import CheckIcon from '@/images/icons/check.svg?react';
 import EditIcon from '@/images/icons/edit.svg?react';
 import ListIcon from '@/images/icons/list.svg?react';
 import PlusIcon from '@/images/icons/plus.svg?react';
 import TrashIcon from '@/images/icons/trash.svg?react';
 import XIcon from '@/images/icons/x.svg?react';
+
+import { useBudgetTables } from '@/hooks/use-budget-tables';
+import { useCategories } from '@/hooks/use-categories';
+import { useDashboard } from '@/hooks/use-dashboard';
+import { useModal } from '@/hooks/use-modal';
+
+import { ButtonDelete, ButtonSecondary } from '@/components/button';
+import ErrorMessage from '@/components/error-message';
+import { Input } from '@/components/forms/custom-form';
+import Icon from '@/components/icon';
+import Modal from '@/components/modal';
 import { Category } from '@/routes/dashboard/budget/budget.types';
 import {
   addNewCategory,

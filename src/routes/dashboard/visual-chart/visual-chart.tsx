@@ -14,14 +14,18 @@ import isBetween from 'dayjs/plugin/isBetween';
 import { useMemo, useState } from 'react';
 import { Line } from 'react-chartjs-2';
 
+import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
+
+import formatNum from '@/utils/formatNum';
+import { generateChartData } from '@/utils/generateChartData';
+
+import { useTransactionHistory } from '@/hooks/use-transaction-history';
+
 import { ButtonSecondary } from '@/components/button';
 import { Select } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
-import { useTransactionHistory } from '@/hooks/use-transaction-history';
-import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 import { PERIODS, TimePeriod } from '@/routes/dashboard/visual-chart/visual-chart.types';
-import formatNum from '@/utils/formatNum';
-import { generateChartData } from '@/utils/generateChartData';
+
 
 dayjs.extend(isBetween);
 

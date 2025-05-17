@@ -1,13 +1,14 @@
 import { Link } from 'react-router-dom';
 
-import { ButtonTertiary, LinkButtonSecondary } from '@/components/button';
-import Icon from '@/components/icon';
-import NavLinks from '@/components/nav-links';
 import FacebookIcon from '@/images/icons/facebook.svg?react';
 import MailIcon from '@/images/icons/mail.svg?react';
 import MapPinIcon from '@/images/icons/map-pin.svg?react';
 import PhoneIcon from '@/images/icons/phone.svg?react';
 import TwitterIcon from '@/images/icons/twitter.svg?react';
+
+import { ButtonTertiary, LinkButtonSecondary } from '@/components/button';
+import Icon from '@/components/icon';
+import NavLinks from '@/components/nav-links';
 
 export default function Footer() {
   return (

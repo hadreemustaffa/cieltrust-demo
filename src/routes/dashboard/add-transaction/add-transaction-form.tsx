@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm, useFormContext } from 'react-hook-form';
 
-import { ButtonSecondary } from '@/components/button';
-import ErrorMessage from '@/components/error-message';
-import { Input, Select } from '@/components/forms/custom-form';
-import Icon from '@/components/icon';
-import { ERROR_MSG } from '@/data/errorMessages';
+import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
+
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useCategories } from '@/hooks/use-categories';
 import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
 import { useOverview } from '@/hooks/use-overview';
 import { useTransactionHistory } from '@/hooks/use-transaction-history';
-import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
+
+import { ButtonSecondary } from '@/components/button';
+import ErrorMessage from '@/components/error-message';
+import { Input, Select } from '@/components/forms/custom-form';
+import Icon from '@/components/icon';
 import { addTransaction } from '@/routes/dashboard/add-transaction/add-transaction.api';
 import { ExpensesFormData, FormData, IncomeFormData } from '@/routes/dashboard/add-transaction/add-transaction.types';
+
+import { ERROR_MSG } from '@/data/errorMessages';
 
 export default function AddTransactionForm() {
   const [transactionType, setTransactionType] = useState<FormData['transactionType']>('income');

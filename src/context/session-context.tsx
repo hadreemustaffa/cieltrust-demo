@@ -1,8 +1,9 @@
 import { Session } from '@supabase/supabase-js';
 import React, { useEffect, useState } from 'react';
 
-import { SessionContext } from '@/hooks/use-session';
 import supabase from '@/utils/supabase';
+
+import { SessionContext } from '@/hooks/use-session';
 
 type Props = { children: React.ReactNode };
 

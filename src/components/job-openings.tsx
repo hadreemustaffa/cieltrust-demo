@@ -1,9 +1,11 @@
 import React from 'react';
 
+import Briefcase from '@/images/icons/briefcase.svg?react';
+
 import { LinkButtonPrimary } from '@/components/button';
 import Icon from '@/components/icon';
+
 import { jobOpenings } from '@/data/jobOpenings';
-import Briefcase from '@/images/icons/briefcase.svg?react';
 
 type JobArticleProps = {
   title: string;

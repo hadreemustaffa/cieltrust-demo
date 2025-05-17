@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react';
 
 import { CategoriesContext } from '@/hooks/use-categories';
+
 import { Category } from '@/routes/dashboard/budget/budget.types';
 
 export const CategoriesProvider = ({

@@ -1,5 +1,6 @@
-import Icon from '@/components/icon';
 import AlertCircleIcon from '@/images/icons/alert-circle.svg?react';
+
+import Icon from '@/components/icon';
 
 type Error = {
   error: string | undefined;

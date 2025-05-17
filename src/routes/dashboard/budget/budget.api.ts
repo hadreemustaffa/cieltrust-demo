@@ -1,7 +1,8 @@
 import React from 'react';
 
-import { AddBudgetTableFormData, Table } from '@/routes/dashboard/budget/budget.types';
 import supabase from '@/utils/supabase';
+
+import { AddBudgetTableFormData, Table } from '@/routes/dashboard/budget/budget.types';
 
 export const addBudgetTable = async ({
   id,

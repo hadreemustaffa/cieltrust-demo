@@ -1,6 +1,7 @@
 import { ReactNode, useState } from 'react';
 
 import { BudgetTablesContext } from '@/hooks/use-budget-tables';
+
 import { Table } from '@/routes/dashboard/budget/budget.types';
 
 export const BudgetTablesProvider = ({

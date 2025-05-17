@@ -1,9 +1,10 @@
 import React, { useEffect, useRef, useState } from 'react';
 
-import Icon from '@/components/icon';
 import EditIcon from '@/images/icons/edit.svg?react';
 import MoreHorizontalIcon from '@/images/icons/more-horizontal.svg?react';
 import TrashIcon from '@/images/icons/trash.svg?react';
+
+import Icon from '@/components/icon';
 
 interface MoreMenuProps {
   onEdit: () => void;

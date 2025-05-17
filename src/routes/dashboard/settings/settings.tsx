@@ -2,17 +2,22 @@ import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { redirect } from 'react-router';
 
-import { deleteUser } from '@/actions/delete';
-import { logout } from '@/actions/logout';
+import AlertTriangleIcon from '@/images/icons/alert-triangle.svg?react';
+import XIcon from '@/images/icons/x.svg?react';
+
+import supabase from '@/utils/supabase';
+
+import { useSession } from '@/hooks/use-session';
+
 import { ButtonDelete, ButtonPrimary, ButtonSecondary, ButtonTertiary } from '@/components/button';
 import ErrorMessage from '@/components/error-message';
 import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import { PasswordInput } from '@/components/password';
-import { useSession } from '@/hooks/use-session';
-import AlertTriangleIcon from '@/images/icons/alert-triangle.svg?react';
-import XIcon from '@/images/icons/x.svg?react';
-import supabase from '@/utils/supabase';
+
+
+import { deleteUser } from '@/actions/delete';
+import { logout } from '@/actions/logout';
 
 interface SettingsProps {
   firstName: string;

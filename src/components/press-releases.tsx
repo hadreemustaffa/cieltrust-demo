@@ -2,6 +2,7 @@ import React from 'react';
 
 import { LinkButtonTertiary } from '@/components/button';
 import Image from '@/components/image';
+
 import { pressReleases } from '@/data/pressReleases';
 
 type PressReleasesArticleProps = {
