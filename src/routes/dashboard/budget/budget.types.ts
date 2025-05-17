@@ -1,20 +1,20 @@
-import React from 'react';
+import { Categories, CategoriesWithAmount } from '@/routes/dashboard/categories/categories.types';
 
-export interface AddBudgetFormProps {
+export interface AddBudgetTableFormData {
   id: number | null;
   name: string;
   amount: number;
-  categories?: Category[];
+  categories?: Categories;
   new_category?: string;
-  addCategories?: Category[];
+  addCategories?: Categories;
   state?: Table[];
 }
 
-export interface EditBudgetFormProps {
+export interface EditBudgetTableFormData {
   id: number | null;
   name: string;
   amount: number;
-  editCategories?: Category[];
+  editCategories?: Categories;
   state: Table[];
 }
 
@@ -25,49 +25,26 @@ export interface BudgetProps {
 export type Table = {
   id: number;
   name: string;
-  budget_categories: CategoryWithAmount[];
+  budget_categories: CategoriesWithAmount;
   amount: number;
   remaining?: number;
 };
 
 export interface BudgetTableProps {
   table: Table;
-  children: React.ReactNode;
 }
 
-export type BudgetTableFormProps =
-  | {
-      variant: 'add';
-      table?: Table;
-      tables: Table[];
-      onSubmit: (data: AddBudgetFormProps) => void;
-      children: React.ReactNode;
-    }
-  | {
-      variant: 'edit';
-      table: Table;
-      tables: Table[];
-      onSubmit: (data: EditBudgetFormProps) => void;
-      children: React.ReactNode;
-    };
+export interface AddBudgetTableFormProps {
+  tables: Table[];
+  onSubmit: (data: AddBudgetTableFormData) => void;
+}
 
-export interface DeleteBudgetTableProps {
+export interface EditBudgetTableFormProps {
+  table: Table;
+  tables: Table[];
+  onSubmit: (data: EditBudgetTableFormData) => void;
+}
+
+export interface DeleteBudgetTableData {
   id: number | null;
-}
-
-export type Category = {
-  id: number;
-  name: string;
-  selected?: boolean;
-};
-
-export type CategoryWithAmount = Category & {
-  budget_id: number;
-  category_id: number;
-  amount: number;
-  spent: number;
-};
-
-export interface BudgetTableCategoryProps {
-  category: CategoryWithAmount;
 }
