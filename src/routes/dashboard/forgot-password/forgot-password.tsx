@@ -1,17 +1,21 @@
 import { useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { ButtonPrimary, LinkButtonTertiary } from '@/components/button';
-import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom-form';
-import Icon from '@/components/icon';
-import { EMAIL_REGEX } from '@/data/constants';
-import { ERROR_MSG } from '@/data/errorMessages';
 import ArrowUpIcon from '@/images/icons/arrow-up.svg?react';
 import CheckCircleIcon from '@/images/icons/check-circle.svg?react';
 import HomeIcon from '@/images/icons/home.svg?react';
 import LockIcon from '@/images/icons/lock.svg?react';
+
 import supabase from '@/utils/supabase';
+
+import { ButtonPrimary, LinkButtonTertiary } from '@/components/button';
+import ErrorMessage from '@/components/error-message';
+import { Input } from '@/components/forms/custom-form';
+import Icon from '@/components/icon';
+
+import { EMAIL_REGEX } from '@/data/constants';
+import { ERROR_MSG } from '@/data/errorMessages';
+
 
 interface FormData {
   email: string;

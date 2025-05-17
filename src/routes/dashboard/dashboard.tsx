@@ -1,12 +1,16 @@
 import { useEffect } from 'react';
 import { useLoaderData } from 'react-router';
 
+import supabase from '@/utils/supabase';
+
 import { BudgetTablesProvider } from '@/context/budget-tables-context';
 import { CategoriesProvider } from '@/context/categories-context';
 import { ModalProvider } from '@/context/modal-context';
 import { OverviewProvider } from '@/context/overview-context';
 import { TransactionHistoryProvider } from '@/context/transaction-history-context';
+
 import { useDashboard } from '@/hooks/use-dashboard';
+
 import AccountOverview from '@/routes/dashboard/account-overview/account-overview';
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
 import AddTransaction from '@/routes/dashboard/add-transaction/add-transaction';
@@ -19,7 +23,6 @@ import TransactionHistory from '@/routes/dashboard/transaction-history/transacti
 import UpcomingPayments from '@/routes/dashboard/upcoming-payment/upcoming-payment';
 import { UpcomingPayment } from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
 import VisualChart from '@/routes/dashboard/visual-chart/visual-chart';
-import supabase from '@/utils/supabase';
 
 interface DashboardProps {
   dashboard_id: number;

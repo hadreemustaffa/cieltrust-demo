@@ -7,6 +7,7 @@ import SecurityMobileImg from '/images/illustrations/security-illustration-mobil
 import FaqSection from '@/components/faq';
 import Icon from '@/components/icon';
 import Image from '@/components/image';
+
 import { security } from '@/data/security';
 
 export default function Security() {

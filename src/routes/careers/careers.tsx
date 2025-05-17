@@ -4,6 +4,7 @@ import Image from '@/components/image';
 import JobOpenings from '@/components/job-openings';
 import OpenAccountBanner from '@/components/open-account-banner';
 import Testimonials from '@/components/testimonials';
+
 import ArchiveIcon from '@/images/icons/archive.svg?react';
 import ClockIcon from '@/images/icons/clock.svg?react';
 import DollarSignIcon from '@/images/icons/dollar-sign.svg?react';

@@ -1,9 +1,10 @@
+import supabase from '@/utils/supabase';
+
 import {
   addCategoryProps,
   deleteCategoryProps,
   updateCategoryProps,
 } from '@/routes/dashboard/manage-categories/manage-categories.types';
-import supabase from '@/utils/supabase';
 
 export const addNewCategory = async ({ name, dashboardId, setState }: addCategoryProps) => {
   try {

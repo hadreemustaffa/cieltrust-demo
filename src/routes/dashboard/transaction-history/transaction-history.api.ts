@@ -1,10 +1,11 @@
 import React from 'react';
 
+import supabase from '@/utils/supabase';
+
 import {
   DeleteTransactionHistoryProps,
   Transaction,
 } from '@/routes/dashboard/transaction-history/transaction-history.types';
-import supabase from '@/utils/supabase';
 
 export const getTransactionHistory = async ({
   setState,

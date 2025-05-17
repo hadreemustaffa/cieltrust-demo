@@ -2,13 +2,15 @@ import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { useNavigate } from 'react-router';
 
-import { ButtonPrimary, LinkButtonTertiary } from '@/components/button';
-import Icon from '@/components/icon';
-import { PasswordInput } from '@/components/password';
 import AlertTriangleIcon from '@/images/icons/alert-triangle.svg?react';
 import ArrowUpIcon from '@/images/icons/arrow-up.svg?react';
 import HomeIcon from '@/images/icons/home.svg?react';
+
 import supabase from '@/utils/supabase';
+
+import { ButtonPrimary, LinkButtonTertiary } from '@/components/button';
+import Icon from '@/components/icon';
+import { PasswordInput } from '@/components/password';
 
 interface FormData {
   password: string;

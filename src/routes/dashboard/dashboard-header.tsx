@@ -1,15 +1,18 @@
 import { FocusEvent, useEffect, useRef, useState } from 'react';
 import { redirect } from 'react-router';
 
-import { logout } from '@/actions/logout';
-import Icon from '@/components/icon';
-import ThemeToggle from '@/components/theme-toggle';
-import useOutsideClick from '@/hooks/use-outside-click';
-import { useSession } from '@/hooks/use-session';
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 import LogoutIcon from '@/images/icons/log-out.svg?react';
 import SettingsIcon from '@/images/icons/settings.svg?react';
+
+import useOutsideClick from '@/hooks/use-outside-click';
+import { useSession } from '@/hooks/use-session';
+
+import Icon from '@/components/icon';
+import ThemeToggle from '@/components/theme-toggle';
 import Settings from '@/routes/dashboard/settings/settings';
+
+import { logout } from '@/actions/logout';
 
 function DashboardHeader() {
   const [isOpen, setIsOpen] = useState(false);

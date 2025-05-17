@@ -2,11 +2,12 @@ import { Suspense, lazy } from 'react';
 import { SkeletonTheme } from 'react-loading-skeleton';
 import { Navigate, Route, RouterProvider, createBrowserRouter, createRoutesFromElements } from 'react-router-dom';
 
+import { DashboardProvider } from '@/context/dashboard-context';
+import { SessionProvider } from '@/context/session-context';
+
 import ErrorBoundary from '@/components/error-boundary';
 import Layout from '@/components/layout';
 import Loading from '@/components/loading';
-import { DashboardProvider } from '@/context/dashboard-context';
-import { SessionProvider } from '@/context/session-context';
 import Dashboard from '@/routes/dashboard/dashboard';
 import ForgotPassword from '@/routes/dashboard/forgot-password/forgot-password';
 import ResetPassword from '@/routes/dashboard/reset-password/reset-password';

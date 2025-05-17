@@ -1,5 +1,6 @@
-import { AddBudgetTableCategoryFormData } from '@/routes/dashboard/budget/budget-table-category/budget-table-category.types';
 import supabase from '@/utils/supabase';
+
+import { AddBudgetTableCategoryFormData } from '@/routes/dashboard/budget/budget-table-category/budget-table-category.types';
 
 export const updateCategoryAmount = async ({
   amount,

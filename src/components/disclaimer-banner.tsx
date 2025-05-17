@@ -1,5 +1,6 @@
-import Icon from '@/components/icon';
 import AlertCircleIcon from '@/images/icons/alert-circle.svg?react';
+
+import Icon from '@/components/icon';
 
 export default function FormDisclaimerBanner({ disclaimerText }: { disclaimerText: string }) {
   return (

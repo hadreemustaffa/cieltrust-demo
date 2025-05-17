@@ -1,16 +1,22 @@
 import { useEffect } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
+import XIcon from '@/images/icons/x.svg?react';
+
+import supabase from '@/utils/supabase';
+
+import { useModal } from '@/hooks/use-modal';
+
 import { ButtonDelete, ButtonPrimary, ButtonSecondary } from '@/components/button';
 import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import MoreMenu from '@/components/more-menu';
-import { ERROR_MSG } from '@/data/errorMessages';
-import { useModal } from '@/hooks/use-modal';
-import XIcon from '@/images/icons/x.svg?react';
 import { EditGoalFormProps, SavingGoalsItemProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
-import supabase from '@/utils/supabase';
+
+import { ERROR_MSG } from '@/data/errorMessages';
+
+
 
 export default function SavingGoalsItem({
   id,

@@ -1,9 +1,11 @@
 import React, { useEffect, useRef } from 'react';
 
+import XIcon from '@/images/icons/x.svg?react';
+
+import { cn } from '@/utils/cn';
+
 import { ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
-import XIcon from '@/images/icons/x.svg?react';
-import { cn } from '@/utils/cn';
 
 interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
   id: string;

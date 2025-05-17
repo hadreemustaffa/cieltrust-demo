@@ -1,17 +1,19 @@
 import { useFormContext } from 'react-hook-form';
 
+import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
+
 import { ButtonPrimary } from '@/components/button';
 import ErrorMessage from '@/components/error-message';
 import { Input, Select } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
-import { ERROR_MSG } from '@/data/errorMessages';
-import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 import {
   AddUpcomingPaymentFormData,
   AddUpcomingPaymentFormProps,
   EditUpcomingPaymentFormData,
   EditUpcomingPaymentFormProps,
 } from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
+
+import { ERROR_MSG } from '@/data/errorMessages';
 
 export default function AddUpcomingPaymentForm({ upcomingPayments, onSubmit }: AddUpcomingPaymentFormProps) {
   const {

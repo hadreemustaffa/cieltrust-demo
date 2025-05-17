@@ -1,9 +1,10 @@
 // components import
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 
+import { formatStr } from '@/utils/formatStr';
+
 import TabPanelItem from '@/components/tab-section/tab-section-panel-item';
 import { TabSectionProps, TitleProps } from '@/components/tab-section/tab-section.types';
-import { formatStr } from '@/utils/formatStr';
 
 export default function TabSection({ data, hasTitle, isTablistWithTitle, children }: TabSectionProps & TitleProps) {
   return (

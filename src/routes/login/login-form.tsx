@@ -2,11 +2,12 @@ import { useState } from 'react';
 import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
-import { login, loginAnonymously } from '@/actions/login';
 import { ButtonPrimary } from '@/components/button';
 import ErrorMessage from '@/components/error-message';
 import { Input } from '@/components/forms/custom-form';
 import { PasswordInput } from '@/components/password';
+
+import { login, loginAnonymously } from '@/actions/login';
 import { EMAIL_REGEX } from '@/data/constants';
 import { ERROR_MSG } from '@/data/errorMessages';
 

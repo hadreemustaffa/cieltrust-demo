@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 
-import Icon from '@/components/icon';
-import useOutsideClick from '@/hooks/use-outside-click';
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
+
+import useOutsideClick from '@/hooks/use-outside-click';
+
+import Icon from '@/components/icon';
 
 interface CategoriesProps {
   children: React.ReactNode;

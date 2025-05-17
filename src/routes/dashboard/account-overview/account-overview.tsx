@@ -1,8 +1,10 @@
-import AccountOverviewCard from './account-overview-card';
 
 import { useOverview } from '@/hooks/use-overview';
 import { useSession } from '@/hooks/use-session';
+
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
+
+import AccountOverviewCard from './account-overview-card';
 
 export default function AccountOverview() {
   const { overview } = useOverview();

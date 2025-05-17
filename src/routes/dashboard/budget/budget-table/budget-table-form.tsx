@@ -3,7 +3,6 @@ import { useFieldArray, useFormContext } from 'react-hook-form';
 import { ButtonPrimary } from '@/components/button';
 import ErrorMessage from '@/components/error-message';
 import { Input } from '@/components/forms/custom-form';
-import { ERROR_MSG } from '@/data/errorMessages';
 import {
   AddBudgetTableFormData,
   AddBudgetTableFormProps,
@@ -11,6 +10,8 @@ import {
   EditBudgetTableFormProps,
 } from '@/routes/dashboard/budget/budget.types';
 import Categories from '@/routes/dashboard/categories/categories';
+
+import { ERROR_MSG } from '@/data/errorMessages';
 
 export const AddBudgetTableForm = ({ tables, onSubmit }: AddBudgetTableFormProps) => {
   const {

@@ -1,9 +1,10 @@
 import { useCallback, useEffect, useState } from 'react';
 
-import { ButtonSecondary } from '@/components/button';
-import Icon from '@/components/icon';
 import MoonIcon from '@/images/icons/moon.svg?react';
 import SunIcon from '@/images/icons/sun.svg?react';
+
+import { ButtonSecondary } from '@/components/button';
+import Icon from '@/components/icon';
 
 const storageKey = 'theme-preference';
 
