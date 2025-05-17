@@ -3,8 +3,8 @@ import { useForm } from 'react-hook-form';
 
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useCategories } from '@/hooks/use-categories';
-import { BudgetTableCategoryProps } from '@/routes/dashboard/budget/budget.types';
-import supabase from '@/utils/supabase';
+import { updateCategoryAmount } from '@/routes/dashboard/budget/budget-table-category/budget-table-category.api';
+import { BudgetTableCategoryProps } from '@/routes/dashboard/budget/budget-table-category/budget-table-category.types';
 
 export default function BudgetTableCategory({ category }: BudgetTableCategoryProps) {
   const [budgetAmount, setBudgetAmount] = useState(category.amount || 0);
@@ -36,40 +36,12 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
 
     if (newAmount === budgetAmount) return;
 
-    try {
-      const { data: updatedData, error } = await supabase
-        .from('budget_categories')
-        .update({ amount: newAmount })
-        .eq('budget_id', category.budget_id)
-        .eq('category_id', category.category_id)
-        .select();
-
-      if (error) {
-        console.error('Error updating category amount:', error);
-        return;
-      }
-
-      if (updatedData) {
-        setBudgetAmount(newAmount);
-
-        setBudgetTables((prevTables) =>
-          prevTables.map((table) => {
-            if (table.id !== category.budget_id) {
-              return table;
-            }
-
-            return {
-              ...table,
-              budget_categories: table.budget_categories.map((cat) =>
-                cat.category_id === category.category_id ? { ...cat, amount: newAmount } : cat,
-              ),
-            };
-          }),
-        );
-      }
-    } catch (error) {
-      console.error('Unexpected error:', error);
-    }
+    await updateCategoryAmount({
+      amount: newAmount,
+      category,
+      setAmount: setBudgetAmount,
+      setTable: setBudgetTables,
+    });
   };
 
   useEffect(() => {
