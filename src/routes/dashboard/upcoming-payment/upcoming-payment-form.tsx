@@ -3,8 +3,8 @@ import { useFormContext } from 'react-hook-form';
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 
 import { ButtonPrimary } from '@/components/button';
+import { Input, Select } from '@/components/custom-form';
 import ErrorMessage from '@/components/error-message';
-import { Input, Select } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import {
   AddUpcomingPaymentFormData,

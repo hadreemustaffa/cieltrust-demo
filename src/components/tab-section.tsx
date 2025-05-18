@@ -1,10 +1,35 @@
 // components import
+import React from 'react';
 import { Tab, TabList, TabPanel, Tabs } from 'react-tabs';
 
 import { formatStr } from '@/utils/formatStr';
 
-import TabPanelItem from '@/components/tab-section/tab-section-panel-item';
-import { TabSectionProps, TitleProps } from '@/components/tab-section/tab-section.types';
+import TabPanelItem from '@/components/tab-section-panel-item';
+
+type TitleProps =
+  | {
+      hasTitle: true;
+      isTablistWithTitle: boolean;
+      children: React.ReactNode;
+    }
+  | {
+      hasTitle?: false;
+      isTablistWithTitle: never;
+      children?: never;
+    };
+
+interface Data {
+  name: string;
+  list: {
+    title: string;
+    description: string;
+    icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+  }[];
+}
+
+interface TabSectionProps {
+  data: Data[];
+}
 
 export default function TabSection({ data, hasTitle, isTablistWithTitle, children }: TabSectionProps & TitleProps) {
   return (

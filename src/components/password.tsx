@@ -1,12 +1,11 @@
 import { useState } from 'react';
 import { useFormContext } from 'react-hook-form';
 
+import { Input } from '@/components/custom-form';
 import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom-form';
 
 import EyeOffIcon from '../images/icons/eye-off.svg?react';
 import EyeIcon from '../images/icons/eye.svg?react';
-
 
 import { ERROR_MSG } from '@/data/errorMessages';
 

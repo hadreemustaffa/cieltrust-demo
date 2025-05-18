@@ -1,5 +1,12 @@
+import React from 'react';
+
 import Icon from '@/components/icon';
-import { TabPanelItemProps } from '@/components/tab-section/tab-section.types';
+
+interface TabPanelItemProps {
+  title: string;
+  description: string;
+  icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
+}
 
 export default function TabPanelItem({ title, description, icon }: TabPanelItemProps) {
   return (

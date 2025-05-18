@@ -8,7 +8,7 @@ import { useModal } from '@/hooks/use-modal';
 import { useTransactionHistory } from '@/hooks/use-transaction-history';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
-import { Input } from '@/components/forms/custom-form';
+import { Input } from '@/components/custom-form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import {

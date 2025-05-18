@@ -10,11 +10,10 @@ import supabase from '@/utils/supabase';
 import { useSession } from '@/hooks/use-session';
 
 import { ButtonDelete, ButtonPrimary, ButtonSecondary, ButtonTertiary } from '@/components/button';
+import { Input } from '@/components/custom-form';
 import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import { PasswordInput } from '@/components/password';
-
 
 import { deleteUser } from '@/actions/delete';
 import { logout } from '@/actions/logout';

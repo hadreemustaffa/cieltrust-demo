@@ -9,13 +9,12 @@ import LockIcon from '@/images/icons/lock.svg?react';
 import supabase from '@/utils/supabase';
 
 import { ButtonPrimary, LinkButtonTertiary } from '@/components/button';
+import { Input } from '@/components/custom-form';
 import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 
 import { EMAIL_REGEX } from '@/data/constants';
 import { ERROR_MSG } from '@/data/errorMessages';
-
 
 interface FormData {
   email: string;

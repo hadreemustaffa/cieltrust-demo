@@ -1,5 +1,5 @@
-import TabSection from '@/components/tab-section/tab-section';
-import { TabSectionTitle } from '@/components/tab-section/tab-section-title';
+import TabSection from '@/components/tab-section';
+import { TabSectionTitle } from '@/components/tab-section-title';
 
 import { testimonials } from '@/data/testimonials';
 

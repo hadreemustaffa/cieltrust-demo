@@ -8,15 +8,13 @@ import supabase from '@/utils/supabase';
 import { useModal } from '@/hooks/use-modal';
 
 import { ButtonDelete, ButtonPrimary, ButtonSecondary } from '@/components/button';
-import { Input } from '@/components/forms/custom-form';
+import { Input } from '@/components/custom-form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import MoreMenu from '@/components/more-menu';
 import { EditGoalFormProps, SavingGoalsItemProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 
 import { ERROR_MSG } from '@/data/errorMessages';
-
-
 
 export default function SavingGoalsItem({
   id,
