@@ -3,8 +3,8 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { ButtonPrimary } from '@/components/button';
+import { Input } from '@/components/custom-form';
 import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom-form';
 import { PasswordInput } from '@/components/password';
 
 import { login, loginAnonymously } from '@/actions/login';

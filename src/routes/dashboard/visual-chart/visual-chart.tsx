@@ -22,10 +22,9 @@ import { generateChartData } from '@/utils/generateChartData';
 import { useTransactionHistory } from '@/hooks/use-transaction-history';
 
 import { ButtonSecondary } from '@/components/button';
-import { Select } from '@/components/forms/custom-form';
+import { Select } from '@/components/custom-form';
 import Icon from '@/components/icon';
 import { PERIODS, TimePeriod } from '@/routes/dashboard/visual-chart/visual-chart.types';
-
 
 dayjs.extend(isBetween);
 

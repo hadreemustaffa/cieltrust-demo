@@ -11,8 +11,8 @@ import { useOverview } from '@/hooks/use-overview';
 import { useTransactionHistory } from '@/hooks/use-transaction-history';
 
 import { ButtonSecondary } from '@/components/button';
+import { Input, Select } from '@/components/custom-form';
 import ErrorMessage from '@/components/error-message';
-import { Input, Select } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import { addTransaction } from '@/routes/dashboard/add-transaction/add-transaction.api';
 import { ExpensesFormData, FormData, IncomeFormData } from '@/routes/dashboard/add-transaction/add-transaction.types';

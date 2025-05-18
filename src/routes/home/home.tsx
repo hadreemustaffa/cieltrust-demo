@@ -12,8 +12,8 @@ import { LinkButtonPrimary, LinkButtonSecondary } from '@/components/button';
 import FaqSection from '@/components/faq';
 import Icon from '@/components/icon';
 import OpenAccountBanner from '@/components/open-account-banner';
-import TabSection from '@/components/tab-section/tab-section';
-import { TabSectionTitle } from '@/components/tab-section/tab-section-title';
+import TabSection from '@/components/tab-section';
+import { TabSectionTitle } from '@/components/tab-section-title';
 import Testimonials from '@/components/testimonials';
 
 import { features } from '@/data/features';

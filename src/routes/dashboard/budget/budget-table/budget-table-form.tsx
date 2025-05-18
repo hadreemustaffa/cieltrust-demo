@@ -1,8 +1,8 @@
 import { useFieldArray, useFormContext } from 'react-hook-form';
 
 import { ButtonPrimary } from '@/components/button';
+import { Input } from '@/components/custom-form';
 import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom-form';
 import {
   AddBudgetTableFormData,
   AddBudgetTableFormProps,

@@ -39,12 +39,7 @@ export default [
     },
     settings: {
       react: { version: '18.3' },
-      'import/resolver': {
-        node: {
-          extensions: ['.js', '.jsx', '.ts', '.tsx'],
-        },
-      },
-      'import/resolver-next': [
+      'import-x/resolver-next': [
         createTypeScriptImportResolver({
           alwaysTryTypes: true,
           project: './tsconfig.json',

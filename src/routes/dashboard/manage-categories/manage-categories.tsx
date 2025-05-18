@@ -14,11 +14,11 @@ import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
+import { Input } from '@/components/custom-form';
 import ErrorMessage from '@/components/error-message';
-import { Input } from '@/components/forms/custom-form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
-import { Category } from '@/routes/dashboard/budget/budget.types';
+import { Category } from '@/routes/dashboard/categories/categories.types';
 import {
   addNewCategory,
   deleteCategory,

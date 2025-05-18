@@ -4,13 +4,14 @@ import supabase from '@/utils/supabase';
 
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
 import { ExpensesFormData, FormData, IncomeFormData } from '@/routes/dashboard/add-transaction/add-transaction.types';
-import { Category, Table } from '@/routes/dashboard/budget/budget.types';
+import { Table } from '@/routes/dashboard/budget/budget.types';
+import { Categories } from '@/routes/dashboard/categories/categories.types';
 import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
 
 interface AddTransactionProps {
   dashboardId: number | null;
   budgetTables: Table[];
-  categories: Category[];
+  categories: Categories;
   setBudgetTables: React.Dispatch<React.SetStateAction<Table[]>>;
   setOverview: React.Dispatch<React.SetStateAction<Overview>>;
   setHistory: React.Dispatch<React.SetStateAction<Transaction[]>>;
