@@ -13,6 +13,7 @@
     "pretty": "prettier --write \"./**/*.{js,jsx,mjs,cjs,ts,tsx,json}\""
   },
   "dependencies": {
+    "@reduxjs/toolkit": "^2.8.2",
     "@supabase/supabase-js": "^2.46.1",
     "@vercel/speed-insights": "^1.1.0",
     "chart.js": "^4.4.8",
@@ -22,6 +23,7 @@
     "react-dom": "^18.3.1",
     "react-hook-form": "^7.53.1",
     "react-loading-skeleton": "^3.5.0",
+    "react-redux": "^9.2.0",
     "react-router": "^6.27.0",
     "react-router-dom": "^6.28.0",
     "react-spinners": "^0.17.0",
