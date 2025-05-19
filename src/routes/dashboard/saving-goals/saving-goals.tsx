@@ -5,7 +5,6 @@ import PlusIcon from '@/images/icons/plus.svg?react';
 
 import supabase from '@/utils/supabase';
 
-import { useModal } from '@/hooks/use-modal';
 import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonPrimary, ButtonSecondary } from '@/components/button';
@@ -20,8 +19,8 @@ import { ERROR_MSG } from '@/data/errorMessages';
 
 export default function SavingGoals(data: SavingGoalsProps) {
   const [savingGoalList, setSavingGoalList] = useState<SavingGoalsProps>(data);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const dashboardId = useAppSelector(getDashboardId);
-  const { activeModal, openModal, closeModal } = useModal();
 
   const {
     register,
@@ -52,7 +51,7 @@ export default function SavingGoals(data: SavingGoalsProps) {
       setSavingGoalList((prevData) => ({ data: [...prevData.data, goalData] }));
     }
 
-    closeModal();
+    setIsModalOpen(false);
   };
 
   const deleteSavingGoal = async (id: number) => {
@@ -62,7 +61,7 @@ export default function SavingGoals(data: SavingGoalsProps) {
 
     const response = await supabase.from('saving_goals').delete().eq('id', id);
 
-    closeModal();
+    setIsModalOpen(false);
 
     return response;
   };
@@ -90,13 +89,13 @@ export default function SavingGoals(data: SavingGoalsProps) {
   }, [isSubmitSuccessful, reset]);
 
   useEffect(() => {
-    if (activeModal === 'addSavingGoalModal') {
+    if (isModalOpen) {
       setFocus('name');
       return () => {
         reset();
       };
     }
-  }, [activeModal, setFocus, reset]);
+  }, [isModalOpen, setFocus, reset]);
 
   return (
     <div className="rounded-md sm:border sm:border-accent/10 sm:p-4 md:col-span-full lg:col-span-2">
@@ -104,17 +103,17 @@ export default function SavingGoals(data: SavingGoalsProps) {
         <div className="flex flex-row items-center justify-between">
           <h2 className="text-lg font-semibold">Saving Goals</h2>
 
-          <ButtonSecondary onClick={() => openModal('addSavingGoalModal')} className="lg:px-2 lg:py-1">
+          <ButtonSecondary onClick={() => setIsModalOpen(true)} className="lg:px-2 lg:py-1">
             <Icon SvgIcon={PlusIcon} isBorderless />
           </ButtonSecondary>
         </div>
 
-        {activeModal === 'addSavingGoalModal' && (
+        {isModalOpen && (
           <Modal
             id="addSavingGoalModal"
             title="Add Saving Goal"
-            isOpen={activeModal === 'addSavingGoalModal'}
-            handleClose={() => closeModal()}
+            isOpen={isModalOpen}
+            handleClose={() => setIsModalOpen(false)}
           >
             <form id="addSavingGoalForm" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
               <div className="flex flex-col gap-2">
@@ -184,7 +183,7 @@ export default function SavingGoals(data: SavingGoalsProps) {
             </form>
 
             <div className="flex flex-row items-center justify-end gap-2">
-              <ButtonSecondary type="button" onClick={() => closeModal()}>
+              <ButtonSecondary type="button" onClick={() => setIsModalOpen(false)}>
                 Cancel
               </ButtonSecondary>
 

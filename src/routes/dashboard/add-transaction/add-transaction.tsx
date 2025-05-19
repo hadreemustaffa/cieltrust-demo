@@ -1,6 +1,6 @@
-import PlusIcon from '@/images/icons/plus.svg?react';
+import { useState } from 'react';
 
-import { useModal } from '@/hooks/use-modal';
+import PlusIcon from '@/images/icons/plus.svg?react';
 
 import { ButtonPrimary } from '@/components/button';
 import Icon from '@/components/icon';
@@ -8,23 +8,23 @@ import Modal from '@/components/modal';
 import AddTransactionForm from '@/routes/dashboard/add-transaction/add-transaction-form';
 
 export default function AddTransaction() {
-  const { activeModal, openModal, closeModal } = useModal();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   return (
     <>
-      <ButtonPrimary onClick={() => openModal('addTransaction')} className="gap-2">
+      <ButtonPrimary onClick={() => setIsModalOpen(true)} className="gap-2">
         <Icon SvgIcon={PlusIcon} isBorderless />
         <span className="hidden md:inline">Add Transaction</span>
       </ButtonPrimary>
 
-      {activeModal === 'addTransaction' && (
+      {isModalOpen && (
         <Modal
           id="addTransactionModal"
           title="Add Transaction"
-          isOpen={activeModal === 'addTransaction'}
-          handleClose={closeModal}
+          isOpen={isModalOpen}
+          handleClose={() => setIsModalOpen(false)}
         >
-          <AddTransactionForm />
+          <AddTransactionForm handleModalClose={() => setIsModalOpen(false)} />
         </Modal>
       )}
     </>

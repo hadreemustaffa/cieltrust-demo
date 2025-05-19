@@ -5,7 +5,6 @@ import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useCategories } from '@/hooks/use-categories';
-import { useModal } from '@/hooks/use-modal';
 import { useOverview } from '@/hooks/use-overview';
 import { useAppSelector } from '@/hooks/use-redux';
 import { useTransactionHistory } from '@/hooks/use-transaction-history';
@@ -20,9 +19,8 @@ import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 
 import { ERROR_MSG } from '@/data/errorMessages';
 
-export default function AddTransactionForm() {
+export default function AddTransactionForm({ handleModalClose }: { handleModalClose: () => void }) {
   const [transactionType, setTransactionType] = useState<FormData['transactionType']>('income');
-  const { closeModal } = useModal();
   const dashboardId = useAppSelector(getDashboardId);
   const { budgetTables, setBudgetTables } = useBudgetTables();
   const { categories } = useCategories();
@@ -65,9 +63,9 @@ export default function AddTransactionForm() {
   useEffect(() => {
     if (isSubmitSuccessful) {
       reset();
-      closeModal();
+      handleModalClose();
     }
-  }, [isSubmitSuccessful, reset, closeModal]);
+  }, [isSubmitSuccessful, reset, handleModalClose]);
 
   return (
     <FormProvider {...methods}>

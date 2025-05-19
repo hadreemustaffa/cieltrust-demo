@@ -1,11 +1,9 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import XIcon from '@/images/icons/x.svg?react';
 
 import supabase from '@/utils/supabase';
-
-import { useModal } from '@/hooks/use-modal';
 
 import { ButtonDelete, ButtonPrimary, ButtonSecondary } from '@/components/button';
 import { Input } from '@/components/custom-form';
@@ -25,7 +23,7 @@ export default function SavingGoalsItem({
   onEditSuccess,
   ...props
 }: SavingGoalsItemProps) {
-  const { activeModal, openModal, closeModal } = useModal();
+  const [activeModal, setActiveModal] = useState<string | null>(null);
 
   const savedAmountPercentage = Math.round((savedAmount / targetAmount) * 100);
   const isComplete = savedAmount >= targetAmount;
@@ -58,12 +56,12 @@ export default function SavingGoalsItem({
       onEditSuccess(data[0]);
     }
 
-    closeModal();
+    setActiveModal(null);
   };
 
   const handleDelete = () => {
     onDelete();
-    closeModal();
+    setActiveModal(null);
   };
 
   const onSubmit: SubmitHandler<EditGoalFormProps> = async () => {
@@ -102,14 +100,14 @@ export default function SavingGoalsItem({
         <p className={`${isComplete && 'text-green-500'} font-semibold`}>{savedAmountPercentage}%</p>
 
         {isComplete ? (
-          <button type="button" onClick={() => openModal(`deleteGoalModal-${id}`)}>
+          <button type="button" onClick={() => setActiveModal(`deleteGoalModal-${id}`)}>
             <Icon SvgIcon={XIcon} width={16} height={16} isBorderless />
           </button>
         ) : (
           <MoreMenu
             variant="horizontal"
-            onEdit={() => openModal(`editGoalModal-${id}`)}
-            onDelete={() => openModal(`deleteGoalModal-${id}`)}
+            onEdit={() => setActiveModal(`editGoalModal-${id}`)}
+            onDelete={() => setActiveModal(`deleteGoalModal-${id}`)}
           />
         )}
       </div>
@@ -118,7 +116,7 @@ export default function SavingGoalsItem({
         id={`editGoalModal-${id}`}
         title="Edit this goal?"
         isOpen={activeModal === `editGoalModal-${id}`}
-        handleClose={() => closeModal()}
+        handleClose={() => setActiveModal(null)}
       >
         <form id="editSavingGoalForm" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
@@ -189,7 +187,7 @@ export default function SavingGoalsItem({
           </div>
 
           <div className="flex flex-row items-center justify-end gap-2">
-            <ButtonSecondary type="button" onClick={() => closeModal()}>
+            <ButtonSecondary type="button" onClick={() => setActiveModal(null)}>
               Cancel
             </ButtonSecondary>
 
@@ -202,7 +200,7 @@ export default function SavingGoalsItem({
         id={`deleteGoalModal-${id}`}
         title="Delete this goal?"
         isOpen={activeModal === `deleteGoalModal-${id}`}
-        handleClose={() => closeModal()}
+        handleClose={() => setActiveModal(null)}
       >
         <div className="flex flex-col gap-2">
           <p>Are you sure you want to delete this goal?</p>
@@ -210,7 +208,7 @@ export default function SavingGoalsItem({
         </div>
 
         <div className="flex flex-row items-center justify-end gap-2">
-          <ButtonSecondary type="button" onClick={() => closeModal()}>
+          <ButtonSecondary type="button" onClick={() => setActiveModal(null)}>
             Cancel
           </ButtonSecondary>
 
