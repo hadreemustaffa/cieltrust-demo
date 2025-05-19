@@ -5,9 +5,9 @@ import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useCategories } from '@/hooks/use-categories';
-import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
 import { useOverview } from '@/hooks/use-overview';
+import { useAppSelector } from '@/hooks/use-redux';
 import { useTransactionHistory } from '@/hooks/use-transaction-history';
 
 import { ButtonSecondary } from '@/components/button';
@@ -16,13 +16,14 @@ import ErrorMessage from '@/components/error-message';
 import Icon from '@/components/icon';
 import { addTransaction } from '@/routes/dashboard/add-transaction/add-transaction.api';
 import { ExpensesFormData, FormData, IncomeFormData } from '@/routes/dashboard/add-transaction/add-transaction.types';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 
 import { ERROR_MSG } from '@/data/errorMessages';
 
 export default function AddTransactionForm() {
   const [transactionType, setTransactionType] = useState<FormData['transactionType']>('income');
   const { closeModal } = useModal();
-  const { dashboardId } = useDashboard();
+  const dashboardId = useAppSelector(getDashboardId);
   const { budgetTables, setBudgetTables } = useBudgetTables();
   const { categories } = useCategories();
   const { setOverview } = useOverview();

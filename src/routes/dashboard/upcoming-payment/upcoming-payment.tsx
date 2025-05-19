@@ -4,13 +4,14 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 import PlusIcon from '@/images/icons/plus.svg?react';
 
-import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
+import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import MoreMenu from '@/components/more-menu';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 import { EditUpcomingPaymentForm } from '@/routes/dashboard/upcoming-payment/upcoming-payment-form';
 import AddUpcomingPaymentForm from '@/routes/dashboard/upcoming-payment/upcoming-payment-form';
 import {
@@ -27,7 +28,7 @@ import {
 export default function UpcomingPayments({ initialUpcomingPayments }: { initialUpcomingPayments: UpcomingPayment[] }) {
   const [upcomingPayments, setUpcomingPayments] = useState<UpcomingPayment[]>(initialUpcomingPayments);
   const { activeModal, openModal, closeModal } = useModal();
-  const { dashboardId } = useDashboard();
+  const dashboardId = useAppSelector(getDashboardId);
 
   const methods = useForm<AddUpcomingPaymentFormData>();
   const editMethods = useForm<EditUpcomingPaymentFormData>();

@@ -5,7 +5,7 @@ import PlusIcon from '@/images/icons/plus.svg?react';
 
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useCategories } from '@/hooks/use-categories';
-import { useDashboard } from '@/hooks/use-dashboard';
+import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
@@ -14,12 +14,13 @@ import BudgetTable from '@/routes/dashboard/budget/budget-table/budget-table';
 import { AddBudgetTableForm } from '@/routes/dashboard/budget/budget-table/budget-table-form';
 import { addBudgetTable } from '@/routes/dashboard/budget/budget.api';
 import { AddBudgetTableFormData, EditBudgetTableFormData } from '@/routes/dashboard/budget/budget.types';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 
 export default function Budget() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { categories } = useCategories();
   const { budgetTables, setBudgetTables } = useBudgetTables();
-  const { dashboardId } = useDashboard();
+  const dashboardId = useAppSelector(getDashboardId);
 
   const methods = useForm<AddBudgetTableFormData>({
     defaultValues: {

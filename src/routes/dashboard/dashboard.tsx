@@ -1,4 +1,3 @@
-import { useEffect } from 'react';
 import { useLoaderData } from 'react-router';
 
 import supabase from '@/utils/supabase';
@@ -9,14 +8,13 @@ import { ModalProvider } from '@/context/modal-context';
 import { OverviewProvider } from '@/context/overview-context';
 import { TransactionHistoryProvider } from '@/context/transaction-history-context';
 
-import { useDashboard } from '@/hooks/use-dashboard';
-
 import AccountOverview from '@/routes/dashboard/account-overview/account-overview';
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
 import AddTransaction from '@/routes/dashboard/add-transaction/add-transaction';
 import Budget from '@/routes/dashboard/budget/budget';
 import { Table } from '@/routes/dashboard/budget/budget.types';
 import { Categories } from '@/routes/dashboard/categories/categories.types';
+import { setDashboardId } from '@/routes/dashboard/dashboard.slice';
 import ManageCategories from '@/routes/dashboard/manage-categories/manage-categories';
 import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
 import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
@@ -24,6 +22,8 @@ import TransactionHistory from '@/routes/dashboard/transaction-history/transacti
 import UpcomingPayments from '@/routes/dashboard/upcoming-payment/upcoming-payment';
 import { UpcomingPayment } from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
 import VisualChart from '@/routes/dashboard/visual-chart/visual-chart';
+
+import { store } from '@/store';
 
 interface DashboardProps {
   dashboard_id: number;
@@ -49,18 +49,13 @@ async function loader() {
   if (error) throw new Error('Failed to fetch dashboard data');
   if (!data) throw new Error('Dashboard data not found');
 
+  store.dispatch(setDashboardId(data.dashboard_id));
+
   return data;
 }
 
 export default function Dashboard() {
-  const { setDashboardId } = useDashboard();
   const data = useLoaderData() as DashboardProps;
-
-  useEffect(() => {
-    if (data?.dashboard_id) {
-      setDashboardId(data.dashboard_id);
-    }
-  }, [data?.dashboard_id, setDashboardId]);
 
   return (
     <ModalProvider>
