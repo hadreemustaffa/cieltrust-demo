@@ -10,8 +10,8 @@ import XIcon from '@/images/icons/x.svg?react';
 
 import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useCategories } from '@/hooks/use-categories';
-import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
+import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
 import { Input } from '@/components/custom-form';
@@ -19,6 +19,7 @@ import ErrorMessage from '@/components/error-message';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
 import { Category } from '@/routes/dashboard/categories/categories.types';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 import {
   addNewCategory,
   deleteCategory,
@@ -27,7 +28,7 @@ import {
 import { CategoryItemProps } from '@/routes/dashboard/manage-categories/manage-categories.types';
 
 export default function ManageCategories() {
-  const { dashboardId } = useDashboard();
+  const dashboardId = useAppSelector(getDashboardId);
   const { categories, setCategories } = useCategories();
   const { budgetTables, setBudgetTables } = useBudgetTables();
   const { activeModal, openModal, closeModal } = useModal();

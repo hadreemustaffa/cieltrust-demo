@@ -5,13 +5,14 @@ import PlusIcon from '@/images/icons/plus.svg?react';
 
 import supabase from '@/utils/supabase';
 
-import { useDashboard } from '@/hooks/use-dashboard';
 import { useModal } from '@/hooks/use-modal';
+import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonPrimary, ButtonSecondary } from '@/components/button';
 import { Input } from '@/components/custom-form';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 import SavingGoalsItem from '@/routes/dashboard/saving-goals/saving-goals-item';
 import { SavingGoalsFormProps, SavingGoalsProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 
@@ -19,9 +20,7 @@ import { ERROR_MSG } from '@/data/errorMessages';
 
 export default function SavingGoals(data: SavingGoalsProps) {
   const [savingGoalList, setSavingGoalList] = useState<SavingGoalsProps>(data);
-
-  const { dashboardId } = useDashboard();
-
+  const dashboardId = useAppSelector(getDashboardId);
   const { activeModal, openModal, closeModal } = useModal();
 
   const {

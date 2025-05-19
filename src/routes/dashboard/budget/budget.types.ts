@@ -1,7 +1,7 @@
 import { Categories, CategoriesWithAmount } from '@/routes/dashboard/categories/categories.types';
 
 export interface AddBudgetTableFormData {
-  id: number | null;
+  id: number;
   name: string;
   amount: number;
   categories?: Categories;
@@ -11,7 +11,7 @@ export interface AddBudgetTableFormData {
 }
 
 export interface EditBudgetTableFormData {
-  id: number | null;
+  id: number;
   name: string;
   amount: number;
   editCategories?: Categories;
