@@ -4,7 +4,6 @@ import supabase from '@/utils/supabase';
 
 import { BudgetTablesProvider } from '@/context/budget-tables-context';
 import { CategoriesProvider } from '@/context/categories-context';
-import { ModalProvider } from '@/context/modal-context';
 import { OverviewProvider } from '@/context/overview-context';
 import { TransactionHistoryProvider } from '@/context/transaction-history-context';
 
@@ -58,31 +57,29 @@ export default function Dashboard() {
   const data = useLoaderData() as DashboardProps;
 
   return (
-    <ModalProvider>
-      <CategoriesProvider initialCategories={data.categories}>
-        <BudgetTablesProvider initialBudgetTables={data.budget}>
-          <OverviewProvider initialOverview={data.overview[0]}>
-            <TransactionHistoryProvider>
-              <div className="my-auto flex flex-col gap-4 text-left">
-                <div className="flex flex-row gap-2 self-end">
-                  <ManageCategories />
-                  <TransactionHistory />
-                  <AddTransaction />
-                </div>
-                <AccountOverview />
-
-                <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-                  <UpcomingPayments initialUpcomingPayments={data.upcoming_payment} />
-                  <Budget />
-                  <VisualChart />
-                  <SavingGoals data={data.saving_goals} />
-                </div>
+    <CategoriesProvider initialCategories={data.categories}>
+      <BudgetTablesProvider initialBudgetTables={data.budget}>
+        <OverviewProvider initialOverview={data.overview[0]}>
+          <TransactionHistoryProvider>
+            <div className="my-auto flex flex-col gap-4 text-left">
+              <div className="flex flex-row gap-2 self-end">
+                <ManageCategories />
+                <TransactionHistory />
+                <AddTransaction />
               </div>
-            </TransactionHistoryProvider>
-          </OverviewProvider>
-        </BudgetTablesProvider>
-      </CategoriesProvider>
-    </ModalProvider>
+              <AccountOverview />
+
+              <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+                <UpcomingPayments initialUpcomingPayments={data.upcoming_payment} />
+                <Budget />
+                <VisualChart />
+                <SavingGoals data={data.saving_goals} />
+              </div>
+            </div>
+          </TransactionHistoryProvider>
+        </OverviewProvider>
+      </BudgetTablesProvider>
+    </CategoriesProvider>
   );
 }
 

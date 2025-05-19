@@ -4,7 +4,6 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 
 import PlusIcon from '@/images/icons/plus.svg?react';
 
-import { useModal } from '@/hooks/use-modal';
 import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
@@ -27,7 +26,7 @@ import {
 
 export default function UpcomingPayments({ initialUpcomingPayments }: { initialUpcomingPayments: UpcomingPayment[] }) {
   const [upcomingPayments, setUpcomingPayments] = useState<UpcomingPayment[]>(initialUpcomingPayments);
-  const { activeModal, openModal, closeModal } = useModal();
+  const [activeModal, setActiveModal] = useState<string | null>(null);
   const dashboardId = useAppSelector(getDashboardId);
 
   const methods = useForm<AddUpcomingPaymentFormData>();
@@ -67,7 +66,7 @@ export default function UpcomingPayments({ initialUpcomingPayments }: { initialU
       state: setUpcomingPayments,
     });
 
-    closeModal();
+    setActiveModal(null);
   };
 
   useEffect(() => {
@@ -85,16 +84,16 @@ export default function UpcomingPayments({ initialUpcomingPayments }: { initialU
   useEffect(() => {
     if (methods.formState.isSubmitSuccessful) {
       methods.reset();
-      closeModal();
+      setActiveModal(null);
     }
-  }, [methods.formState.isSubmitSuccessful, methods, closeModal]);
+  }, [methods.formState.isSubmitSuccessful, methods]);
 
   useEffect(() => {
     if (editMethods.formState.isSubmitSuccessful) {
       editMethods.reset();
-      closeModal();
+      setActiveModal(null);
     }
-  }, [editMethods.formState.isSubmitSuccessful, editMethods, closeModal]);
+  }, [editMethods.formState.isSubmitSuccessful, editMethods]);
 
   const calculateNextPaymentDate = (startDate: string, recurrence: string) => {
     const currentDate = dayjs();
@@ -146,7 +145,7 @@ export default function UpcomingPayments({ initialUpcomingPayments }: { initialU
         <div className="flex flex-row flex-wrap items-center justify-between gap-4">
           <h2 className="text-lg font-semibold">Upcoming Payments</h2>
 
-          <ButtonSecondary onClick={() => openModal('addUpcomingPaymentModal')} className="lg:px-2 lg:py-1">
+          <ButtonSecondary onClick={() => setActiveModal('addUpcomingPaymentModal')} className="lg:px-2 lg:py-1">
             <Icon SvgIcon={PlusIcon} isBorderless />
           </ButtonSecondary>
         </div>
@@ -178,8 +177,8 @@ export default function UpcomingPayments({ initialUpcomingPayments }: { initialU
 
                       <MoreMenu
                         variant="horizontal"
-                        onEdit={() => openModal(`editUpcomingPaymentModal-${payment.id}`)}
-                        onDelete={() => openModal(`deleteUpcomingPaymentModal-${payment.id}`)}
+                        onEdit={() => setActiveModal(`editUpcomingPaymentModal-${payment.id}`)}
+                        onDelete={() => setActiveModal(`deleteUpcomingPaymentModal-${payment.id}`)}
                       />
                     </div>
 
@@ -188,7 +187,7 @@ export default function UpcomingPayments({ initialUpcomingPayments }: { initialU
                         id={`editUpcomingPaymentModal-${payment.id}`}
                         title="Edit payment details?"
                         isOpen={activeModal === `editUpcomingPaymentModal-${payment.id}`}
-                        handleClose={() => closeModal()}
+                        handleClose={() => setActiveModal(null)}
                       >
                         <FormProvider {...editMethods}>
                           <EditUpcomingPaymentForm
@@ -205,7 +204,7 @@ export default function UpcomingPayments({ initialUpcomingPayments }: { initialU
                         id={`deleteUpcomingPaymentModal-${payment.id}`}
                         title="Delete upcoming payment"
                         isOpen={activeModal === `deleteUpcomingPaymentModal-${payment.id}`}
-                        handleClose={() => closeModal()}
+                        handleClose={() => setActiveModal(null)}
                       >
                         <div className="flex flex-col gap-2">
                           <p>Are you sure you want to delete this payment?</p>
@@ -213,7 +212,7 @@ export default function UpcomingPayments({ initialUpcomingPayments }: { initialU
                         </div>
 
                         <div className="flex flex-row items-center justify-end gap-2">
-                          <ButtonSecondary type="button" onClick={() => closeModal()}>
+                          <ButtonSecondary type="button" onClick={() => setActiveModal(null)}>
                             Cancel
                           </ButtonSecondary>
 
@@ -236,7 +235,7 @@ export default function UpcomingPayments({ initialUpcomingPayments }: { initialU
           id="addUpcomingPaymentModal"
           title="Add upcoming payment"
           isOpen={activeModal === 'addUpcomingPaymentModal'}
-          handleClose={() => closeModal()}
+          handleClose={() => setActiveModal(null)}
         >
           <FormProvider {...methods}>
             <AddUpcomingPaymentForm upcomingPayments={upcomingPayments} onSubmit={onAddSubmit} />

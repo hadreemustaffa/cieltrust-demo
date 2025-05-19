@@ -4,7 +4,6 @@ import { MoonLoader } from 'react-spinners';
 
 import ClockIcon from '@/images/icons/clock.svg?react';
 
-import { useModal } from '@/hooks/use-modal';
 import { useTransactionHistory } from '@/hooks/use-transaction-history';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
@@ -21,10 +20,10 @@ export default function TransactionHistory() {
   const [transactionType, setTransactionType] = useState<Transaction['type']>('income');
   const [currentPage, setCurrentPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const prevTransactionTypeRef = useRef(transactionType);
   const itemsPerPage = 10;
 
-  const { activeModal, openModal, closeModal } = useModal();
   const { history, setHistory } = useTransactionHistory();
 
   const {
@@ -94,9 +93,9 @@ export default function TransactionHistory() {
 
   useEffect(() => {
     if (isSubmitSuccessful) {
-      closeModal();
+      setIsModalOpen(false);
     }
-  }, [closeModal, isSubmitSuccessful]);
+  }, [isSubmitSuccessful]);
 
   useEffect(() => {
     if (prevTransactionTypeRef.current !== transactionType) {
@@ -111,7 +110,7 @@ export default function TransactionHistory() {
   }, [transactionType, currentPage, paginatedTransactions.length]);
 
   useEffect(() => {
-    if (activeModal !== 'viewTransactionHistory') return;
+    if (!isModalOpen) return;
 
     const fetchData = async () => {
       await getTransactionHistory({
@@ -126,7 +125,7 @@ export default function TransactionHistory() {
       reset();
       setTransactionType('income');
     };
-  }, [activeModal, reset, setHistory]);
+  }, [isModalOpen, reset, setHistory]);
 
   const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
   const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
@@ -135,17 +134,17 @@ export default function TransactionHistory() {
 
   return (
     <>
-      <ButtonSecondary onClick={() => openModal('viewTransactionHistory')} className="gap-2">
+      <ButtonSecondary onClick={() => setIsModalOpen(true)} className="gap-2">
         <Icon SvgIcon={ClockIcon} isBorderless />
         <span className="hidden md:inline">View Transaction History</span>
       </ButtonSecondary>
 
-      {activeModal === 'viewTransactionHistory' && (
+      {isModalOpen && (
         <Modal
           id="viewTransactionHistoryModal"
           title="Transaction History"
-          isOpen={activeModal === 'viewTransactionHistory'}
-          handleClose={closeModal}
+          isOpen={isModalOpen}
+          handleClose={() => setIsModalOpen(false)}
           className="max-h-[80vh] max-w-3xl overflow-y-auto"
         >
           {isLoading ? (
