@@ -1,4 +1,5 @@
 import React, { useEffect, useRef } from 'react';
+import { MoonLoader } from 'react-spinners';
 
 import XIcon from '@/images/icons/x.svg?react';
 
@@ -7,7 +8,7 @@ import { cn } from '@/utils/cn';
 import { ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
 
-interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
+export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
   id: string;
   title: string;
   isOpen: boolean;
@@ -76,3 +77,13 @@ export default function Modal({ title, isOpen, children, handleClose, className 
     </div>
   );
 }
+
+export const ModalLoading = ({ isOpen, handleClose }: Pick<ModalProps, 'isOpen' | 'handleClose'>) => {
+  return (
+    <Modal id="loadingModal" title="" isOpen={isOpen} handleClose={handleClose}>
+      <div className="h-[300px] content-center self-center">
+        <MoonLoader color="hsla(210, 96%, 40%, 1)" />
+      </div>
+    </Modal>
+  );
+};
