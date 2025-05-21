@@ -1,11 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import { MoonLoader } from 'react-spinners';
 
+import AlertCircleIcon from '@/images/icons/alert-circle.svg?react';
 import XIcon from '@/images/icons/x.svg?react';
 
 import { cn } from '@/utils/cn';
 
 import { ButtonSecondary } from '@/components/button';
+import ErrorMessage from '@/components/error-message';
 import Icon from '@/components/icon';
 
 export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
@@ -14,6 +16,10 @@ export interface ModalProps extends React.HTMLAttributes<HTMLDivElement> {
   isOpen: boolean;
   children: React.ReactNode;
   handleClose: () => void;
+}
+
+interface ModalErrorProps extends Pick<ModalProps, 'isOpen' | 'handleClose'> {
+  error: string;
 }
 
 export default function Modal({ title, isOpen, children, handleClose, className }: ModalProps) {
@@ -83,6 +89,18 @@ export const ModalLoading = ({ isOpen, handleClose }: Pick<ModalProps, 'isOpen' 
     <Modal id="loadingModal" title="" isOpen={isOpen} handleClose={handleClose}>
       <div className="h-[300px] content-center self-center">
         <MoonLoader color="hsla(210, 96%, 40%, 1)" />
+      </div>
+    </Modal>
+  );
+};
+
+export const ModalError = ({ isOpen, handleClose, error }: ModalErrorProps) => {
+  return (
+    <Modal id="errorModal" title="" isOpen={isOpen} handleClose={handleClose}>
+      <div className="flex h-[300px] flex-col items-center justify-center gap-4 rounded-md border border-accent/10">
+        <Icon SvgIcon={AlertCircleIcon} width={64} height={64} isBorderless />
+        <h2 className="text-lg font-semibold">Something went wrong</h2>
+        <ErrorMessage error={error} />
       </div>
     </Modal>
   );
