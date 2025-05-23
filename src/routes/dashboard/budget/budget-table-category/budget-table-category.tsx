@@ -2,10 +2,12 @@ import { useEffect, useRef, useState } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { useBudgetTables } from '@/hooks/use-budget-tables';
-import { useCategories } from '@/hooks/use-categories';
+import { useAppSelector } from '@/hooks/use-redux';
 
+import { useGetCategoriesQuery } from '@/routes/dashboard/api.slice';
 import { updateCategoryAmount } from '@/routes/dashboard/budget/budget-table-category/budget-table-category.api';
 import { BudgetTableCategoryProps } from '@/routes/dashboard/budget/budget-table-category/budget-table-category.types';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 
 export default function BudgetTableCategory({ category }: BudgetTableCategoryProps) {
   const [budgetAmount, setBudgetAmount] = useState(category.amount || 0);
@@ -13,7 +15,8 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
   const nameRef = useRef<HTMLParagraphElement>(null);
   const thRef = useRef<HTMLTableCellElement>(null);
   const { setBudgetTables } = useBudgetTables();
-  const { categories } = useCategories();
+  const dashboardId = useAppSelector(getDashboardId);
+  const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
 
   const spent = category.spent || 0;
   const remaining = budgetAmount - spent;

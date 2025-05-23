@@ -4,12 +4,12 @@ import { FormProvider, SubmitHandler, useForm } from 'react-hook-form';
 import PlusIcon from '@/images/icons/plus.svg?react';
 
 import { useBudgetTables } from '@/hooks/use-budget-tables';
-import { useCategories } from '@/hooks/use-categories';
 import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
-import Modal from '@/components/modal';
+import Modal from '@/components/modal/modal';
+import { useGetCategoriesQuery } from '@/routes/dashboard/api.slice';
 import BudgetTable from '@/routes/dashboard/budget/budget-table/budget-table';
 import { AddBudgetTableForm } from '@/routes/dashboard/budget/budget-table/budget-table-form';
 import { addBudgetTable } from '@/routes/dashboard/budget/budget.api';
@@ -18,9 +18,9 @@ import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 
 export default function Budget() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const { categories } = useCategories();
   const { budgetTables, setBudgetTables } = useBudgetTables();
   const dashboardId = useAppSelector(getDashboardId);
+  const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
 
   const methods = useForm<AddBudgetTableFormData>({
     defaultValues: {

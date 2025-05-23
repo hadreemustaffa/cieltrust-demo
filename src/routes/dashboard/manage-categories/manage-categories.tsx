@@ -21,9 +21,9 @@ import {
   useDeleteCategoryMutation,
   useEditCategoryMutation,
   useGetCategoriesQuery,
-} from '@/routes/dashboard/api-slice';
+} from '@/routes/dashboard/api.slice';
 import { Category } from '@/routes/dashboard/categories/categories.types';
-import { getDashboardId } from '@/routes/dashboard/dashboard-slice';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 import { CategoriesListProps, CategoryItemProps } from '@/routes/dashboard/manage-categories/manage-categories.types';
 
 export default function ManageCategories() {
