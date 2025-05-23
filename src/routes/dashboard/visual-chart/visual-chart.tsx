@@ -19,11 +19,13 @@ import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 import formatNum from '@/utils/formatNum';
 import { generateChartData } from '@/utils/generateChartData';
 
-import { useTransactionHistory } from '@/hooks/use-transaction-history';
+import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonSecondary } from '@/components/button';
 import { Select } from '@/components/custom-form';
 import Icon from '@/components/icon';
+import { useGetAllTransactionHistoryQuery } from '@/routes/dashboard/api.slice';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 import { PERIODS, TimePeriod } from '@/routes/dashboard/visual-chart/visual-chart.types';
 
 dayjs.extend(isBetween);
@@ -37,7 +39,10 @@ export default function VisualChart() {
     year: dayjs().year(),
   });
 
-  const { history } = useTransactionHistory();
+  const dashboardId = useAppSelector(getDashboardId);
+  const { data, isLoading } = useGetAllTransactionHistoryQuery(dashboardId);
+
+  const history = useMemo(() => data?.history ?? [], [data]);
 
   const { availableMonths, availableYears, currentMonth, currentYear } = useMemo(() => {
     const months = Array.from(
@@ -217,7 +222,9 @@ export default function VisualChart() {
 
   return (
     <div className="flex justify-center rounded-md border border-accent/10 p-4 md:col-span-full lg:col-span-2">
-      <div className="flex w-full flex-col justify-center gap-4">
+      <div
+        className={`flex w-full flex-col justify-center gap-4 ${isLoading ? 'pointer-events-none animate-pulse' : ''}`}
+      >
         {!hasData && <div className="py-8 text-center text-gray-500">No transaction data available to display</div>}
 
         {hasData && (

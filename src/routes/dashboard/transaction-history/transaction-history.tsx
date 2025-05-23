@@ -1,136 +1,27 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
-import { MoonLoader } from 'react-spinners';
+import React, { useEffect, useRef, useState } from 'react';
 
 import ClockIcon from '@/images/icons/clock.svg?react';
+import TrashIcon from '@/images/icons/trash.svg?react';
 
-import { useTransactionHistory } from '@/hooks/use-transaction-history';
+import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
 import { Input } from '@/components/custom-form';
 import Icon from '@/components/icon';
-import Modal from '@/components/modal';
+import Modal, { ModalError, ModalLoading, ModalProps } from '@/components/modal/modal';
 import {
-  deleteTransactionHistory,
-  getTransactionHistory,
-} from '@/routes/dashboard/transaction-history/transaction-history.api';
-import { Transaction } from '@/routes/dashboard/transaction-history/transaction-history.types';
+  useDeleteTransactionHistoryMutation,
+  useGetPaginatedTransactionHistoryQuery,
+} from '@/routes/dashboard/api.slice';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
+import {
+  Transaction,
+  TransactionListItemProps,
+  TransactionsListProps,
+} from '@/routes/dashboard/transaction-history/transaction-history.types';
 
 export default function TransactionHistory() {
-  const [transactionType, setTransactionType] = useState<Transaction['type']>('income');
-  const [currentPage, setCurrentPage] = useState(1);
-  const [isLoading, setIsLoading] = useState(true);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const prevTransactionTypeRef = useRef(transactionType);
-  const itemsPerPage = 10;
-
-  const { history, setHistory } = useTransactionHistory();
-
-  const {
-    register,
-    getValues,
-    setValue,
-    watch,
-    reset,
-    handleSubmit,
-    formState: { isSubmitSuccessful },
-  } = useForm();
-
-  let tableColumns;
-  if (transactionType === 'income') {
-    tableColumns = ['From', 'Amount', 'Savings (%)', 'Date', 'Reference'];
-  } else {
-    tableColumns = ['Budget', 'Category', 'Amount', 'Date', 'Reference'];
-  }
-
-  const incomeTransactions = history.filter((transaction) => transaction.type === 'income');
-  const expensesTransactions = history.filter((transaction) => transaction.type === 'expenses');
-
-  const currentTransactions = useMemo(
-    () => (transactionType === 'income' ? incomeTransactions : expensesTransactions),
-    [transactionType, incomeTransactions, expensesTransactions],
-  );
-  const paginatedTransactions = useMemo(
-    () => currentTransactions.slice((currentPage - 1) * itemsPerPage, currentPage * itemsPerPage),
-    [currentTransactions, currentPage],
-  );
-
-  const startItem = currentTransactions.length === 0 ? 0 : (currentPage - 1) * itemsPerPage + 1;
-  const endItem = Math.min(startItem + itemsPerPage - 1, currentTransactions.length);
-  const totalPages = Math.ceil(currentTransactions.length / itemsPerPage);
-
-  const checkboxNames = useMemo(
-    () => paginatedTransactions.map((t) => `historyCheckbox-${t.id}`),
-    [paginatedTransactions],
-  );
-  const watchedValues = watch(checkboxNames);
-  const allChecked = useMemo(
-    () => checkboxNames.length > 0 && (watchedValues || []).every(Boolean),
-    [checkboxNames, watchedValues],
-  );
-
-  const handleCheckAllCheckbox = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const checked = e.target.checked;
-    paginatedTransactions.forEach((transaction) => {
-      setValue(`historyCheckbox-${transaction.id}`, checked);
-    });
-  };
-
-  const onSubmit: SubmitHandler<{ [key: string]: boolean }> = async () => {
-    const getSelectedIds = () => {
-      const values = getValues();
-      return Object.entries(values)
-        .filter(([key, value]) => key.startsWith('historyCheckbox-') && value)
-        .map(([key]) => key.replace('historyCheckbox-', ''));
-    };
-
-    if (window.confirm('Are you sure you want to delete the selected transactions?')) {
-      await deleteTransactionHistory({
-        id: getSelectedIds(),
-      });
-    }
-  };
-
-  useEffect(() => {
-    if (isSubmitSuccessful) {
-      setIsModalOpen(false);
-    }
-  }, [isSubmitSuccessful]);
-
-  useEffect(() => {
-    if (prevTransactionTypeRef.current !== transactionType) {
-      setCurrentPage(1);
-      prevTransactionTypeRef.current = transactionType;
-      return;
-    }
-
-    if (paginatedTransactions.length === 0 && currentPage > 1) {
-      setCurrentPage((prev) => prev - 1);
-    }
-  }, [transactionType, currentPage, paginatedTransactions.length]);
-
-  useEffect(() => {
-    if (!isModalOpen) return;
-
-    const fetchData = async () => {
-      await getTransactionHistory({
-        setState: setHistory,
-      });
-    };
-
-    fetchData();
-    setIsLoading(false);
-
-    return () => {
-      reset();
-      setTransactionType('income');
-    };
-  }, [isModalOpen, reset, setHistory]);
-
-  const handlePrevPage = () => setCurrentPage((prev) => Math.max(prev - 1, 1));
-  const handleNextPage = () => setCurrentPage((prev) => Math.min(prev + 1, totalPages));
-  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setTransactionType(e.target.value as Transaction['type']);
 
   return (
     <>
@@ -139,157 +30,346 @@ export default function TransactionHistory() {
         <span className="hidden md:inline">View Transaction History</span>
       </ButtonSecondary>
 
-      {isModalOpen && (
-        <Modal
-          id="viewTransactionHistoryModal"
-          title="Transaction History"
-          isOpen={isModalOpen}
-          handleClose={() => setIsModalOpen(false)}
-          className="max-h-[80vh] max-w-3xl overflow-y-auto"
-        >
-          {isLoading ? (
-            <div className="flex h-[300px] w-full items-center justify-center">
-              <MoonLoader color="hsla(210, 96%, 40%, 1)" />
-            </div>
-          ) : (
-            <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-              <div className="flex flex-row flex-wrap justify-between gap-2">
-                <div className="flex flex-row items-center gap-2">
-                  <label htmlFor="transactionTypeSelect" className="text-sm">
-                    Change Transaction Type:
-                  </label>
-                  <select
-                    id="transactionTypeSelect"
-                    value={transactionType}
-                    onChange={handleTypeChange}
-                    className="rounded-md border border-accent/10 bg-card px-2 py-1 hover:cursor-pointer"
-                  >
-                    <option value="income">Income</option>
-                    <option value="expenses">Expenses</option>
-                  </select>
-                </div>
-
-                {watchedValues.filter(Boolean).length > 0 && (
-                  <ButtonDelete type="submit" className="max-h-8 px-2">
-                    Delete Selected
-                  </ButtonDelete>
-                )}
-              </div>
-
-              {history.length > 0 ? (
-                <>
-                  <table className="flex flex-col gap-2 border border-accent/10">
-                    <tbody className="flex w-full flex-col overflow-x-scroll text-sm md:overflow-auto">
-                      <tr className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] justify-between bg-accent/5 sm:w-full">
-                        <th scope="col" className="rounded-sm px-2 py-1">
-                          <Input
-                            type="checkbox"
-                            name="historyCheckbox-all"
-                            id="historyCheckbox-all"
-                            checked={allChecked}
-                            onChange={handleCheckAllCheckbox}
-                          />
-                        </th>
-                        {tableColumns?.map((column, index) => (
-                          <th
-                            scope="col"
-                            key={index}
-                            className="rounded-sm px-2 py-1 [&:not(:first-child)]:border-l [&:not(:first-child)]:border-l-accent/10"
-                          >
-                            {column}
-                          </th>
-                        ))}
-                      </tr>
-
-                      {transactionType === 'income' &&
-                        paginatedTransactions.map((transaction) => (
-                          <tr
-                            key={transaction.id}
-                            className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] border-b border-b-accent/10 last:border-b-0 sm:w-full"
-                          >
-                            <td className="px-2 py-1 text-sm">
-                              <Input
-                                id={`checkbox-${transaction.id}`}
-                                type="checkbox"
-                                {...register(`historyCheckbox-${transaction.id}`)}
-                              />
-                            </td>
-                            {transaction.type === 'income' && (
-                              <>
-                                <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.from}</td>
-                                <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
-                                <td className="border-l border-accent/10 px-2 py-1 text-sm">
-                                  {transaction.savings ? transaction.savings : '-'}
-                                </td>
-                              </>
-                            )}
-                            <td className="border-l border-accent/10 px-2 py-1 text-sm">
-                              {transaction.transaction_date}
-                            </td>
-                            <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.reference}</td>
-                          </tr>
-                        ))}
-
-                      {transactionType === 'expenses' &&
-                        paginatedTransactions.map((transaction) => (
-                          <tr
-                            key={transaction.id}
-                            className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] border-b border-b-accent/10 last:border-b-0 sm:w-full"
-                          >
-                            <td className="px-2 py-1 text-sm">
-                              <Input
-                                id={`checkbox-${transaction.id}`}
-                                type="checkbox"
-                                {...register(`historyCheckbox-${transaction.id}`)}
-                              />
-                            </td>
-                            {transaction.type === 'expenses' && (
-                              <>
-                                <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.budget}</td>
-                                <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.category}</td>
-                                <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
-                              </>
-                            )}
-                            <td className="border-l border-accent/10 px-2 py-1 text-sm">
-                              {transaction.transaction_date}
-                            </td>
-                            <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.reference}</td>
-                          </tr>
-                        ))}
-                    </tbody>
-                  </table>
-
-                  <div className="flex items-center justify-between text-xs">
-                    <button
-                      type="button"
-                      onClick={handlePrevPage}
-                      className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
-                      disabled={currentPage === 1}
-                    >
-                      Previous
-                    </button>
-                    <span>
-                      {currentTransactions.length > 0
-                        ? `Showing ${startItem} - ${endItem} of ${currentTransactions.length} transactions`
-                        : 'No transactions found'}
-                    </span>
-                    <button
-                      type="button"
-                      onClick={handleNextPage}
-                      className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
-                      disabled={currentPage === totalPages || totalPages === 0}
-                    >
-                      Next
-                    </button>
-                  </div>
-                </>
-              ) : (
-                <p className="py-8 text-center">No transaction history found.</p>
-              )}
-            </form>
-          )}
-        </Modal>
-      )}
+      {isModalOpen && <ModalWithContent isOpen={isModalOpen} handleClose={() => setIsModalOpen(false)} />}
     </>
   );
 }
+
+const ModalWithContent = ({ isOpen, handleClose }: Pick<ModalProps, 'isOpen' | 'handleClose'>) => {
+  const [transactionType, setTransactionType] = useState<Transaction['type']>('income');
+  const [currentPage, setCurrentPage] = useState(0);
+  const dashboardId = useAppSelector(getDashboardId);
+
+  const { data, isLoading, isFetching, isSuccess, isError, error } = useGetPaginatedTransactionHistoryQuery({
+    dashboardId,
+    page: currentPage,
+    limit: 10,
+    type: transactionType,
+  });
+
+  const history = data?.history ?? [];
+  const count = data?.count ?? 0;
+  const limit = data?.limit ?? 0;
+
+  const incomeTransactions = history.filter((transaction) => transaction.type === 'income');
+  const expensesTransactions = history.filter((transaction) => transaction.type === 'expenses');
+
+  const currentTransactions = transactionType === 'income' ? incomeTransactions : expensesTransactions;
+
+  const totalItems = count;
+  const totalPages = limit > 0 ? Math.ceil(totalItems / limit) : 1;
+  const lastPage = totalPages;
+
+  const startItem = totalItems === 0 ? 0 : currentPage * limit + 1;
+  const endItem = totalItems === 0 ? 0 : Math.min(startItem + currentTransactions.length - 1, totalItems);
+
+  const handlePrevPage = () => setCurrentPage(currentPage - 1);
+  const handleNextPage = () => setCurrentPage(currentPage + 1);
+  const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
+    setTransactionType(e.target.value as Transaction['type']);
+
+  useEffect(() => {
+    if (!isOpen) return;
+
+    return () => {
+      setTransactionType('income');
+    };
+  }, [isOpen]);
+
+  if (isLoading) {
+    return <ModalLoading isOpen={isOpen} handleClose={handleClose} />;
+  } else if (isError) {
+    return <ModalError isOpen={isOpen} handleClose={handleClose} error={error.toString()} />;
+  }
+
+  if (isSuccess) {
+    return (
+      <Modal
+        id="viewTransactionHistoryModal"
+        title="Transaction History"
+        isOpen={isOpen}
+        handleClose={handleClose}
+        className="max-h-[80vh] max-w-3xl overflow-y-auto"
+      >
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-row items-center gap-2">
+            <label htmlFor="transactionTypeSelect" className="text-sm">
+              Change Transaction Type:
+            </label>
+            <select
+              id="transactionTypeSelect"
+              value={transactionType}
+              onChange={handleTypeChange}
+              className="rounded-md border border-accent/10 bg-card px-2 py-1 hover:cursor-pointer"
+            >
+              <option value="income">Income</option>
+              <option value="expenses">Expenses</option>
+            </select>
+          </div>
+
+          {history.length > 0 ? (
+            <>
+              <TransactionsList
+                isFetching={isFetching}
+                transactionType={transactionType}
+                setCurrentPage={setCurrentPage}
+                currentTransactions={currentTransactions}
+                handleClose={handleClose}
+              />
+              <div className="mt-4 flex items-center justify-between text-xs">
+                <button
+                  type="button"
+                  onClick={handlePrevPage}
+                  className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
+                  disabled={currentPage === 0}
+                >
+                  Previous
+                </button>
+                <span>
+                  {currentTransactions.length > 0
+                    ? `Showing ${startItem} - ${endItem} of ${totalItems} transactions`
+                    : 'No transactions found'}
+                </span>
+                <button
+                  type="button"
+                  onClick={handleNextPage}
+                  className="rounded-md border border-accent/10 p-1 hover:cursor-pointer hover:border-accent/50 disabled:cursor-default disabled:border-accent/10 disabled:opacity-50"
+                  disabled={currentPage + 1 === lastPage}
+                >
+                  Next
+                </button>
+              </div>
+            </>
+          ) : (
+            <p className="py-8 text-center">No transaction history found.</p>
+          )}
+        </div>
+      </Modal>
+    );
+  }
+};
+
+const TransactionsList = ({
+  isFetching,
+  transactionType,
+  setCurrentPage,
+  currentTransactions,
+  handleClose,
+}: TransactionsListProps) => {
+  const [selectAll, setSelectAll] = useState(false);
+  const [checkedTransactions, setCheckedTransactions] = useState<Record<string, boolean>>({});
+  const prevTransactionTypeRef = useRef(transactionType);
+
+  const [deleteTransactionHistory] = useDeleteTransactionHistoryMutation();
+
+  const checkedCount = Object.values(checkedTransactions).filter(Boolean).length;
+  const hasCheckedItems = checkedCount > 0;
+
+  let tableColumns;
+  if (transactionType === 'income') {
+    tableColumns = ['From', 'Amount', 'Savings (%)', 'Date', 'Reference'];
+  } else {
+    tableColumns = ['Budget', 'Category', 'Amount', 'Date', 'Reference'];
+  }
+
+  const resetState = () => {
+    setCheckedTransactions({});
+    setSelectAll(false);
+  };
+
+  const handleCloseModal = () => {
+    setCheckedTransactions({});
+    setSelectAll(false);
+    handleClose();
+  };
+
+  const handleCheckTransaction = (category: string, isChecked: boolean) => {
+    setCheckedTransactions((prev) => ({
+      ...prev,
+      [category]: isChecked,
+    }));
+  };
+
+  const handleSelectAll = (isChecked: boolean) => {
+    setSelectAll(isChecked);
+
+    const newCheckedState: Record<string, boolean> = {};
+    currentTransactions.forEach((transaction) => {
+      if (transaction) {
+        newCheckedState[transaction.id.toString()] = isChecked;
+      }
+    });
+
+    setCheckedTransactions((prev) => ({
+      ...prev,
+      ...newCheckedState,
+    }));
+  };
+
+  const handleDeleteSelected = async () => {
+    if (!window.confirm(`Are you sure you want to delete ${checkedCount} selected transactions?`)) {
+      return;
+    }
+
+    const transactionsToDelete = currentTransactions.filter(
+      (category) => category && checkedTransactions[category.id.toString()],
+    );
+
+    const transactionsToDeleteIds = transactionsToDelete.map((category) => category.id);
+
+    await deleteTransactionHistory({ id: transactionsToDeleteIds });
+    handleCloseModal();
+
+    resetState();
+  };
+
+  useEffect(() => {
+    if (prevTransactionTypeRef.current !== transactionType) {
+      setCurrentPage(0);
+      prevTransactionTypeRef.current = transactionType;
+      resetState();
+    }
+  }, [transactionType, setCurrentPage]);
+
+  useEffect(() => {
+    const allCurrentChecked = currentTransactions.every(
+      (transaction) => transaction && checkedTransactions[transaction.id.toString()],
+    );
+    setSelectAll(currentTransactions.length > 0 && allCurrentChecked);
+  }, [currentTransactions, checkedTransactions]);
+
+  return (
+    <div className="relative flex flex-col gap-4">
+      <div
+        className={`items-center justify-between sm:absolute sm:-top-8 sm:right-0 sm:-translate-y-1/2 ${hasCheckedItems ? 'flex' : 'hidden'}`}
+      >
+        <ButtonDelete onClick={handleDeleteSelected} disabled={!hasCheckedItems}>
+          <Icon SvgIcon={TrashIcon} isBorderless />
+          <span className="hidden pl-2 font-semibold md:inline">
+            Delete {checkedCount} {checkedCount === 1 ? 'item' : 'items'}
+          </span>
+          <span className="pl-2 font-semibold md:hidden">
+            {checkedCount} {checkedCount === 1 ? 'item' : 'items'}
+          </span>
+        </ButtonDelete>
+      </div>
+
+      <table className={`flex flex-col gap-2 border border-accent/10 ${isFetching ? 'animate-pulse' : ''}`}>
+        <tbody className="flex w-full flex-col overflow-x-scroll text-sm md:overflow-auto">
+          <tr className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] justify-between bg-accent/5 sm:w-full">
+            <th scope="col" className="rounded-sm px-2 py-1">
+              <Input
+                type="checkbox"
+                id="select-all-checkbox"
+                name="select-all-checkbox"
+                checked={selectAll}
+                onChange={(e) => handleSelectAll(e.target.checked)}
+              />
+            </th>
+            {tableColumns?.map((column, index) => (
+              <th
+                scope="col"
+                key={index}
+                className="rounded-sm px-2 py-1 [&:not(:first-child)]:border-l [&:not(:first-child)]:border-l-accent/10"
+              >
+                {column}
+              </th>
+            ))}
+          </tr>
+
+          {transactionType === 'income' ? (
+            <>
+              {currentTransactions.map((transaction) => (
+                <IncomeTransaction
+                  key={transaction.id}
+                  transaction={transaction}
+                  checkedTransactions={checkedTransactions}
+                  handleCheckTransaction={handleCheckTransaction}
+                />
+              ))}
+            </>
+          ) : (
+            <>
+              {currentTransactions.map((transaction) => (
+                <ExpensesTransaction
+                  key={transaction.id}
+                  transaction={transaction}
+                  checkedTransactions={checkedTransactions}
+                  handleCheckTransaction={handleCheckTransaction}
+                />
+              ))}
+            </>
+          )}
+        </tbody>
+      </table>
+    </div>
+  );
+};
+
+const IncomeTransaction = React.memo(
+  ({ transaction, checkedTransactions, handleCheckTransaction }: TransactionListItemProps) => {
+    return (
+      <tr
+        key={transaction.id}
+        className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] border-b border-b-accent/10 last:border-b-0 sm:w-full"
+      >
+        <td className="px-2 py-1 text-sm">
+          <Input
+            type="checkbox"
+            id={`transaction-${transaction.id}-checkbox`}
+            name={`transaction-${transaction.id}-checkbox`}
+            checked={transaction.id ? checkedTransactions[transaction.id.toString()] || false : false}
+            onChange={(e) => handleCheckTransaction(transaction?.id.toString() || '', e.target.checked)}
+          />
+        </td>
+
+        {transaction.type === 'income' && (
+          <>
+            <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.from}</td>
+            <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
+            <td className="border-l border-accent/10 px-2 py-1 text-sm">
+              {transaction.savings ? transaction.savings : '-'}
+            </td>
+          </>
+        )}
+
+        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.transaction_date}</td>
+        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.reference}</td>
+      </tr>
+    );
+  },
+);
+
+IncomeTransaction.displayName = 'IncomeTransaction';
+
+const ExpensesTransaction = React.memo(
+  ({ transaction, checkedTransactions, handleCheckTransaction }: TransactionListItemProps) => {
+    return (
+      <tr
+        key={transaction.id}
+        className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] border-b border-b-accent/10 last:border-b-0 sm:w-full"
+      >
+        <td className="px-2 py-1 text-sm">
+          <Input
+            type="checkbox"
+            id={`transaction-${transaction.id}-checkbox`}
+            name={`transaction-${transaction.id}-checkbox`}
+            checked={transaction.id ? checkedTransactions[transaction.id.toString()] || false : false}
+            onChange={(e) => handleCheckTransaction(transaction?.id.toString() || '', e.target.checked)}
+          />
+        </td>
+        {transaction.type === 'expenses' && (
+          <>
+            <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.budget}</td>
+            <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.category}</td>
+          </>
+        )}
+        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.amount}</td>
+        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.transaction_date}</td>
+        <td className="border-l border-accent/10 px-2 py-1 text-sm">{transaction.reference}</td>
+      </tr>
+    );
+  },
+);
+
+ExpensesTransaction.displayName = 'ExpensesTransaction';
