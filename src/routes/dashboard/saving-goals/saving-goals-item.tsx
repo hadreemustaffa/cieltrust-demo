@@ -8,7 +8,7 @@ import supabase from '@/utils/supabase';
 import { ButtonDelete, ButtonPrimary, ButtonSecondary } from '@/components/button';
 import { Input } from '@/components/custom-form';
 import Icon from '@/components/icon';
-import Modal from '@/components/modal';
+import Modal from '@/components/modal/modal';
 import MoreMenu from '@/components/more-menu';
 import { EditGoalFormProps, SavingGoalsItemProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 

@@ -10,7 +10,7 @@ import { useAppSelector } from '@/hooks/use-redux';
 import { ButtonPrimary, ButtonSecondary } from '@/components/button';
 import { Input } from '@/components/custom-form';
 import Icon from '@/components/icon';
-import Modal from '@/components/modal';
+import Modal from '@/components/modal/modal';
 import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 import SavingGoalsItem from '@/routes/dashboard/saving-goals/saving-goals-item';
 import { SavingGoalsFormProps, SavingGoalsProps } from '@/routes/dashboard/saving-goals/saving-goals.types';

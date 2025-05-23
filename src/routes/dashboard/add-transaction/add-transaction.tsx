@@ -4,7 +4,7 @@ import PlusIcon from '@/images/icons/plus.svg?react';
 
 import { ButtonPrimary } from '@/components/button';
 import Icon from '@/components/icon';
-import Modal from '@/components/modal';
+import Modal from '@/components/modal/modal';
 import AddTransactionForm from '@/routes/dashboard/add-transaction/add-transaction-form';
 
 export default function AddTransaction() {

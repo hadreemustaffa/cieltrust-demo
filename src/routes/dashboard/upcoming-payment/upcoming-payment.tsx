@@ -8,7 +8,7 @@ import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
-import Modal from '@/components/modal';
+import Modal from '@/components/modal/modal';
 import MoreMenu from '@/components/more-menu';
 import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 import { EditUpcomingPaymentForm } from '@/routes/dashboard/upcoming-payment/upcoming-payment-form';
