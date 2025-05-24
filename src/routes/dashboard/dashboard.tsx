@@ -3,7 +3,6 @@ import { useLoaderData } from 'react-router';
 
 import supabase from '@/utils/supabase';
 
-import { BudgetTablesProvider } from '@/context/budget-tables-context';
 import { OverviewProvider } from '@/context/overview-context';
 
 import AccountOverview from '@/routes/dashboard/account-overview/account-overview';
@@ -33,7 +32,6 @@ interface DashboardProps {
 }
 
 const saving_goals = 'saving_goals(*)';
-const budget = 'budget(*, budget_categories(*))';
 const overview = 'overview(*)';
 const upcoming_payment = 'upcoming_payment(*)';
 
@@ -41,7 +39,7 @@ async function loader() {
   try {
     const { data, error } = await supabase
       .from('users')
-      .select(`dashboard_id, ${saving_goals}, ${budget}, ${overview}, ${upcoming_payment}`)
+      .select(`dashboard_id, ${saving_goals}, ${overview}, ${upcoming_payment}`)
       .single();
 
     if (error) {
@@ -67,25 +65,23 @@ export default function Dashboard() {
   const data = useLoaderData() as DashboardProps;
 
   return (
-    <BudgetTablesProvider initialBudgetTables={data.budget}>
-      <OverviewProvider initialOverview={data.overview[0]}>
-        <div className="my-auto flex flex-col gap-4 text-left">
-          <div className="flex flex-row gap-2 self-end">
-            <ManageCategories />
-            <TransactionHistory />
-            <AddTransaction />
-          </div>
-          <AccountOverview />
-
-          <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-            <UpcomingPayments initialUpcomingPayments={data.upcoming_payment} />
-            <Budget />
-            <VisualChart />
-            <SavingGoals data={data.saving_goals} />
-          </div>
+    <OverviewProvider initialOverview={data.overview[0]}>
+      <div className="my-auto flex flex-col gap-4 text-left">
+        <div className="flex flex-row gap-2 self-end">
+          <ManageCategories />
+          <TransactionHistory />
+          <AddTransaction />
         </div>
-      </OverviewProvider>
-    </BudgetTablesProvider>
+        <AccountOverview />
+
+        <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
+          <UpcomingPayments initialUpcomingPayments={data.upcoming_payment} />
+          <Budget />
+          <VisualChart />
+          <SavingGoals data={data.saving_goals} />
+        </div>
+      </div>
+    </OverviewProvider>
   );
 }
 

@@ -1,21 +1,19 @@
 import { Categories, CategoriesWithAmount } from '@/routes/dashboard/categories/categories.types';
 
 export interface AddBudgetTableFormData {
-  id: number;
+  dashboardId: number;
   name: string;
   amount: number;
-  categories?: Categories;
-  new_category?: string;
-  addCategories?: Categories;
-  state?: Table[];
+  categories: Categories;
 }
 
 export interface EditBudgetTableFormData {
+  dashboardId: number;
   id: number;
   name: string;
   amount: number;
-  editCategories?: Categories;
-  state: Table[];
+  table: Table;
+  categories: Categories;
 }
 
 export interface BudgetProps {
@@ -35,14 +33,13 @@ export interface BudgetTableProps {
 }
 
 export interface AddBudgetTableFormProps {
+  handleModalClose: () => void;
   tables: Table[];
-  onSubmit: (data: AddBudgetTableFormData) => void;
 }
 
 export interface EditBudgetTableFormProps {
+  handleModalClose: () => void;
   table: Table;
-  tables: Table[];
-  onSubmit: (data: EditBudgetTableFormData) => void;
 }
 
 export interface DeleteBudgetTableData {
