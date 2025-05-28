@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getPagination } from '@/utils/getPagination';
 import supabase from '@/utils/supabase';
 
+import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
 import {
   AddBudgetTableFormData,
   DB_Table,
@@ -26,8 +27,30 @@ import {
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_PUBLIC_SUPABASE_URL }),
-  tagTypes: ['Categories', 'TransactionHistory', 'BudgetTables'],
+  tagTypes: ['Overview', 'Categories', 'TransactionHistory', 'BudgetTables'],
   endpoints: (build) => ({
+    // Overview
+    getOverview: build.query<Overview, number>({
+      queryFn: async (dashboardId: number) => {
+        try {
+          const { data, error } = await supabase
+            .from('overview')
+            .select('balance, income, expenses, savings, previous_month')
+            .eq('dashboard_id', dashboardId)
+            .single();
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to fetch overview:', error);
+          return { error };
+        }
+      },
+      providesTags: ['Overview'],
+    }),
     // Categories
     getCategories: build.query<Categories, number>({
       queryFn: async (dashboardId: number) => {
@@ -446,6 +469,7 @@ export const apiSlice = createApi({
 });
 
 export const {
+  useGetOverviewQuery,
   useGetCategoriesQuery,
   useGetCategoryQuery,
   useAddNewCategoryMutation,
