@@ -1,11 +1,13 @@
 import { Action, configureStore, ThunkAction } from '@reduxjs/toolkit';
 
 import { apiSlice } from '@/routes/dashboard/api.slice';
+import budgetReducer from '@/routes/dashboard/budget/budget.slice';
 import dashboardReducer from '@/routes/dashboard/dashboard.slice';
 
 export const store = configureStore({
   reducer: {
     dashboard: dashboardReducer,
+    budget: budgetReducer,
     [apiSlice.reducerPath]: apiSlice.reducer,
   },
   middleware: (getDefaultMiddleware) => getDefaultMiddleware().prepend(apiSlice.middleware),

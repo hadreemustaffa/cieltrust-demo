@@ -1,8 +1,17 @@
-import { useFieldArray, useFormContext } from 'react-hook-form';
+import { useEffect } from 'react';
+import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+
+import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonPrimary } from '@/components/button';
 import { Input } from '@/components/custom-form';
 import ErrorMessage from '@/components/error-message';
+import {
+  useAddBudgetTableMutation,
+  useEditBudgetTableMutation,
+  useGetCategoriesQuery,
+} from '@/routes/dashboard/api.slice';
+import { getTables } from '@/routes/dashboard/budget/budget.slice';
 import {
   AddBudgetTableFormData,
   AddBudgetTableFormProps,
@@ -10,23 +19,78 @@ import {
   EditBudgetTableFormProps,
 } from '@/routes/dashboard/budget/budget.types';
 import Categories from '@/routes/dashboard/categories/categories';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 
 import { ERROR_MSG } from '@/data/errorMessages';
 
-export const AddBudgetTableForm = ({ tables, onSubmit }: AddBudgetTableFormProps) => {
+export const AddBudgetTableForm = ({ tables, handleModalClose }: AddBudgetTableFormProps) => {
+  const dashboardId = useAppSelector(getDashboardId);
+  const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
+  const [addBudgetTable, { isSuccess: isAddBudgetSuccess }] = useAddBudgetTableMutation();
+
   const {
     register,
     watch,
+    reset,
     control,
+    setFocus,
     formState: { errors, isSubmitting },
     handleSubmit,
-  } = useFormContext<AddBudgetTableFormData>();
+  } = useForm<AddBudgetTableFormData>({
+    defaultValues: {
+      categories: categories.map((category) => {
+        return {
+          ...category,
+          selected: false,
+        };
+      }),
+    },
+  });
 
   const addCategoriesArr = useFieldArray({
     control: control,
-    name: 'addCategories',
+    name: 'categories',
     keyName: '_id',
   });
+
+  const onSubmit: SubmitHandler<AddBudgetTableFormData> = async (data) => {
+    try {
+      await addBudgetTable({
+        dashboardId: dashboardId,
+        name: data.name,
+        amount: data.amount,
+        categories: data.categories,
+      }).unwrap();
+    } catch (error) {
+      console.error('Failed to add budget table:', error);
+    }
+  };
+
+  useEffect(() => {
+    setFocus('name');
+
+    return () => {
+      reset();
+    };
+  }, [setFocus, reset]);
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      reset({
+        categories: categories.map((category) => ({
+          ...category,
+          selected: false,
+        })),
+      });
+    }
+  }, [categories, reset]);
+
+  useEffect(() => {
+    if (isAddBudgetSuccess) {
+      reset();
+      handleModalClose();
+    }
+  }, [isAddBudgetSuccess, reset, handleModalClose]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -57,7 +121,7 @@ export const AddBudgetTableForm = ({ tables, onSubmit }: AddBudgetTableFormProps
 
       <Categories
         handleNewCategoryModal={() => null}
-        selectedCategories={(watch('addCategories') ?? [])
+        selectedCategories={(watch('categories') ?? [])
           .filter((category) => category.selected)
           .map((category) => category.id)}
       >
@@ -72,7 +136,7 @@ export const AddBudgetTableForm = ({ tables, onSubmit }: AddBudgetTableFormProps
                 id={field._id}
                 type="checkbox"
                 className="rounded-md border border-accent/10 bg-transparent"
-                {...register(`addCategories.${index}.selected` as const)}
+                {...register(`categories.${index}.selected` as const)}
               />
             </label>
           </li>
@@ -114,20 +178,92 @@ export const AddBudgetTableForm = ({ tables, onSubmit }: AddBudgetTableFormProps
   );
 };
 
-export const EditBudgetTableForm = ({ table, tables, onSubmit }: EditBudgetTableFormProps) => {
+export const EditBudgetTableForm = ({ table, handleModalClose }: EditBudgetTableFormProps) => {
+  const dashboardId = useAppSelector(getDashboardId);
+  const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
+  const [editBudgetTable, { isSuccess }] = useEditBudgetTableMutation();
+
   const {
     register,
     watch,
+    reset,
     control,
+    setFocus,
     handleSubmit,
     formState: { errors, isSubmitting },
-  } = useFormContext<EditBudgetTableFormData>();
+  } = useForm<EditBudgetTableFormData>({
+    defaultValues: {
+      table: table,
+      categories: categories.map((category) => {
+        return {
+          ...category,
+          selected: table.budget_categories.some((bc) => bc.category_id === category.id),
+        };
+      }),
+    },
+  });
+
+  const tables = useAppSelector(getTables);
 
   const editCategoriesArr = useFieldArray({
     control: control,
-    name: 'editCategories',
+    name: 'categories',
     keyName: '_id',
   });
+
+  const onSubmit: SubmitHandler<EditBudgetTableFormData> = async (data) => {
+    const selectedCategoriesIds = data.categories.filter((category) => category.selected).map((c) => c.id);
+    const tableCategoriesId = table.budget_categories.map((bc) => bc.category_id);
+
+    const isSameName = table.name === data.name;
+    const isSameAmount = table.amount === data.amount;
+    const isSameCategories =
+      selectedCategoriesIds.length === tableCategoriesId.length &&
+      selectedCategoriesIds.every((id, index) => id === tableCategoriesId[index]);
+
+    if (isSameName && isSameCategories && isSameAmount) {
+      return;
+    }
+
+    try {
+      await editBudgetTable({
+        id: table.id,
+        name: data.name,
+        amount: data.amount,
+        table: table,
+        dashboardId: dashboardId,
+        categories: data.categories,
+      }).unwrap();
+    } catch (error) {
+      console.error('Failed to update budget table:', error);
+    }
+  };
+
+  useEffect(() => {
+    if (isSuccess) {
+      reset();
+      handleModalClose();
+    }
+  }, [isSuccess, reset, handleModalClose]);
+
+  useEffect(() => {
+    setFocus('name');
+
+    return () => {
+      reset();
+    };
+  }, [setFocus, reset]);
+
+  useEffect(() => {
+    if (categories.length > 0) {
+      reset({
+        categories: categories.map((category) => ({
+          ...category,
+          selected: table.budget_categories.some((bc) => bc.category_id === category.id),
+        })),
+      });
+    }
+  }, [categories, reset, table.budget_categories]);
 
   return (
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
@@ -166,7 +302,7 @@ export const EditBudgetTableForm = ({ table, tables, onSubmit }: EditBudgetTable
       <Categories
         handleNewCategoryModal={() => null}
         selectedCategories={[
-          ...(watch('editCategories')
+          ...(watch('categories')
             ?.filter((category) => category.selected)
             .map((category) => category.id) ?? []),
         ]}
@@ -187,14 +323,14 @@ export const EditBudgetTableForm = ({ table, tables, onSubmit }: EditBudgetTable
                     type="checkbox"
                     className="rounded-md border border-accent/10 bg-transparent"
                     defaultChecked={isChecked}
-                    {...register(`editCategories.${index}.selected` as const)}
+                    {...register(`categories.${index}.selected` as const)}
                   />
                 ) : (
                   <input
                     id={field._id}
                     type="checkbox"
                     className="rounded-md border border-accent/10 bg-transparent"
-                    {...register(`editCategories.${index}.selected` as const)}
+                    {...register(`categories.${index}.selected` as const)}
                   />
                 )}
               </label>
@@ -216,7 +352,7 @@ export const EditBudgetTableForm = ({ table, tables, onSubmit }: EditBudgetTable
             className="w-full rounded-md border border-accent/10 bg-transparent p-2"
             placeholder="$ 0"
             defaultValue={table.amount}
-            aria-invalid={errors.name ? 'true' : 'false'}
+            aria-invalid={errors.amount ? 'true' : 'false'}
             {...register('amount', {
               required: {
                 value: true,

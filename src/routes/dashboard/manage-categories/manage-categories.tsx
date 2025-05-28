@@ -8,7 +8,6 @@ import PlusIcon from '@/images/icons/plus.svg?react';
 import TrashIcon from '@/images/icons/trash.svg?react';
 import XIcon from '@/images/icons/x.svg?react';
 
-import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
@@ -20,6 +19,7 @@ import {
   useAddNewCategoryMutation,
   useDeleteCategoryMutation,
   useEditCategoryMutation,
+  useGetAllBudgetTablesQuery,
   useGetCategoriesQuery,
 } from '@/routes/dashboard/api.slice';
 import { Category } from '@/routes/dashboard/categories/categories.types';
@@ -59,9 +59,9 @@ const ModalContent = ({ isOpen, handleClose }: Pick<ModalProps, 'isOpen' | 'hand
   const [selectAll, setSelectAll] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const [checkedCategories, setCheckedCategories] = useState<Record<string, boolean>>({});
-  const { budgetTables, setBudgetTables } = useBudgetTables();
   const dashboardId = useAppSelector(getDashboardId);
 
+  const { data: budgetTables = [] } = useGetAllBudgetTablesQuery(dashboardId);
   const { data: categories = [], isFetching } = useGetCategoriesQuery(dashboardId);
   const [deleteCategory] = useDeleteCategoryMutation();
 
@@ -90,18 +90,6 @@ const ModalContent = ({ isOpen, handleClose }: Pick<ModalProps, 'isOpen' | 'hand
     handleClose();
   };
 
-  const updateStateAfterDelete = async (categoriesIds: number[]) => {
-    categoriesIds.forEach((id) => {
-      setBudgetTables((prev) => {
-        const updatedTables = prev.map((table) => ({
-          ...table,
-          budget_categories: table.budget_categories.filter((cat) => cat.category_id !== id),
-        }));
-        return [...updatedTables];
-      });
-    });
-  };
-
   const handleDeleteSelected = async () => {
     if (!window.confirm(`Are you sure you want to delete ${checkedCount} selected categories?`)) {
       return;
@@ -114,7 +102,6 @@ const ModalContent = ({ isOpen, handleClose }: Pick<ModalProps, 'isOpen' | 'hand
     const categoriesToDeleteIds = categoriesToDelete.map((category) => category.id);
 
     await deleteCategory({ categoryIds: categoriesToDeleteIds, dashboardId, tables: budgetTables }).unwrap();
-    updateStateAfterDelete(categoriesToDeleteIds);
 
     setCheckedCategories({});
     setSelectAll(false);

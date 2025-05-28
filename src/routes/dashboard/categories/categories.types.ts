@@ -12,6 +12,27 @@ export type CategoryWithAmount = Category & {
   category_id: number;
   amount: number;
   spent: number;
+  category_name: string;
 };
 
 export type CategoriesWithAmount = CategoryWithAmount[];
+
+export type DB_Category = {
+  id: number;
+  name: string;
+  created_at: string;
+};
+
+export type DB_Categories = DB_Category[];
+
+export type DB_CategoryWithAmount = DB_Category & {
+  budget_id: number;
+  category_id: number;
+  amount: number;
+  spent: number;
+  category: {
+    name: string;
+  };
+};
+
+export type DB_CategoriesWithAmount = DB_CategoryWithAmount[];
