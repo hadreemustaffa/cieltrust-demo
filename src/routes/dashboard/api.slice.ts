@@ -3,6 +3,13 @@ import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 import { getPagination } from '@/utils/getPagination';
 import supabase from '@/utils/supabase';
 
+import {
+  AddBudgetTableFormData,
+  DB_Table,
+  EditBudgetTableCategoryFormData,
+  EditBudgetTableFormData,
+  Table,
+} from '@/routes/dashboard/budget/budget.types';
 import type { Category, Categories } from '@/routes/dashboard/categories/categories.types';
 import {
   DeleteCategory,
@@ -19,7 +26,7 @@ import {
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_PUBLIC_SUPABASE_URL }),
-  tagTypes: ['Categories', 'TransactionHistory'],
+  tagTypes: ['Categories', 'TransactionHistory', 'BudgetTables'],
   endpoints: (build) => ({
     // Categories
     getCategories: build.query<Categories, number>({
@@ -111,7 +118,7 @@ export const apiSlice = createApi({
           return { error };
         }
       },
-      invalidatesTags: (result, error, arg) => [{ type: 'Categories', id: arg.id }],
+      invalidatesTags: (result, error, arg) => [{ type: 'Categories', id: arg.id }, 'BudgetTables'],
     }),
     deleteCategory: build.mutation<{ categoryIds: number[] }, DeleteCategory>({
       queryFn: async ({ categoryIds, dashboardId, tables }) => {
@@ -144,7 +151,7 @@ export const apiSlice = createApi({
           return { error };
         }
       },
-      invalidatesTags: ['Categories'],
+      invalidatesTags: ['Categories', 'BudgetTables'],
     }),
     // Transaction History
     getAllTransactionHistory: build.query<TransactionHistory, number>({
@@ -209,6 +216,232 @@ export const apiSlice = createApi({
       },
       invalidatesTags: ['TransactionHistory'],
     }),
+    // Budget Tables
+    getAllBudgetTables: build.query<Table[], number>({
+      queryFn: async (dashboardId: number) => {
+        try {
+          const { data, error } = await supabase
+            .from('budget')
+            .select(
+              `id, name, amount, created_at, budget_categories (budget_id, category_id, amount, spent, category:categories (name))`,
+            )
+            .eq('dashboard_id', dashboardId);
+
+          if (error) {
+            return { error: error.message };
+          }
+          // Transform budget_categories to include category_name
+          const transformed = data.map((table: DB_Table) => ({
+            ...table,
+            budget_categories: (table.budget_categories || []).map((bc) => ({
+              budget_id: bc.budget_id,
+              category_id: bc.category_id,
+              amount: bc.amount,
+              spent: bc.spent,
+              category_name: bc.category.name,
+            })),
+          }));
+
+          return { data: transformed };
+        } catch (error) {
+          console.error('Failed to fetch all budget tables:', error);
+          return { error };
+        }
+      },
+      providesTags: (result = [], error, arg) => [
+        'BudgetTables',
+        ...result.map(({ id }) => ({ type: 'BudgetTables', id }) as const),
+      ],
+    }),
+    getBudgetTable: build.query<Table, number>({
+      queryFn: async (id: number) => {
+        try {
+          const { data, error } = await supabase
+            .from('budget')
+            .select(
+              `id, name, amount, created_at, budget_categories (budget_id, category_id, amount, spent, category:categories (name))`,
+            )
+            .eq('id', id)
+            .select()
+            .single();
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          // Transform budget_categories to include category_name
+          const transformed = data.map((table: DB_Table) => ({
+            ...table,
+            budget_categories: (table.budget_categories || []).map((bc) => ({
+              budget_id: bc.budget_id,
+              category_id: bc.category_id,
+              amount: bc.amount,
+              spent: bc.spent,
+              category_name: bc.category.name,
+            })),
+          }));
+
+          return { data: transformed };
+        } catch (error) {
+          console.error('Failed to fetch budget table:', error);
+          return { error };
+        }
+      },
+      providesTags: (result, error, arg) => [{ type: 'BudgetTables', id: arg } as const],
+    }),
+    addBudgetTable: build.mutation<Table, AddBudgetTableFormData>({
+      async queryFn({ name, dashboardId, amount, categories }) {
+        try {
+          const { data, error: budgetError } = await supabase
+            .from('budget')
+            .insert({
+              dashboard_id: dashboardId,
+              name: name,
+              amount: amount,
+            })
+            .select('id')
+            .single();
+
+          if (budgetError) {
+            return { error: budgetError.message };
+          }
+
+          const selectedCategoriesIds = categories
+            .filter((category) => category.selected)
+            .map((category) => category.id);
+
+          const newCategoriesMap = categories
+            .filter((category) => selectedCategoriesIds.includes(category.id))
+            .map((category) => ({
+              budget_id: data.id,
+              category_id: category.id,
+            }));
+
+          if (selectedCategoriesIds.length > 0) {
+            const { error: categoryError } = await supabase.from('budget_categories').insert(newCategoriesMap);
+
+            if (categoryError) {
+              return { error: categoryError.message };
+            }
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to add new budget table:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: ['BudgetTables'],
+    }),
+    editBudgetTable: build.mutation<Table, EditBudgetTableFormData>({
+      async queryFn({ id, name, amount, dashboardId, table, categories }) {
+        try {
+          const { data, error } = await supabase
+            .from('budget')
+            .update({
+              name: name,
+              amount: amount,
+            })
+            .eq('id', id)
+            .eq('dashboard_id', dashboardId);
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          const selectedCategoriesIds = categories
+            .filter((category) => category.selected)
+            .map((category) => category.id);
+
+          const tableCategoriesIds = table.budget_categories
+            .filter((bc) => bc.budget_id === table.id)
+            .map((bc) => bc.category_id);
+
+          const newCategoriesMap = selectedCategoriesIds
+            .filter((categoryId) => !tableCategoriesIds?.includes(categoryId))
+            .map((categoryId) => ({
+              budget_id: table.id,
+              category_id: categoryId,
+              amount: 0,
+              spent: 0,
+            }));
+
+          if (newCategoriesMap.length > 0) {
+            const { error: categoryError } = await supabase.from('budget_categories').insert(newCategoriesMap);
+
+            if (categoryError) {
+              return { error: categoryError.message };
+            }
+          }
+
+          const removedCategoriesIds = tableCategoriesIds
+            .filter((categoryId) => !selectedCategoriesIds.includes(categoryId))
+            .map((categoryId) => ({
+              category_id: categoryId,
+            }));
+
+          if (removedCategoriesIds.length > 0) {
+            const { error: categoryError } = await supabase
+              .from('budget_categories')
+              .delete()
+              .in(
+                'category_id',
+                removedCategoriesIds.map((c) => c.category_id),
+              )
+              .eq('budget_id', table.id);
+
+            if (categoryError) {
+              return { error: categoryError.message };
+            }
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to edit budget table:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'BudgetTables', id: arg.table.id }],
+    }),
+    deleteBudgetTable: build.mutation<Table, number>({
+      async queryFn(id) {
+        try {
+          const { data, error } = await supabase.from('budget').delete().eq('id', id);
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to delete budget table:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: ['BudgetTables'],
+    }),
+    editBudgetTableCategory: build.mutation<Table, EditBudgetTableCategoryFormData>({
+      async queryFn({ amount, category }) {
+        try {
+          const { data, error } = await supabase
+            .from('budget_categories')
+            .update({ amount: amount })
+            .eq('budget_id', category.budget_id)
+            .eq('category_id', category.category_id)
+            .single();
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to edit budget table category:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: (result, error, arg) => [{ type: 'BudgetTables', id: arg.category.budget_id }],
+    }),
   }),
 });
 
@@ -221,4 +454,10 @@ export const {
   useGetAllTransactionHistoryQuery,
   useGetPaginatedTransactionHistoryQuery,
   useDeleteTransactionHistoryMutation,
+  useGetAllBudgetTablesQuery,
+  useGetBudgetTableQuery,
+  useAddBudgetTableMutation,
+  useEditBudgetTableMutation,
+  useDeleteBudgetTableMutation,
+  useEditBudgetTableCategoryMutation,
 } = apiSlice;

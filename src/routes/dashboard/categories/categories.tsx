@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 
@@ -12,15 +12,10 @@ interface CategoriesProps {
   handleNewCategoryModal: () => void;
 }
 
-export default function Categories({ children, selectedCategories, handleNewCategoryModal }: CategoriesProps) {
+function Categories({ children, selectedCategories, handleNewCategoryModal }: CategoriesProps) {
   const [isOpen, setIsOpen] = useState(false);
-  const [categoriesSelected, setCategoriesSelected] = useState(selectedCategories);
 
   const ref = useOutsideClick<HTMLDivElement>(() => setIsOpen(false));
-
-  useEffect(() => {
-    setCategoriesSelected(selectedCategories);
-  }, [selectedCategories]);
 
   return (
     <div ref={ref} className="relative flex flex-col gap-2">
@@ -31,8 +26,8 @@ export default function Categories({ children, selectedCategories, handleNewCate
         onClick={() => setIsOpen(!isOpen)}
         className="flex w-full flex-row items-center justify-between gap-2 text-nowrap rounded-md border border-accent/10 bg-transparent p-2"
       >
-        {categoriesSelected.length > 0 ? (
-          <span>{categoriesSelected.length} selected</span>
+        {selectedCategories.length > 0 ? (
+          <span>{selectedCategories.length} selected</span>
         ) : (
           <span>Select Categories</span>
         )}
@@ -55,3 +50,5 @@ export default function Categories({ children, selectedCategories, handleNewCate
     </div>
   );
 }
+
+export default React.memo(Categories);

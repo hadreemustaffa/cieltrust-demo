@@ -1,31 +1,24 @@
 import { useEffect, useRef, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { SubmitHandler, useForm } from 'react-hook-form';
 
-import { useBudgetTables } from '@/hooks/use-budget-tables';
-import { useAppSelector } from '@/hooks/use-redux';
-
-import { useGetCategoriesQuery } from '@/routes/dashboard/api.slice';
-import { updateCategoryAmount } from '@/routes/dashboard/budget/budget-table-category/budget-table-category.api';
+import { useEditBudgetTableCategoryMutation } from '@/routes/dashboard/api.slice';
 import { BudgetTableCategoryProps } from '@/routes/dashboard/budget/budget-table-category/budget-table-category.types';
-import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
+import { EditBudgetTableCategoryFormData } from '@/routes/dashboard/budget/budget.types';
 
 export default function BudgetTableCategory({ category }: BudgetTableCategoryProps) {
-  const [budgetAmount, setBudgetAmount] = useState(category.amount || 0);
   const [isOverflowing, setIsOverflowing] = useState(false);
   const nameRef = useRef<HTMLParagraphElement>(null);
   const thRef = useRef<HTMLTableCellElement>(null);
-  const { setBudgetTables } = useBudgetTables();
-  const dashboardId = useAppSelector(getDashboardId);
-  const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
+  const [editBudgetTableCategory, { isLoading }] = useEditBudgetTableCategoryMutation();
 
   const spent = category.spent || 0;
-  const remaining = budgetAmount - spent;
-  const isOverBudget = spent > budgetAmount;
-  const categoryName = categories.find((cat) => cat.id === category.category_id)?.name || '';
+  const remaining = category.amount - spent;
+  const isOverBudget = spent > category.amount;
+  const categoryName = category.category_name;
 
-  const { register, handleSubmit } = useForm({
+  const { register, handleSubmit } = useForm<EditBudgetTableCategoryFormData>({
     defaultValues: {
-      amount: budgetAmount,
+      amount: category.amount || 0,
     },
   });
 
@@ -35,17 +28,15 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
     }
   };
 
-  const onSubmit = async (data: { amount: number }) => {
+  const onSubmit: SubmitHandler<EditBudgetTableCategoryFormData> = async (data) => {
     const newAmount = Number(data.amount);
 
-    if (newAmount === budgetAmount) return;
+    if (newAmount === category.amount || isNaN(newAmount)) return;
 
-    await updateCategoryAmount({
+    await editBudgetTableCategory({
+      category: category,
       amount: newAmount,
-      category,
-      setAmount: setBudgetAmount,
-      setTable: setBudgetTables,
-    });
+    }).unwrap();
   };
 
   useEffect(() => {
@@ -68,7 +59,7 @@ export default function BudgetTableCategory({ category }: BudgetTableCategoryPro
   return (
     <tr
       key={category.category_id}
-      className="grid min-w-[500px] grid-cols-4 items-center justify-between border-b border-accent/10 last:border-b-0 last-of-type:last:border-r-0 sm:w-full"
+      className={`grid min-w-[500px] grid-cols-4 items-center justify-between border-b border-accent/10 last:border-b-0 last-of-type:last:border-r-0 sm:w-full ${isLoading ? 'opacity-50' : ''}`}
     >
       <th
         scope="row"

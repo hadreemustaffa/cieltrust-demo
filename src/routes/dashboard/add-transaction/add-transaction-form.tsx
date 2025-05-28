@@ -3,7 +3,6 @@ import { FormProvider, SubmitHandler, useForm, useFormContext } from 'react-hook
 
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 
-import { useBudgetTables } from '@/hooks/use-budget-tables';
 import { useOverview } from '@/hooks/use-overview';
 import { useAppSelector } from '@/hooks/use-redux';
 
@@ -13,7 +12,7 @@ import ErrorMessage from '@/components/error-message';
 import Icon from '@/components/icon';
 import { addTransaction } from '@/routes/dashboard/add-transaction/add-transaction.api';
 import { ExpensesFormData, FormData, IncomeFormData } from '@/routes/dashboard/add-transaction/add-transaction.types';
-import { useGetCategoriesQuery } from '@/routes/dashboard/api.slice';
+import { useGetAllBudgetTablesQuery, useGetCategoriesQuery } from '@/routes/dashboard/api.slice';
 import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 
 import { ERROR_MSG } from '@/data/errorMessages';
@@ -21,8 +20,8 @@ import { ERROR_MSG } from '@/data/errorMessages';
 export default function AddTransactionForm({ handleModalClose }: { handleModalClose: () => void }) {
   const [transactionType, setTransactionType] = useState<FormData['transactionType']>('income');
   const dashboardId = useAppSelector(getDashboardId);
-  const { budgetTables, setBudgetTables } = useBudgetTables();
   const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
+  const { data: budgetTables = [] } = useGetAllBudgetTablesQuery(dashboardId);
   const { setOverview } = useOverview();
 
   const methods = useForm<FormData & IncomeFormData & ExpensesFormData>();
@@ -41,9 +40,7 @@ export default function AddTransactionForm({ handleModalClose }: { handleModalCl
       transactionType: transactionType,
       budgetTables: budgetTables,
       categories: categories,
-      setBudgetTables: setBudgetTables,
       setOverview: setOverview,
-      setHistory: setOverview.transactions,
       date: getValues('date'),
       from: getValues('from'),
       percent_saved: getValues('percent_saved'),
@@ -168,8 +165,8 @@ const IncomeForm = () => {
 };
 
 const ExpensesForm = () => {
-  const { budgetTables } = useBudgetTables();
   const dashboardId = useAppSelector(getDashboardId);
+  const { data: budgetTables = [] } = useGetAllBudgetTablesQuery(dashboardId);
   const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
 
   const NO_BUDGET_FOUND = 'No budget found';
