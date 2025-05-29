@@ -12,7 +12,6 @@ import SavingGoals from '@/routes/dashboard/saving-goals/saving-goals';
 import { SavingGoalsFormProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 import TransactionHistory from '@/routes/dashboard/transaction-history/transaction-history';
 import UpcomingPayments from '@/routes/dashboard/upcoming-payment/upcoming-payment';
-import { UpcomingPayment } from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
 import VisualChart from '@/routes/dashboard/visual-chart/visual-chart';
 
 import { store } from '@/store';
@@ -20,18 +19,13 @@ import { store } from '@/store';
 interface DashboardProps {
   dashboard_id: number;
   saving_goals: SavingGoalsFormProps[];
-  upcoming_payment: UpcomingPayment[];
 }
 
 const saving_goals = 'saving_goals(*)';
-const upcoming_payment = 'upcoming_payment(*)';
 
 async function loader() {
   try {
-    const { data, error } = await supabase
-      .from('users')
-      .select(`dashboard_id, ${saving_goals}, ${upcoming_payment}`)
-      .single();
+    const { data, error } = await supabase.from('users').select(`dashboard_id, ${saving_goals}`).single();
 
     if (error) {
       throw new Error(`${error.message} (Code: ${error.code})`);
@@ -65,7 +59,7 @@ export default function Dashboard() {
       <AccountOverview />
 
       <div className="grid grid-cols-1 gap-4 md:grid-cols-4">
-        <UpcomingPayments initialUpcomingPayments={data.upcoming_payment} />
+        <UpcomingPayments />
         <Budget />
         <VisualChart />
         <SavingGoals data={data.saving_goals} />
