@@ -1,5 +1,6 @@
 import { createApi, fetchBaseQuery } from '@reduxjs/toolkit/query/react';
 
+import { calculateNextPaymentDate } from '@/utils/calculateNextPaymentDate';
 import { getPagination } from '@/utils/getPagination';
 import supabase from '@/utils/supabase';
 
@@ -27,11 +28,18 @@ import {
   Transaction,
   TransactionHistory,
 } from '@/routes/dashboard/transaction-history/transaction-history.types';
+import {
+  AddUpcomingPaymentFormData,
+  DeleteUpcomingPayment,
+  EditUpcomingPaymentFormData,
+  GetUpcomingPayment,
+  UpcomingPayment,
+} from '@/routes/dashboard/upcoming-payment/upcoming-payment.types';
 
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_PUBLIC_SUPABASE_URL }),
-  tagTypes: ['Overview', 'Categories', 'TransactionHistory', 'BudgetTables'],
+  tagTypes: ['Overview', 'Categories', 'TransactionHistory', 'BudgetTables', 'UpcomingPayment'],
   endpoints: (build) => ({
     // Overview
     getOverview: build.query<Overview, number>({
@@ -526,6 +534,131 @@ export const apiSlice = createApi({
       },
       invalidatesTags: ['TransactionHistory', 'Overview', 'BudgetTables'],
     }),
+    // Upcoming Payment
+    getAllUpcomingPayments: build.query<UpcomingPayment[], number>({
+      queryFn: async (dashboard_id) => {
+        try {
+          const { data, error } = await supabase.from('upcoming_payment').select().eq('dashboard_id', dashboard_id);
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          // Sorts the upcoming payments by their next payment date
+          // in ascending order (soonest first)
+          const transformed = data.sort((a: UpcomingPayment, b: UpcomingPayment) => {
+            const nextDateA = calculateNextPaymentDate(a.date ?? '', a.recurrence);
+            const nextDateB = calculateNextPaymentDate(b.date ?? '', b.recurrence);
+            return nextDateA.unix() - nextDateB.unix();
+          });
+
+          return { data: transformed };
+        } catch (error) {
+          console.error('Failed to get upcoming payments:', error);
+          return { error };
+        }
+      },
+      providesTags: (result = [], error, arg) => [
+        'UpcomingPayment',
+        ...result.map(({ id }) => ({ type: 'UpcomingPayment', id }) as const),
+      ],
+    }),
+    getUpcomingPayment: build.query<UpcomingPayment, GetUpcomingPayment>({
+      queryFn: async ({ id, dashboard_id }) => {
+        try {
+          const { data, error } = await supabase
+            .from('upcoming_payment')
+            .select()
+            .eq('id', id)
+            .eq('dashboard_id', dashboard_id)
+            .single();
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to get upcoming payment:', error);
+          return { error };
+        }
+      },
+      providesTags: (result, error, arg) => [{ type: 'UpcomingPayment', id: arg.id } as const],
+    }),
+    addUpcomingPayment: build.mutation<UpcomingPayment, AddUpcomingPaymentFormData>({
+      queryFn: async ({ dashboard_id, name, amount, date, recurrence }) => {
+        try {
+          const { data, error } = await supabase
+            .from('upcoming_payment')
+            .insert({
+              dashboard_id: dashboard_id,
+              name: name,
+              date: date,
+              amount: amount,
+              recurrence: recurrence,
+            })
+            .select()
+            .single();
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to add upcoming payment:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: ['UpcomingPayment'],
+    }),
+    deleteUpcomingPayment: build.mutation<UpcomingPayment, DeleteUpcomingPayment>({
+      queryFn: async ({ id, dashboard_id }) => {
+        try {
+          const { data, error } = await supabase
+            .from('upcoming_payment')
+            .delete()
+            .eq('id', id)
+            .eq('dashboard_id', dashboard_id);
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to delete upcoming payment:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: ['UpcomingPayment'],
+    }),
+    editUpcomingPayment: build.mutation<UpcomingPayment, EditUpcomingPaymentFormData>({
+      queryFn: async ({ dashboard_id, id, name, amount, date, recurrence }) => {
+        try {
+          const { data, error } = await supabase
+            .from('upcoming_payment')
+            .update({
+              name: name,
+              amount: amount,
+              date: date,
+              recurrence: recurrence,
+            })
+            .eq('id', id)
+            .eq('dashboard_id', dashboard_id);
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to edit upcoming payment:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: ['UpcomingPayment'],
+    }),
   }),
 });
 
@@ -547,4 +680,9 @@ export const {
   useEditBudgetTableCategoryMutation,
   useAddTransactionIncomeMutation,
   useAddTransactionExpensesMutation,
+  useGetAllUpcomingPaymentsQuery,
+  useGetUpcomingPaymentQuery,
+  useAddUpcomingPaymentMutation,
+  useDeleteUpcomingPaymentMutation,
+  useEditUpcomingPaymentMutation,
 } = apiSlice;

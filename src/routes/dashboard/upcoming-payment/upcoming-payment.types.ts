@@ -1,4 +1,23 @@
-import React from 'react';
+export type UpcomingPayment = {
+  id: number;
+  name: string;
+  date: string;
+  amount: number;
+  recurrence: string;
+};
+
+export interface UpcomingPaymentItemProps {
+  payment: UpcomingPayment;
+}
+
+export interface AddUpcomingPaymentFormProps {
+  handleModalClose: () => void;
+}
+
+export interface EditUpcomingPaymentFormProps {
+  payment: UpcomingPayment;
+  handleModalClose: () => void;
+}
 
 export interface AddUpcomingPaymentFormData {
   dashboard_id: number;
@@ -6,7 +25,6 @@ export interface AddUpcomingPaymentFormData {
   date: string;
   amount: number;
   recurrence: string;
-  state: React.Dispatch<React.SetStateAction<UpcomingPayment[]>>;
 }
 
 export interface EditUpcomingPaymentFormData {
@@ -16,28 +34,14 @@ export interface EditUpcomingPaymentFormData {
   date: string;
   amount: number;
   recurrence: string;
-  state: React.Dispatch<React.SetStateAction<UpcomingPayment[]>>;
 }
 
-export type UpcomingPayment = {
+export interface DeleteUpcomingPayment {
+  dashboard_id: number;
   id: number;
-  name: string;
-  date: string;
-  amount: number;
-  recurrence: string;
-};
-
-export interface AddUpcomingPaymentFormProps {
-  upcomingPayments: UpcomingPayment[];
-  onSubmit: (data: AddUpcomingPaymentFormData) => void;
 }
 
-export interface EditUpcomingPaymentFormProps {
-  upcomingPayment: UpcomingPayment;
-  upcomingPayments: UpcomingPayment[];
-  onSubmit: (data: EditUpcomingPaymentFormData) => void;
-}
-export interface DeleteUpcomingPaymentProps {
-  id: number | null;
-  state: React.Dispatch<React.SetStateAction<UpcomingPayment[]>>;
+export interface GetUpcomingPayment {
+  id: number;
+  dashboard_id: number;
 }
