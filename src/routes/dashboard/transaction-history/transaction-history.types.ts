@@ -1,28 +1,22 @@
 import React from 'react';
 
-export type Transaction =
-  | {
-      type: 'income';
-      id: number;
-      transaction_date: string;
-      from: string;
-      savings: number;
-      amount: number;
-      reference?: string;
-    }
-  | {
-      type: 'expenses';
-      id: number;
-      transaction_date: string;
-      budget: string;
-      category: string;
-      amount: number;
-      reference?: string;
-    };
+export type TransactionType = 'income' | 'expenses';
+
+export type Transaction = {
+  type: TransactionType;
+  id: number;
+  transaction_date: string;
+  budget: string;
+  category: string;
+  amount: number;
+  reference: string;
+  from: string;
+  savings: number;
+};
 
 export interface TransactionsListProps {
   isFetching: boolean;
-  transactionType: Transaction['type'];
+  transactionType: TransactionType;
   setCurrentPage: React.Dispatch<React.SetStateAction<number>>;
   currentTransactions: Transaction[];
   handleClose: () => void;
@@ -34,20 +28,8 @@ export interface TransactionListItemProps {
   handleCheckTransaction: (id: string, checked: boolean) => void;
 }
 
-export type TransactionHistoryItem = {
-  type: Transaction['type'];
-  id: number;
-  transaction_date: string;
-  budget: string;
-  category: string;
-  amount: number;
-  reference: string;
-  from: string;
-  savings: number;
-};
-
 export type TransactionHistory = {
-  history: TransactionHistoryItem[];
+  history: Transaction[];
   count?: number;
   limit?: number;
   page?: number;
@@ -55,7 +37,7 @@ export type TransactionHistory = {
 
 export type GetPaginatedTransactionHistory = {
   dashboardId: number | null;
-  type?: Transaction['type'];
+  type?: TransactionType;
   page?: number;
   limit?: number;
 };

@@ -1,18 +1,19 @@
-export interface FormData {
-  transactionType: 'income' | 'expenses';
-  id: number;
-  date: string;
-  reference?: string;
-}
+export type AddTransactionFormData = AddTransactionIncomeFormData & AddTransactionExpensesFormData;
 
-export interface IncomeFormData {
+export interface AddTransactionIncomeFormData {
+  dashboard_id: number;
+  transaction_date: string;
   from: string;
   amount: number;
-  percent_saved?: number;
+  percent_saved: number;
+  reference: string;
 }
 
-export interface ExpensesFormData {
-  budget_id?: number;
-  category_id?: number;
+export interface AddTransactionExpensesFormData {
+  dashboard_id: number;
+  transaction_date: string;
+  budget: string;
+  category: string;
   amount: number;
+  reference: string;
 }
