@@ -1,66 +1,100 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { FormProvider, SubmitHandler, useForm, useFormContext } from 'react-hook-form';
+import Skeleton from 'react-loading-skeleton';
+import { MoonLoader } from 'react-spinners';
 
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 
-import { useOverview } from '@/hooks/use-overview';
 import { useAppSelector } from '@/hooks/use-redux';
 
 import { ButtonSecondary } from '@/components/button';
 import { Input, Select } from '@/components/custom-form';
 import ErrorMessage from '@/components/error-message';
 import Icon from '@/components/icon';
-import { addTransaction } from '@/routes/dashboard/add-transaction/add-transaction.api';
-import { ExpensesFormData, FormData, IncomeFormData } from '@/routes/dashboard/add-transaction/add-transaction.types';
-import { useGetAllBudgetTablesQuery, useGetCategoriesQuery } from '@/routes/dashboard/api.slice';
+import {
+  AddTransactionExpensesFormData,
+  AddTransactionFormData,
+  AddTransactionIncomeFormData,
+} from '@/routes/dashboard/add-transaction/add-transaction.types';
+import {
+  useAddTransactionExpensesMutation,
+  useAddTransactionIncomeMutation,
+  useGetAllBudgetTablesQuery,
+} from '@/routes/dashboard/api.slice';
+import { Table } from '@/routes/dashboard/budget/budget.types';
 import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
+import { TransactionType } from '@/routes/dashboard/transaction-history/transaction-history.types';
 
 import { ERROR_MSG } from '@/data/errorMessages';
 
 export default function AddTransactionForm({ handleModalClose }: { handleModalClose: () => void }) {
-  const [transactionType, setTransactionType] = useState<FormData['transactionType']>('income');
+  const [transactionType, setTransactionType] = useState<TransactionType>('income');
   const dashboardId = useAppSelector(getDashboardId);
-  const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
-  const { data: budgetTables = [] } = useGetAllBudgetTablesQuery(dashboardId);
-  const { setOverview } = useOverview();
 
-  const methods = useForm<FormData & IncomeFormData & ExpensesFormData>();
+  const methods = useForm<AddTransactionFormData>();
+
+  const [addTransactionIncome, { isLoading: isLoadingIncome, isSuccess: isSuccessIncome }] =
+    useAddTransactionIncomeMutation();
+  const [addTransactionExpenses, { isLoading: isLoadingExpenses, isSuccess: isSuccessExpenses }] =
+    useAddTransactionExpensesMutation();
 
   const {
     register,
     handleSubmit,
     reset,
-    getValues,
-    formState: { errors, isSubmitSuccessful },
+    resetField,
+    formState: { errors },
   } = methods;
 
-  const onSubmit: SubmitHandler<FormData & IncomeFormData & ExpensesFormData> = async () => {
-    await addTransaction({
-      dashboardId: dashboardId,
-      transactionType: transactionType,
-      budgetTables: budgetTables,
-      categories: categories,
-      setOverview: setOverview,
-      date: getValues('date'),
-      from: getValues('from'),
-      percent_saved: getValues('percent_saved'),
-      amount: getValues('amount'),
-      reference: getValues('reference'),
-      budget_id: getValues('budget_id'),
-      category_id: getValues('category_id'),
-    });
+  const onSubmit: SubmitHandler<AddTransactionFormData> = async (data) => {
+    if (transactionType === 'income') {
+      try {
+        await addTransactionIncome({
+          dashboard_id: dashboardId,
+          transaction_date: data.transaction_date,
+          from: data.from,
+          amount: data.amount,
+          percent_saved: data.percent_saved,
+          reference: data.reference,
+        }).unwrap();
+      } catch (error) {
+        console.error('Failed to add income transaction:', error);
+      }
+    }
+
+    if (transactionType === 'expenses') {
+      try {
+        await addTransactionExpenses({
+          dashboard_id: dashboardId,
+          transaction_date: data.transaction_date,
+          budget: data.budget,
+          category: data.category,
+          amount: data.amount,
+          reference: data.reference,
+        }).unwrap();
+      } catch (error) {
+        console.error('Failed to add expenses transaction:', error);
+      }
+    }
   };
 
+  // reset shared fields when transaction type changes
   useEffect(() => {
-    reset({}, { keepDirty: true });
-  }, [reset, transactionType]);
+    reset({
+      transaction_date: '',
+      reference: '',
+    });
+    // cannot include in plain reset({}) since amount is of type number
+    // using '' will throw TS error
+    resetField('amount');
+  }, [reset, resetField, transactionType]);
 
   useEffect(() => {
-    if (isSubmitSuccessful) {
+    if (isSuccessIncome || isSuccessExpenses) {
       reset();
       handleModalClose();
     }
-  }, [isSubmitSuccessful, reset, handleModalClose]);
+  }, [isSuccessIncome, isSuccessExpenses, reset, handleModalClose]);
 
   return (
     <FormProvider {...methods}>
@@ -74,7 +108,7 @@ export default function AddTransactionForm({ handleModalClose }: { handleModalCl
                 { label: 'Income', value: 'income' },
                 { label: 'Expenses', value: 'expenses' },
               ]}
-              onChange={(event) => setTransactionType(event.currentTarget.value as FormData['transactionType'])}
+              onChange={(event) => setTransactionType(event.currentTarget.value as TransactionType)}
             />
 
             <span aria-hidden className="absolute right-2 top-1/2 -translate-y-1/2">
@@ -88,11 +122,11 @@ export default function AddTransactionForm({ handleModalClose }: { handleModalCl
           <Input
             id="transaction-date"
             type="date"
-            {...register('date', {
+            {...register('transaction_date', {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
             })}
           />
-          {errors.date && <ErrorMessage error={errors.date.message} />}
+          {errors.transaction_date && <ErrorMessage error={errors.transaction_date.message} />}
         </div>
 
         {transactionType === 'income' && <IncomeForm />}
@@ -104,7 +138,10 @@ export default function AddTransactionForm({ handleModalClose }: { handleModalCl
           {errors.reference && <ErrorMessage error={errors.reference.message} />}
         </div>
 
-        <ButtonSecondary type="submit">Submit</ButtonSecondary>
+        <ButtonSecondary type="submit" className={isLoadingIncome || isLoadingExpenses ? 'opacity-50' : ''}>
+          <MoonLoader loading={isLoadingIncome || isLoadingExpenses} size={16} color="hsla(210, 96%, 40%, 1)" />
+          <span className="ml-2">Add {transactionType === 'income' ? 'Income' : 'Expenses'}</span>
+        </ButtonSecondary>
       </form>
     </FormProvider>
   );
@@ -114,7 +151,7 @@ const IncomeForm = () => {
   const {
     register,
     formState: { errors },
-  } = useFormContext<IncomeFormData>();
+  } = useFormContext<AddTransactionIncomeFormData>();
 
   return (
     <>
@@ -137,9 +174,12 @@ const IncomeForm = () => {
             id="income-amount"
             type="number"
             min={0}
+            step={50}
             placeholder="Enter amount"
             {...register('amount', {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
+              valueAsNumber: true,
+              min: { value: 0, message: 'Amount must be greater than 0' },
             })}
           />
           {errors.amount && <ErrorMessage error={errors.amount.message} />}
@@ -155,7 +195,9 @@ const IncomeForm = () => {
             step={5}
             defaultValue={0}
             placeholder="0-100"
-            {...register('percent_saved')}
+            {...register('percent_saved', {
+              required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
+            })}
           />
           {errors.percent_saved && <ErrorMessage error={errors.percent_saved.message} />}
         </div>
@@ -166,8 +208,8 @@ const IncomeForm = () => {
 
 const ExpensesForm = () => {
   const dashboardId = useAppSelector(getDashboardId);
-  const { data: budgetTables = [] } = useGetAllBudgetTablesQuery(dashboardId);
-  const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
+  const { data: budgetTables = [], isLoading } = useGetAllBudgetTablesQuery(dashboardId);
+  const [selectedBudget, setSelectedBudget] = useState<Table | null>(null);
 
   const NO_BUDGET_FOUND = 'No budget found';
   const isBudgetFound = budgetTables.length > 0;
@@ -175,18 +217,63 @@ const ExpensesForm = () => {
   const {
     register,
     formState: { errors },
-    watch,
     setValue,
-  } = useFormContext<ExpensesFormData>();
+    watch,
+  } = useFormContext<AddTransactionExpensesFormData>();
 
-  const selectedBudgetId = watch('budget_id');
-  const activeBudget = budgetTables.find((table) => table.id === selectedBudgetId) || budgetTables[0];
-
+  // initialize selectedBudget when budgetTables loads
   useEffect(() => {
-    if (activeBudget?.budget_categories?.length) {
-      setValue('category_id', undefined);
+    if (budgetTables.length > 0 && !selectedBudget) {
+      const firstBudget = budgetTables[0];
+      setSelectedBudget(firstBudget);
+      setValue('budget', firstBudget.name);
     }
-  }, [activeBudget, setValue]);
+  }, [budgetTables, selectedBudget, setValue]);
+
+  const budgetValue = watch('budget');
+
+  // keep local state in sync with form state
+  useEffect(() => {
+    if (budgetValue && budgetValue !== selectedBudget?.name) {
+      const foundBudget = budgetTables.find((budget) => budget.name === budgetValue);
+      if (foundBudget) {
+        setSelectedBudget(foundBudget);
+      }
+    }
+  }, [budgetValue, selectedBudget, budgetTables]);
+
+  const handleBudgetChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const selectedBudgetName = e.target.value;
+    const foundBudget = budgetTables.find((budget) => budget.name === selectedBudgetName);
+
+    if (foundBudget) {
+      setSelectedBudget(foundBudget);
+      setValue('budget', foundBudget.name);
+    }
+
+    setValue('category', '');
+  };
+
+  if (isLoading) {
+    return (
+      <>
+        <div className="flex flex-col gap-2">
+          <p className="opacity-50">Budget:</p>
+          <Skeleton height={40} />
+        </div>
+        <div className="flex flex-row gap-2">
+          <div className="flex w-full flex-col gap-2">
+            <p className="opacity-50">Category:</p>
+            <Skeleton height={40} />
+          </div>
+          <div className="flex w-full flex-col gap-2">
+            <p className="opacity-50">Amount:</p>
+            <Skeleton height={40} />
+          </div>
+        </div>
+      </>
+    );
+  }
 
   return (
     <>
@@ -197,23 +284,24 @@ const ExpensesForm = () => {
             id="expenses-budget"
             options={
               isBudgetFound
-                ? budgetTables.map((table) => ({ label: table.name, value: table.id }))
+                ? budgetTables.map((table) => ({ label: table.name, value: table.name }))
                 : [{ label: NO_BUDGET_FOUND, value: NO_BUDGET_FOUND }]
             }
-            defaultValue={isBudgetFound ? budgetTables[0].id : NO_BUDGET_FOUND}
-            {...register('budget_id', {
+            value={selectedBudget?.name || ''}
+            {...register('budget', {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
-              validate: (value) => value !== null || 'Please create a budget first',
+              validate: (value) => value !== NO_BUDGET_FOUND || 'Please create a budget first',
             })}
+            onChange={handleBudgetChange}
           />
           <span aria-hidden className="absolute right-2 top-1/2 -translate-y-1/2">
             <Icon SvgIcon={ChevronDownIcon} isBorderless />
           </span>
         </div>
-        {errors.budget_id && <ErrorMessage error={errors.budget_id.message} />}
+        {errors.budget && <ErrorMessage error={errors.budget.message} />}
       </div>
 
-      {isBudgetFound && activeBudget && (
+      {isBudgetFound && selectedBudget && selectedBudget.budget_categories && (
         <div className="flex flex-row gap-2">
           <div className="flex w-full flex-col gap-2">
             <label htmlFor="expenses-category">Category:</label>
@@ -222,12 +310,12 @@ const ExpensesForm = () => {
                 id="expenses-category"
                 options={[
                   { label: 'Select category', value: '' },
-                  ...activeBudget.budget_categories.map((category) => ({
-                    label: categories.find((cat) => cat.id === category.category_id)?.name || '',
-                    value: categories.find((cat) => cat.id === category.category_id)?.id || '',
+                  ...selectedBudget.budget_categories.map((category) => ({
+                    label: category.category_name,
+                    value: category.category_name,
                   })),
                 ]}
-                {...register('category_id', {
+                {...register('category', {
                   required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
                 })}
               />
@@ -235,7 +323,7 @@ const ExpensesForm = () => {
                 <Icon SvgIcon={ChevronDownIcon} isBorderless />
               </span>
             </div>
-            {errors.category_id && <ErrorMessage error={errors.category_id.message} />}
+            {errors.category && <ErrorMessage error={errors.category.message} />}
           </div>
           <div className="flex w-full flex-col gap-2">
             <label htmlFor="expenses-amount">Amount:</label>
@@ -243,10 +331,12 @@ const ExpensesForm = () => {
               id="expenses-amount"
               type="number"
               min={0}
+              step={50}
               placeholder="Enter amount"
               {...register('amount', {
                 required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
                 valueAsNumber: true,
+                min: { value: 0, message: 'Amount must be greater than 0' },
               })}
             />
             {errors.amount && <ErrorMessage error={errors.amount.message} />}

@@ -15,9 +15,9 @@ import {
 } from '@/routes/dashboard/api.slice';
 import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
 import {
-  Transaction,
   TransactionListItemProps,
   TransactionsListProps,
+  TransactionType,
 } from '@/routes/dashboard/transaction-history/transaction-history.types';
 
 export default function TransactionHistory() {
@@ -36,7 +36,7 @@ export default function TransactionHistory() {
 }
 
 const ModalWithContent = ({ isOpen, handleClose }: Pick<ModalProps, 'isOpen' | 'handleClose'>) => {
-  const [transactionType, setTransactionType] = useState<Transaction['type']>('income');
+  const [transactionType, setTransactionType] = useState<TransactionType>('income');
   const [currentPage, setCurrentPage] = useState(0);
   const dashboardId = useAppSelector(getDashboardId);
 
@@ -66,7 +66,7 @@ const ModalWithContent = ({ isOpen, handleClose }: Pick<ModalProps, 'isOpen' | '
   const handlePrevPage = () => setCurrentPage(currentPage - 1);
   const handleNextPage = () => setCurrentPage(currentPage + 1);
   const handleTypeChange = (e: React.ChangeEvent<HTMLSelectElement>) =>
-    setTransactionType(e.target.value as Transaction['type']);
+    setTransactionType(e.target.value as TransactionType);
 
   useEffect(() => {
     if (!isOpen) return;

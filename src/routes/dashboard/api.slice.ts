@@ -5,6 +5,10 @@ import supabase from '@/utils/supabase';
 
 import { Overview } from '@/routes/dashboard/account-overview/account-overview.types';
 import {
+  AddTransactionExpensesFormData,
+  AddTransactionIncomeFormData,
+} from '@/routes/dashboard/add-transaction/add-transaction.types';
+import {
   AddBudgetTableFormData,
   DB_Table,
   EditBudgetTableCategoryFormData,
@@ -20,8 +24,8 @@ import {
 import {
   DeleteTransactionHistory,
   GetPaginatedTransactionHistory,
+  Transaction,
   TransactionHistory,
-  TransactionHistoryItem,
 } from '@/routes/dashboard/transaction-history/transaction-history.types';
 
 export const apiSlice = createApi({
@@ -222,7 +226,7 @@ export const apiSlice = createApi({
       },
       providesTags: ['TransactionHistory'],
     }),
-    deleteTransactionHistory: build.mutation<TransactionHistoryItem, DeleteTransactionHistory>({
+    deleteTransactionHistory: build.mutation<Transaction, DeleteTransactionHistory>({
       queryFn: async ({ id }) => {
         try {
           const { data, error } = await supabase.from('transactions').delete().in('id', [id]);
@@ -313,7 +317,7 @@ export const apiSlice = createApi({
       providesTags: (result, error, arg) => [{ type: 'BudgetTables', id: arg } as const],
     }),
     addBudgetTable: build.mutation<Table, AddBudgetTableFormData>({
-      async queryFn({ name, dashboardId, amount, categories }) {
+      queryFn: async ({ name, dashboardId, amount, categories }) => {
         try {
           const { data, error: budgetError } = await supabase
             .from('budget')
@@ -357,7 +361,7 @@ export const apiSlice = createApi({
       invalidatesTags: ['BudgetTables'],
     }),
     editBudgetTable: build.mutation<Table, EditBudgetTableFormData>({
-      async queryFn({ id, name, amount, dashboardId, table, categories }) {
+      queryFn: async ({ id, name, amount, dashboardId, table, categories }) => {
         try {
           const { data, error } = await supabase
             .from('budget')
@@ -427,7 +431,7 @@ export const apiSlice = createApi({
       invalidatesTags: (result, error, arg) => [{ type: 'BudgetTables', id: arg.table.id }],
     }),
     deleteBudgetTable: build.mutation<Table, number>({
-      async queryFn(id) {
+      queryFn: async (id) => {
         try {
           const { data, error } = await supabase.from('budget').delete().eq('id', id);
 
@@ -444,7 +448,7 @@ export const apiSlice = createApi({
       invalidatesTags: ['BudgetTables'],
     }),
     editBudgetTableCategory: build.mutation<Table, EditBudgetTableCategoryFormData>({
-      async queryFn({ amount, category }) {
+      queryFn: async ({ amount, category }) => {
         try {
           const { data, error } = await supabase
             .from('budget_categories')
@@ -465,6 +469,63 @@ export const apiSlice = createApi({
       },
       invalidatesTags: (result, error, arg) => [{ type: 'BudgetTables', id: arg.category.budget_id }],
     }),
+    // Add Transactions
+    addTransactionIncome: build.mutation<Transaction, AddTransactionIncomeFormData>({
+      queryFn: async ({ dashboard_id, transaction_date, from, amount, percent_saved, reference }) => {
+        try {
+          const { data, error } = await supabase
+            .from('transactions')
+            .insert({
+              dashboard_id: dashboard_id,
+              type: 'income',
+              transaction_date: transaction_date,
+              from: from,
+              amount: amount,
+              percent_saved: percent_saved,
+              reference: reference,
+            })
+            .single();
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to add income transaction:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: ['TransactionHistory', 'Overview'],
+    }),
+    addTransactionExpenses: build.mutation<Transaction, AddTransactionExpensesFormData>({
+      queryFn: async ({ dashboard_id, transaction_date, budget, category, amount, reference }) => {
+        try {
+          const { data, error } = await supabase
+            .from('transactions')
+            .insert({
+              dashboard_id: dashboard_id,
+              type: 'expenses',
+              transaction_date: transaction_date,
+              budget: budget,
+              category: category,
+              amount: amount,
+              reference: reference,
+            })
+            .single();
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to add expenses transaction:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: ['TransactionHistory', 'Overview', 'BudgetTables'],
+    }),
   }),
 });
 
@@ -484,4 +545,6 @@ export const {
   useEditBudgetTableMutation,
   useDeleteBudgetTableMutation,
   useEditBudgetTableCategoryMutation,
+  useAddTransactionIncomeMutation,
+  useAddTransactionExpensesMutation,
 } = apiSlice;
