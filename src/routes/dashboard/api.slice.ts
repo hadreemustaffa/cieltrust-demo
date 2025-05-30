@@ -23,6 +23,13 @@ import {
   UpdateCategory,
 } from '@/routes/dashboard/manage-categories/manage-categories-slice';
 import {
+  AddSavingGoalsFormData,
+  DeleteSavingGoal,
+  EditSavingGoalsFormData,
+  GetSavingGoal,
+  SavingGoal,
+} from '@/routes/dashboard/saving-goals/saving-goals.types';
+import {
   DeleteTransactionHistory,
   GetPaginatedTransactionHistory,
   Transaction,
@@ -39,7 +46,7 @@ import {
 export const apiSlice = createApi({
   reducerPath: 'api',
   baseQuery: fetchBaseQuery({ baseUrl: import.meta.env.VITE_PUBLIC_SUPABASE_URL }),
-  tagTypes: ['Overview', 'Categories', 'TransactionHistory', 'BudgetTables', 'UpcomingPayment'],
+  tagTypes: ['Overview', 'Categories', 'TransactionHistory', 'BudgetTables', 'UpcomingPayment', 'SavingGoals'],
   endpoints: (build) => ({
     // Overview
     getOverview: build.query<Overview, number>({
@@ -659,6 +666,121 @@ export const apiSlice = createApi({
       },
       invalidatesTags: ['UpcomingPayment'],
     }),
+    // Saving Goals
+    getAllSavingGoals: build.query<SavingGoal[], number>({
+      queryFn: async (dashboard_id) => {
+        try {
+          const { data, error } = await supabase.from('saving_goals').select().eq('dashboard_id', dashboard_id);
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to get saving goals:', error);
+          return { error };
+        }
+      },
+      providesTags: (result = [], error, arg) => [
+        'SavingGoals',
+        ...result.map(({ id }) => ({ type: 'SavingGoals', id }) as const),
+      ],
+    }),
+    getSavingGoal: build.query<SavingGoal, GetSavingGoal>({
+      queryFn: async ({ id, dashboard_id }) => {
+        try {
+          const { data, error } = await supabase
+            .from('saving_goals')
+            .select()
+            .eq('id', id)
+            .eq('dashboard_id', dashboard_id)
+            .single();
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to get saving goal:', error);
+          return { error };
+        }
+      },
+      providesTags: (result, error, arg) => [{ type: 'SavingGoals', id: arg.id } as const],
+    }),
+    addSavingGoal: build.mutation<SavingGoal, AddSavingGoalsFormData>({
+      queryFn: async ({ dashboard_id, name, target_amount, saved_amount }) => {
+        try {
+          const { data, error } = await supabase
+            .from('saving_goals')
+            .insert({
+              dashboard_id: dashboard_id,
+              name: name,
+              target_amount: target_amount,
+              saved_amount: saved_amount,
+            })
+            .select()
+            .single();
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to add saving goal:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: ['SavingGoals'],
+    }),
+    editSavingGoal: build.mutation<SavingGoal, EditSavingGoalsFormData>({
+      queryFn: async ({ dashboard_id, id, name, target_amount, saved_amount }) => {
+        try {
+          const { data, error } = await supabase
+            .from('saving_goals')
+            .update({
+              name: name,
+              target_amount: target_amount,
+              saved_amount: saved_amount,
+            })
+            .eq('id', id)
+            .eq('dashboard_id', dashboard_id);
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to edit saving goal:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: ['SavingGoals'],
+    }),
+    deleteSavingGoal: build.mutation<SavingGoal, DeleteSavingGoal>({
+      queryFn: async ({ dashboard_id, id }) => {
+        try {
+          const { data, error } = await supabase
+            .from('saving_goals')
+            .delete()
+            .eq('id', id)
+            .eq('dashboard_id', dashboard_id);
+
+          if (error) {
+            return { error: error.message };
+          }
+
+          return { data };
+        } catch (error) {
+          console.error('Failed to delete saving goal:', error);
+          return { error };
+        }
+      },
+      invalidatesTags: ['SavingGoals'],
+    }),
   }),
 });
 
@@ -685,4 +807,9 @@ export const {
   useAddUpcomingPaymentMutation,
   useDeleteUpcomingPaymentMutation,
   useEditUpcomingPaymentMutation,
+  useGetAllSavingGoalsQuery,
+  useGetSavingGoalQuery,
+  useAddSavingGoalMutation,
+  useEditSavingGoalMutation,
+  useDeleteSavingGoalMutation,
 } = apiSlice;
