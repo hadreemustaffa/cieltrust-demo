@@ -1,218 +1,108 @@
 import { useEffect, useState } from 'react';
-import { SubmitHandler, useForm } from 'react-hook-form';
+import { MoonLoader } from 'react-spinners';
 
 import XIcon from '@/images/icons/x.svg?react';
 
-import supabase from '@/utils/supabase';
+import { useAppSelector } from '@/hooks/use-redux';
 
-import { ButtonDelete, ButtonPrimary, ButtonSecondary } from '@/components/button';
-import { Input } from '@/components/custom-form';
+import { ButtonDelete, ButtonSecondary } from '@/components/button';
 import Icon from '@/components/icon';
 import Modal from '@/components/modal/modal';
 import MoreMenu from '@/components/more-menu';
-import { EditGoalFormProps, SavingGoalsItemProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
+import { useDeleteSavingGoalMutation } from '@/routes/dashboard/api.slice';
+import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
+import { EditSavingGoalsForm } from '@/routes/dashboard/saving-goals/saving-goals-form';
+import { SavingGoalsItemProps } from '@/routes/dashboard/saving-goals/saving-goals.types';
 
-import { ERROR_MSG } from '@/data/errorMessages';
-
-export default function SavingGoalsItem({
-  id,
-  name,
-  targetAmount,
-  savedAmount,
-  onDelete,
-  onEditSuccess,
-  ...props
-}: SavingGoalsItemProps) {
+export default function SavingGoalsItem({ goal }: SavingGoalsItemProps) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
+  const dashboardId = useAppSelector(getDashboardId);
+  const [deleteSavingGoal, { isLoading, isSuccess }] = useDeleteSavingGoalMutation();
 
-  const savedAmountPercentage = Math.round((savedAmount / targetAmount) * 100);
-  const isComplete = savedAmount >= targetAmount;
+  const savedAmountPercentage = Math.round((goal.saved_amount / goal.target_amount) * 100);
+  const isComplete = goal.saved_amount >= goal.target_amount;
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    getValues,
-    setFocus,
-    formState: { errors, isSubmitSuccessful },
-  } = useForm<EditGoalFormProps>();
-
-  const editSavingGoal = async () => {
-    const { data, error } = await supabase
-      .from('saving_goals')
-      .update({
-        name: getValues('name'),
-        target_amount: getValues('target_amount'),
-        saved_amount: savedAmount + getValues('saved_amount'),
-      })
-      .eq('id', id)
-      .select();
-
-    if (error) {
-      console.log(error);
+  const handleDelete = async () => {
+    try {
+      await deleteSavingGoal({
+        dashboard_id: dashboardId,
+        id: goal.id,
+      }).unwrap();
+    } catch (error) {
+      console.error('Error deleting goal:', error);
     }
+  };
 
-    if (data) {
-      onEditSuccess(data[0]);
-    }
-
+  const handleModalClose = () => {
     setActiveModal(null);
   };
 
-  const handleDelete = () => {
-    onDelete();
-    setActiveModal(null);
-  };
-
-  const onSubmit: SubmitHandler<EditGoalFormProps> = async () => {
-    await editSavingGoal();
-  };
-
   useEffect(() => {
-    if (activeModal === `editGoalModal-${id}`) {
-      setFocus('name');
+    if (isSuccess) {
+      handleModalClose();
     }
-  }, [activeModal, id, setFocus]);
-
-  // https://react-hook-form.com/docs/useform/reset
-  useEffect(() => {
-    const updateList = async () => {
-      if (isSubmitSuccessful) {
-        reset();
-      }
-    };
-
-    updateList();
-  }, [isSubmitSuccessful, reset]);
+  }, [isSuccess]);
 
   return (
-    <li
-      {...props}
-      className="relative flex flex-row items-center justify-between gap-2 rounded-md border border-accent/10 p-2"
-    >
+    <li className="relative flex flex-row items-center justify-between gap-2 rounded-md border border-accent/10 p-2">
       <p className="flex flex-row items-center gap-2 pl-4 before:absolute before:left-2 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-md before:bg-brand before:content-['']">
-        {name}
+        {goal.name}
         <span className="text-xs text-copy/30">
-          ({savedAmount !== null ? savedAmount : 0}/{targetAmount})
+          ({goal.saved_amount !== null ? goal.saved_amount : 0}/{goal.target_amount})
         </span>
       </p>
       <div className="flex flex-row items-center gap-4">
         <p className={`${isComplete && 'text-green-500'} font-semibold`}>{savedAmountPercentage}%</p>
 
         {isComplete ? (
-          <button type="button" onClick={() => setActiveModal(`deleteGoalModal-${id}`)}>
+          <button type="button" onClick={() => setActiveModal(`deleteGoalModal-${goal.id}`)}>
             <Icon SvgIcon={XIcon} width={16} height={16} isBorderless />
           </button>
         ) : (
           <MoreMenu
             variant="horizontal"
-            onEdit={() => setActiveModal(`editGoalModal-${id}`)}
-            onDelete={() => setActiveModal(`deleteGoalModal-${id}`)}
+            onEdit={() => setActiveModal(`editGoalModal-${goal.id}`)}
+            onDelete={() => setActiveModal(`deleteGoalModal-${goal.id}`)}
           />
         )}
       </div>
 
       <Modal
-        id={`editGoalModal-${id}`}
+        id={`editGoalModal-${goal.id}`}
         title="Edit this goal?"
-        isOpen={activeModal === `editGoalModal-${id}`}
-        handleClose={() => setActiveModal(null)}
+        isOpen={activeModal === `editGoalModal-${goal.id}`}
+        handleClose={handleModalClose}
       >
-        <form id="editSavingGoalForm" onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
-          <div className="flex flex-col gap-2">
-            <label htmlFor="goalName" className="text-sm">
-              Name
-            </label>
-            <Input
-              id="goalName"
-              type="text"
-              placeholder="Insert goal name"
-              defaultValue={name}
-              autoComplete="off"
-              aria-invalid={errors.name ? 'true' : 'false'}
-              {...register('name', {
-                required: {
-                  value: true,
-                  message: ERROR_MSG.FIELD_IS_REQUIRED,
-                },
-              })}
-            />
-            {errors.name && <p className="text-sm text-red-500">{errors.name.message}</p>}
-          </div>
-
-          <div className="flex w-full flex-col gap-2">
-            <label htmlFor="goalAmount" className="text-sm">
-              Target Amount
-            </label>
-            <Input
-              id="goalAmount"
-              type="number"
-              min={0}
-              placeholder="Insert amount"
-              defaultValue={targetAmount}
-              autoComplete="off"
-              aria-invalid={errors.target_amount ? 'true' : 'false'}
-              {...register('target_amount', {
-                required: {
-                  value: true,
-                  message: ERROR_MSG.FIELD_IS_REQUIRED,
-                },
-                validate: (value) => {
-                  if (value <= 0) {
-                    return 'Target amount cannot be zero';
-                  }
-                },
-                valueAsNumber: true,
-              })}
-            />
-            {errors.target_amount && <p className="text-sm text-red-500">{errors.target_amount.message}</p>}
-          </div>
-
-          <div className="flex w-full flex-col gap-2">
-            <label htmlFor="goalSavedAmount" className="text-sm">
-              Saved Amount (optional)
-            </label>
-            <Input
-              id="goalSavedAmount"
-              type="number"
-              min={0}
-              placeholder="Insert saved amount"
-              defaultValue={savedAmount}
-              autoComplete="off"
-              aria-invalid={errors.saved_amount ? 'true' : 'false'}
-              {...register('saved_amount', {
-                valueAsNumber: true,
-              })}
-            />
-          </div>
-
-          <div className="flex flex-row items-center justify-end gap-2">
-            <ButtonSecondary type="button" onClick={() => setActiveModal(null)}>
-              Cancel
-            </ButtonSecondary>
-
-            <ButtonPrimary type="submit">Save</ButtonPrimary>
-          </div>
-        </form>
+        <EditSavingGoalsForm goal={goal} handleModalClose={handleModalClose} />
       </Modal>
 
       <Modal
-        id={`deleteGoalModal-${id}`}
+        id={`deleteGoalModal-${goal.id}`}
         title="Delete this goal?"
-        isOpen={activeModal === `deleteGoalModal-${id}`}
-        handleClose={() => setActiveModal(null)}
+        isOpen={activeModal === `deleteGoalModal-${goal.id}`}
+        handleClose={handleModalClose}
       >
         <div className="flex flex-col gap-2">
           <p>Are you sure you want to delete this goal?</p>
-          <p className="font-semibold">{name}</p>
+          <p className="font-semibold">{goal.name}</p>
         </div>
 
         <div className="flex flex-row items-center justify-end gap-2">
-          <ButtonSecondary type="button" onClick={() => setActiveModal(null)}>
+          <ButtonSecondary type="button" onClick={handleModalClose}>
             Cancel
           </ButtonSecondary>
 
-          <ButtonDelete onClick={() => handleDelete()}>Delete</ButtonDelete>
+          <div className="flex flex-row items-center justify-end gap-2 disabled:opacity-50">
+            <ButtonDelete
+              type="button"
+              className={isLoading ? 'opacity-50' : ''}
+              onClick={handleDelete}
+              disabled={isLoading}
+            >
+              <MoonLoader loading={isLoading} size={16} color="#fff" />
+              <span className="ml-2">{`${isLoading ? 'Deleting' : 'Delete'}`} Goal</span>
+            </ButtonDelete>
+          </div>
         </div>
       </Modal>
     </li>

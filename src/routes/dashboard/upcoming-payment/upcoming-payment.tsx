@@ -10,7 +10,7 @@ import Icon from '@/components/icon';
 import Modal from '@/components/modal/modal';
 import { useGetAllUpcomingPaymentsQuery } from '@/routes/dashboard/api.slice';
 import { getDashboardId } from '@/routes/dashboard/dashboard.slice';
-import AddUpcomingPaymentForm from '@/routes/dashboard/upcoming-payment/upcoming-payment-form';
+import { AddUpcomingPaymentForm } from '@/routes/dashboard/upcoming-payment/upcoming-payment-form';
 import UpcomingPaymentItem from '@/routes/dashboard/upcoming-payment/upcoming-payment-item';
 
 export default function UpcomingPayments() {

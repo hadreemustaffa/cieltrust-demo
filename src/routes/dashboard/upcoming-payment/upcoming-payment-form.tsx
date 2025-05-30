@@ -25,7 +25,7 @@ import {
 
 import { ERROR_MSG } from '@/data/errorMessages';
 
-export default function AddUpcomingPaymentForm({ handleModalClose }: AddUpcomingPaymentFormProps) {
+export const AddUpcomingPaymentForm = ({ handleModalClose }: AddUpcomingPaymentFormProps) => {
   const dashboardId = useAppSelector(getDashboardId);
   const { data: upcomingPayments = [] } = useGetAllUpcomingPaymentsQuery(dashboardId);
   const [addUpcomingPayment, { isLoading, isSuccess }] = useAddUpcomingPaymentMutation();
@@ -163,7 +163,7 @@ export default function AddUpcomingPaymentForm({ handleModalClose }: AddUpcoming
       </div>
     </form>
   );
-}
+};
 
 export const EditUpcomingPaymentForm = ({ payment, handleModalClose }: EditUpcomingPaymentFormProps) => {
   const dashboardId = useAppSelector(getDashboardId);
