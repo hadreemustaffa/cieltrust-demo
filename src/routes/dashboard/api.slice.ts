@@ -32,8 +32,8 @@ import {
 import {
   DeleteTransactionHistory,
   GetPaginatedTransactionHistory,
+  PaginatedTransactionHistory,
   Transaction,
-  TransactionHistory,
 } from '@/routes/dashboard/transaction-history/transaction-history.types';
 import {
   AddUpcomingPaymentFormData,
@@ -196,12 +196,12 @@ export const apiSlice = createApi({
       invalidatesTags: ['Categories', 'BudgetTables'],
     }),
     // Transaction History
-    getAllTransactionHistory: build.query<TransactionHistory, number>({
+    getAllTransactionHistory: build.query<Transaction[], number>({
       queryFn: async (dashboardId: number) => {
         try {
           const { data, error } = await supabase
             .from('transactions')
-            .select('*')
+            .select()
             .eq('dashboard_id', dashboardId)
             .order('transaction_date', { ascending: false });
 
@@ -217,7 +217,7 @@ export const apiSlice = createApi({
       },
       providesTags: ['TransactionHistory'],
     }),
-    getPaginatedTransactionHistory: build.query<TransactionHistory, GetPaginatedTransactionHistory>({
+    getPaginatedTransactionHistory: build.query<PaginatedTransactionHistory, GetPaginatedTransactionHistory>({
       queryFn: async ({ dashboardId, page = 0, type, limit = 5 }) => {
         const { from, to } = getPagination(page, limit);
         try {

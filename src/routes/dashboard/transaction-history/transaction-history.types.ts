@@ -28,12 +28,12 @@ export interface TransactionListItemProps {
   handleCheckTransaction: (id: string, checked: boolean) => void;
 }
 
-export type TransactionHistory = {
+export interface PaginatedTransactionHistory {
   history: Transaction[];
   count?: number;
   limit?: number;
   page?: number;
-};
+}
 
 export type GetPaginatedTransactionHistory = {
   dashboardId: number | null;
