@@ -13,10 +13,10 @@ import dayjs from 'dayjs';
 import isBetween from 'dayjs/plugin/isBetween';
 import { useMemo, useState } from 'react';
 import { Line } from 'react-chartjs-2';
+import { MoonLoader } from 'react-spinners';
 
 import ChevronDownIcon from '@/images/icons/chevron-down.svg?react';
 
-import formatNum from '@/utils/formatNum';
 import { generateChartData } from '@/utils/generateChartData';
 
 import { useAppSelector } from '@/hooks/use-redux';
@@ -40,15 +40,12 @@ export default function VisualChart() {
   });
 
   const dashboardId = useAppSelector(getDashboardId);
-  const { data, isLoading } = useGetAllTransactionHistoryQuery(dashboardId);
-
-  const history = useMemo(() => data?.history ?? [], [data]);
+  const { data: history = [], isLoading } = useGetAllTransactionHistoryQuery(dashboardId);
 
   const { availableMonths, availableYears, currentMonth, currentYear } = useMemo(() => {
     const months = Array.from(
       new Set(history.map((transaction) => dayjs(transaction.transaction_date).format('YYYY-MM'))),
     ).sort();
-
     const years = Array.from(new Set(history.map((transaction) => dayjs(transaction.transaction_date).year()))).sort();
 
     return {
@@ -68,9 +65,6 @@ export default function VisualChart() {
     () => generateChartData(history, chartConfig.date, chartConfig.period),
     [history, chartConfig.date, chartConfig.period],
   );
-
-  const staticYWidth = 32;
-  const staticYWidthClass = `w-[32px]`;
 
   const options = {
     responsive: false,
@@ -98,50 +92,6 @@ export default function VisualChart() {
     scales: {
       y: {
         beginAtZero: true,
-        ticks: {
-          display: false,
-        },
-        grid: {
-          drawTicks: false,
-          drwaBorder: false,
-        },
-      },
-    },
-  };
-
-  const staticYOptions = {
-    maintainAspectRatio: false,
-    pointStyle: false,
-    tooltips: {
-      enabled: false,
-    },
-    plugins: {
-      legend: {
-        display: false,
-      },
-    },
-    scales: {
-      y: {
-        beginAtZero: true,
-        ticks: {
-          callback: (val: number | string) => {
-            return formatNum(Number(val));
-          },
-        },
-        grid: {
-          drawTicks: false,
-        },
-        afterFit: (ctx: { width: number }) => {
-          ctx.width = 32;
-        },
-      },
-      x: {
-        ticks: {
-          display: false,
-        },
-        grid: {
-          drawTicks: false,
-        },
       },
     },
   };
@@ -183,20 +133,6 @@ export default function VisualChart() {
     ],
   };
 
-  const staticYData = {
-    labels: formatChartLabels(chartState.labels),
-    datasets: [
-      {
-        label: 'Income',
-        data: chartState.incomeData,
-      },
-      {
-        label: 'Expenses',
-        data: chartState.expensesData,
-      },
-    ],
-  };
-
   const handlePeriodChange = (period: TimePeriod) => {
     setChartConfig((prev) => ({ ...prev, period }));
   };
@@ -222,90 +158,91 @@ export default function VisualChart() {
 
   return (
     <div className="flex justify-center rounded-md border border-accent/10 p-4 md:col-span-full lg:col-span-2">
-      <div
-        className={`flex w-full flex-col justify-center gap-4 ${isLoading ? 'pointer-events-none animate-pulse' : ''}`}
-      >
-        {!hasData && <div className="py-8 text-center text-gray-500">No transaction data available to display</div>}
-
-        {hasData && (
+      <div className="flex w-full flex-col justify-center gap-4">
+        {isLoading ? (
+          <div className="mx-auto opacity-50">
+            <MoonLoader color="rgb(53, 162, 235)" size={64} />
+          </div>
+        ) : (
           <>
-            <div className="flex flex-row flex-wrap items-center gap-2">
-              <div className="flex flex-row flex-wrap items-center gap-2">
-                {PERIODS.map((period) => (
-                  <ButtonSecondary
-                    key={period}
-                    className={`${chartConfig.period === period ? 'bg-accent/10' : ''}`}
-                    onClick={() => handlePeriodChange(period)}
-                    aria-pressed={chartConfig.period === period}
-                  >
-                    {period}
-                  </ButtonSecondary>
-                ))}
-              </div>
-
-              {availableMonths.length > 0 && chartConfig.period !== 'YTD' && (
-                <div className="flex flex-row items-center gap-2">
-                  <label htmlFor="selectMonth" className="sr-only">
-                    Select Month
-                  </label>
-                  <div className="relative">
-                    <Select
-                      id="selectMonth"
-                      className="w-32"
-                      value={chartConfig.date.format('YYYY-MM')}
-                      onChange={(e) => handleMonthChange(e.target.value)}
-                      aria-label="Select month"
-                      options={availableMonthsByYear.map((month) => ({
-                        label: dayjs(month + '-01').format('MMMM'),
-                        value: month,
-                      }))}
-                    >
-                      {currentMonth === undefined && chartConfig.year === dayjs().year() && (
-                        <option value={dayjs().format('YYYY-MM')}>{dayjs().format('MMMM')}</option>
-                      )}
-                    </Select>
-
-                    <span className="absolute right-2 top-1/2 -translate-y-1/2">
-                      <Icon SvgIcon={ChevronDownIcon} isBorderless />
-                    </span>
+            {hasData ? (
+              <>
+                <div className="flex flex-row flex-wrap items-center gap-2">
+                  <div className="flex flex-row flex-wrap items-center gap-2">
+                    {PERIODS.map((period) => (
+                      <ButtonSecondary
+                        key={period}
+                        className={`${chartConfig.period === period ? 'bg-accent/10' : ''} w-14 py-1`}
+                        onClick={() => handlePeriodChange(period)}
+                        aria-pressed={chartConfig.period === period}
+                      >
+                        {period}
+                      </ButtonSecondary>
+                    ))}
                   </div>
 
-                  <label htmlFor="selectYear" className="sr-only">
-                    Select Year
-                  </label>
-                  <div className="relative">
-                    <Select
-                      id="selectYear"
-                      className="w-[86px]"
-                      value={chartConfig.year}
-                      onChange={(e) => handleYearChange(e.target.value)}
-                      aria-label="Select year"
-                      options={availableYears.map((year) => ({
-                        label: year,
-                        value: year,
-                      }))}
-                    >
-                      {currentYear === undefined && <option value={dayjs().year()}>{dayjs().year()}</option>}
-                    </Select>
+                  {availableMonths.length > 0 && chartConfig.period !== 'YTD' && (
+                    <div className="flex flex-row items-center gap-2">
+                      <label htmlFor="selectMonth" className="sr-only">
+                        Select Month
+                      </label>
+                      <div className="relative">
+                        <Select
+                          id="selectMonth"
+                          className="w-32 py-1"
+                          value={chartConfig.date.format('YYYY-MM')}
+                          onChange={(e) => handleMonthChange(e.target.value)}
+                          aria-label="Select month"
+                          options={availableMonthsByYear.map((month) => ({
+                            label: dayjs(month + '-01').format('MMMM'),
+                            value: month,
+                          }))}
+                        >
+                          {currentMonth === undefined && chartConfig.year === dayjs().year() && (
+                            <option value={dayjs().format('YYYY-MM')}>{dayjs().format('MMMM')}</option>
+                          )}
+                        </Select>
 
-                    <span className="absolute right-2 top-1/2 -translate-y-1/2">
-                      <Icon SvgIcon={ChevronDownIcon} isBorderless />
-                    </span>
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2">
+                          <Icon SvgIcon={ChevronDownIcon} isBorderless />
+                        </span>
+                      </div>
+
+                      <label htmlFor="selectYear" className="sr-only">
+                        Select Year
+                      </label>
+                      <div className="relative">
+                        <Select
+                          id="selectYear"
+                          className="w-[86px] py-1"
+                          value={chartConfig.year}
+                          onChange={(e) => handleYearChange(e.target.value)}
+                          aria-label="Select year"
+                          options={availableYears.map((year) => ({
+                            label: year,
+                            value: year,
+                          }))}
+                        >
+                          {currentYear === undefined && <option value={dayjs().year()}>{dayjs().year()}</option>}
+                        </Select>
+
+                        <span className="absolute right-2 top-1/2 -translate-y-1/2">
+                          <Icon SvgIcon={ChevronDownIcon} isBorderless />
+                        </span>
+                      </div>
+                    </div>
+                  )}
+                </div>
+
+                <div className="relative flex flex-row items-center">
+                  <div className="w-[800px] overflow-x-scroll pl-2">
+                    <Line data={chartData} width={800} height={300} options={options} />
                   </div>
                 </div>
-              )}
-            </div>
-
-            <div className="relative flex flex-row items-center">
-              <div
-                className={`absolute left-0 top-0 hover:pointer-events-none ${staticYWidthClass} ${chartConfig.period === '1M' ? 'h-[calc(100%-62px)]' : 'h-[calc(100%-42px)]'} rounded-md border border-accent/10 bg-card`}
-              >
-                <Line data={staticYData} height={300} options={staticYOptions} />
-              </div>
-              <div className="w-[800px] overflow-x-scroll pl-2">
-                <Line data={chartData} width={800 - staticYWidth} height={300} options={options} />
-              </div>
-            </div>
+              </>
+            ) : (
+              <div className="py-8 text-center text-gray-500">No transaction data available to display</div>
+            )}
           </>
         )}
       </div>
