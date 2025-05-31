@@ -8,19 +8,16 @@ html[style='color-scheme: dark'] {
   --brand-hover: 211, 86%, 36%;
   --brand-secondary: 211, 88%, 36%;
   --brand-tertiary: 210, 91%, 42%;
-
   --card: 213, 48%, 10%;
   --card-secondary: 213, 48%, 10%;
-
   --surface: 215, 61%, 13%, 0.502;
-
   --accent: 240, 100%, 93%;
   --accent-hover: 220, 19%, 94%;
-
   --copy: 220, 19%, 94%;
   --copy-secondary: 211, 100%, 73%;
   --link: 227, 92%, 95%, 0.733;
   --link-secondary: 211, 100%, 73%;
+  --skeleton: 210, 33%, 16%;
 }
 
 html[style='color-scheme: light'] {
@@ -29,19 +26,16 @@ html[style='color-scheme: light'] {
   --brand-hover: 211, 86%, 36%;
   --brand-secondary: 214, 58%, 71%;
   --brand-tertiary: 214, 58%, 62%;
-
   --card: 220, 9%, 94%;
   --card-secondary: 213, 22%, 92%;
-
   --surface: 214, 33%, 92%, 0.8;
-
   --accent: 224, 9%, 34%;
   --accent-hover: 220, 13%, 13%;
-
   --copy: 220, 13%, 13%;
   --copy-secondary: 212, 100%, 36%;
   --link: 226, 87%, 6%, 0.682;
   --link-secondary: 212, 100%, 36%;
+  --skeleton: 55, 31%, 85%;
 }
 
 /* react-tabs */

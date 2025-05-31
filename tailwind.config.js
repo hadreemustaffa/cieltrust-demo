@@ -25,6 +25,7 @@ export default {
         link: 'hsla(var(--link))',
         'link-hover': 'hsla(var(--link-hover))',
         'link-secondary': 'hsla(var(--link-secondary))',
+        skeleton: 'hsla(var(--skeleton))',
       },
       fontFamily: {
         lexend: ['Lexend', ' sans-serif'],

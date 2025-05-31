@@ -20,10 +20,10 @@ export default function AccountOverview() {
     return (
       <div className="grid grid-cols-1 rounded-md text-left sm:border sm:border-accent/10 sm:p-4">
         <div className="flex flex-row gap-4 overflow-x-auto md:grid md:grid-cols-2 md:overflow-x-visible 2xl:grid-cols-4">
-          <Skeleton height={100} width={310} />
-          <Skeleton height={100} width={310} />
-          <Skeleton height={100} width={310} />
-          <Skeleton height={100} width={310} />
+          <Skeleton height={125} className="min-w-[200px]" />
+          <Skeleton height={125} className="min-w-[200px]" />
+          <Skeleton height={125} className="min-w-[200px]" />
+          <Skeleton height={125} className="min-w-[200px]" />
         </div>
       </div>
     );

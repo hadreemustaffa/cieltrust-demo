@@ -6,8 +6,8 @@ import { SessionProvider } from '@/context/session-context';
 import { router } from '@/router';
 
 const skeletonTheme = {
-  baseColor: 'hsl(220, 13%, 15%)',
-  highlightColor: 'hsl(220, 13%, 18%)',
+  baseColor: 'hsla(var(--skeleton), 0.85)',
+  highlightColor: 'hsla(var(--skeleton),0.5)',
 };
 
 function App() {
