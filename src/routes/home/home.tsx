@@ -118,13 +118,13 @@ export default function Home() {
                   <span className="text-3xl font-bold">78%</span>Secure Retirement Planning
                 </p>
 
-                <div className="h-[1px] w-full bg-accent/10 md:h-full md:w-[1px]"></div>
+                <div className="h-px w-full bg-accent/10 md:h-full md:w-px"></div>
 
                 <p className="flex flex-col gap-2">
                   <span className="text-3xl font-bold">63%</span>Manageable Debt Consolidation
                 </p>
 
-                <div className="h-[1px] w-full bg-accent/10 md:h-full md:w-[1px]"></div>
+                <div className="h-px w-full bg-accent/10 md:h-full md:w-px"></div>
 
                 <p className="flex flex-col gap-2">
                   <span className="text-3xl font-bold">91%</span>Reducing financial burdens
@@ -181,13 +181,13 @@ export default function Home() {
                   <span className="text-3xl font-bold">65%</span>Cash Flow Management
                 </p>
 
-                <div className="h-[1px] w-full bg-accent/10 md:h-full md:w-[1px]"></div>
+                <div className="h-px w-full bg-accent/10 md:h-full md:w-px"></div>
 
                 <p className="flex flex-col gap-2">
                   <span className="text-3xl font-bold">70%</span>Drive Business Expansion
                 </p>
 
-                <div className="h-[1px] w-full bg-accent/10 md:h-full md:w-[1px]"></div>
+                <div className="h-px w-full bg-accent/10 md:h-full md:w-px"></div>
 
                 <p className="flex flex-col gap-2">
                   <span className="text-3xl font-bold">45%</span>Streamline payroll processing

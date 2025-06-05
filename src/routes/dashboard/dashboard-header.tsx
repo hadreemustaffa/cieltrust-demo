@@ -93,7 +93,7 @@ function DashboardHeader() {
             onBlur={handleBlur}
             className={`absolute right-0 top-12 w-48 rounded-md border border-accent/10 bg-background p-2 shadow-lg transition-opacity`}
           >
-            <li className="rounded-sm hover:bg-accent/10">
+            <li className="rounded-xs hover:bg-accent/10">
               {!isAnonymousUser && (
                 <button
                   type="button"
@@ -105,7 +105,7 @@ function DashboardHeader() {
                 </button>
               )}
             </li>
-            <li className="rounded-sm hover:bg-accent/10">
+            <li className="rounded-xs hover:bg-accent/10">
               <button
                 type="button"
                 className="flex w-full flex-row items-center gap-2 p-2 text-left"

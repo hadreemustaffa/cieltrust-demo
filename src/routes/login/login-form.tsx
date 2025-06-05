@@ -80,9 +80,9 @@ export default function LoginForm() {
       </ButtonPrimary>
 
       <div className="flex w-full max-w-4xl flex-row items-center gap-4">
-        <div className="h-[1px] w-full bg-accent/10"></div>
+        <div className="h-px w-full bg-accent/10"></div>
         <p className="text-sm text-accent/10">or</p>
-        <div className="h-[1px] w-full bg-accent/10"></div>
+        <div className="h-px w-full bg-accent/10"></div>
       </div>
 
       <FormProvider {...methods}>

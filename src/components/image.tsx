@@ -21,7 +21,7 @@ export default function Image({ alt, mobile, laptop, desktop, className, ...prop
       {isLoading && <Skeleton height={320} />}
       <img
         className={cn(
-          `aspect-4/3 w-full object-cover shadow-sm transition-opacity duration-500 ${isLoading ? 'absolute inset-0 opacity-0' : 'block opacity-100'}`,
+          `aspect-4/3 w-full object-cover shadow-xs transition-opacity duration-500 ${isLoading ? 'absolute inset-0 opacity-0' : 'block opacity-100'}`,
           className,
         )}
         src={mobile}

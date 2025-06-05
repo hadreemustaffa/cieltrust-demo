@@ -45,7 +45,7 @@ export default function AccountOverviewCard({
             {hasTooltip && <Tooltip text="This value resets on the first day of each month" />}
           </div>
 
-          <div className={`flex flex-row items-center gap-2 rounded-sm ${trendColor} px-2 py-1 text-xs text-white`}>
+          <div className={`flex flex-row items-center gap-2 rounded-xs ${trendColor} px-2 py-1 text-xs text-white`}>
             <p>{formattedPercent}</p>
             <Icon SvgIcon={TrendIcon} width={16} height={16} isBorderless />
           </div>
@@ -56,7 +56,7 @@ export default function AccountOverviewCard({
         </p>
       </div>
 
-      <div className="h-[1px] w-full bg-accent/10"></div>
+      <div className="h-px w-full bg-accent/10"></div>
 
       <p className="text-sm">
         Last month: <span className="font-semibold">{Math.round(lastMonthAmount)}</span>

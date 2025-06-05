@@ -129,7 +129,7 @@ export const AddBudgetTableForm = ({ tables, handleModalClose }: AddBudgetTableF
           <li key={field._id}>
             <label
               htmlFor={field._id}
-              className="flex flex-row items-center justify-between rounded-sm px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10"
+              className="flex flex-row items-center justify-between rounded-xs px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10"
             >
               {field.name}
               <input
@@ -313,7 +313,7 @@ export const EditBudgetTableForm = ({ table, handleModalClose }: EditBudgetTable
             <li key={field.id}>
               <label
                 htmlFor={field._id}
-                className={`flex flex-row items-center justify-between rounded-sm px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10`}
+                className={`flex flex-row items-center justify-between rounded-xs px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10`}
               >
                 {field.name}
 

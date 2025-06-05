@@ -4,6 +4,7 @@ import EditIcon from '@/images/icons/edit.svg?react';
 import MoreHorizontalIcon from '@/images/icons/more-horizontal.svg?react';
 import TrashIcon from '@/images/icons/trash.svg?react';
 
+import { ButtonTertiary } from '@/components/button';
 import Icon from '@/components/icon';
 
 interface MoreMenuProps {
@@ -44,39 +45,35 @@ export default function MoreMenu({ onEdit, onDelete, variant = 'vertical', child
 
   return (
     <div className="relative flex flex-row items-center" onBlur={handleBlur}>
-      <button ref={buttonRef} type="button" onClick={() => setIsOpen(!isOpen)}>
+      <button ref={buttonRef} type="button" className="hover:cursor-pointer" onClick={() => setIsOpen(!isOpen)}>
         <Icon SvgIcon={MoreHorizontalIcon} width={16} height={16} isBorderless />
       </button>
 
       {isOpen && (
         <div
           ref={ref}
-          className={`absolute z-50 flex min-w-28 gap-2 rounded-md border border-accent/10 bg-card p-1 shadow-md ${variant === 'horizontal' ? 'right-6 top-1/2 -translate-y-1/2 flex-row items-center justify-center' : '-right-2 top-6 flex-col'}`}
+          className={`border-accent/10 bg-card absolute z-50 flex min-w-28 gap-2 rounded-md border p-1 shadow-md ${variant === 'horizontal' ? 'top-1/2 right-6 -translate-y-1/2 flex-row items-center justify-center' : 'top-6 -right-2 flex-col'}`}
           role="menu"
           aria-orientation={variant === 'horizontal' ? 'horizontal' : 'vertical'}
           aria-expanded={isOpen}
           aria-label="More menu"
           onBlur={handleBlur}
         >
-          <button
-            type="button"
-            className="flex items-center gap-2 rounded-sm px-2 py-1 text-left hover:bg-accent/10"
-            onClick={onEdit}
-          >
+          <ButtonTertiary type="button" className="hover:bg-accent/10 px-2 py-1 hover:no-underline" onClick={onEdit}>
             <Icon SvgIcon={EditIcon} width={16} height={16} isBorderless />
             <span className={variant === 'horizontal' ? 'hidden sm:inline' : ''}>Edit</span>
-          </button>
+          </ButtonTertiary>
 
-          {variant === 'horizontal' && <div className="h-4 w-px bg-accent/10" />}
+          {variant === 'horizontal' && <div className="bg-accent/10 h-4 w-px" />}
 
-          <button
+          <ButtonTertiary
             type="button"
-            className="flex items-center gap-2 rounded-sm px-2 py-1 text-left text-red-500 hover:bg-accent/10 hover:bg-red-500 hover:text-white"
+            className="px-2 py-1 text-red-500 hover:bg-red-400/10 hover:no-underline"
             onClick={onDelete}
           >
             <Icon SvgIcon={TrashIcon} width={16} height={16} isBorderless />
             <span className={variant === 'horizontal' ? 'hidden sm:inline' : ''}>Delete</span>
-          </button>
+          </ButtonTertiary>
 
           {children}
         </div>

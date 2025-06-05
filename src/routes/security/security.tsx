@@ -35,7 +35,7 @@ export default function Security() {
         </div>
       </div>
 
-      <div className="h-[1px] w-full bg-accent/10"></div>
+      <div className="h-px w-full bg-accent/10"></div>
 
       <div className="flex flex-col gap-8 lg:text-left">
         <div className="flex max-w-[80ch] flex-col gap-4">
@@ -65,7 +65,7 @@ export default function Security() {
         </div>
       </div>
 
-      <div className="h-[1px] w-full bg-accent/10"></div>
+      <div className="h-px w-full bg-accent/10"></div>
 
       <div className="flex flex-col gap-8 lg:text-left">
         <div className="flex max-w-[80ch] flex-col gap-4">
@@ -92,7 +92,7 @@ export default function Security() {
         </div>
       </div>
 
-      <div className="h-[1px] w-full bg-accent/10"></div>
+      <div className="h-px w-full bg-accent/10"></div>
 
       <FaqSection />
     </>

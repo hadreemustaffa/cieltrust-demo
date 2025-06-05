@@ -256,8 +256,8 @@ const TransactionsList = ({
 
       <table className={`flex flex-col gap-2 border border-accent/10 ${isFetching ? 'animate-pulse' : ''}`}>
         <tbody className="flex w-full flex-col overflow-x-scroll text-sm md:overflow-auto">
-          <tr className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] justify-between bg-accent/5 sm:w-full">
-            <th scope="col" className="rounded-sm px-2 py-1">
+          <tr className="grid w-[640px] grid-cols-[30px_repeat(5,1fr)] justify-between bg-accent/5 sm:w-full">
+            <th scope="col" className="rounded-xs px-2 py-1">
               <Input
                 type="checkbox"
                 id="select-all-checkbox"
@@ -270,7 +270,7 @@ const TransactionsList = ({
               <th
                 scope="col"
                 key={index}
-                className="rounded-sm px-2 py-1 [&:not(:first-child)]:border-l [&:not(:first-child)]:border-l-accent/10"
+                className="rounded-xs px-2 py-1 not-first:border-l not-first:border-l-accent/10"
               >
                 {column}
               </th>
@@ -311,7 +311,7 @@ const IncomeTransaction = React.memo(
     return (
       <tr
         key={transaction.id}
-        className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] border-b border-b-accent/10 last:border-b-0 sm:w-full"
+        className="grid w-[640px] grid-cols-[30px_repeat(5,1fr)] border-b border-b-accent/10 last:border-b-0 sm:w-full"
       >
         <td className="px-2 py-1 text-sm">
           <Input
@@ -347,7 +347,7 @@ const ExpensesTransaction = React.memo(
     return (
       <tr
         key={transaction.id}
-        className="grid w-[640px] grid-cols-[30px_repeat(5,_1fr)] border-b border-b-accent/10 last:border-b-0 sm:w-full"
+        className="grid w-[640px] grid-cols-[30px_repeat(5,1fr)] border-b border-b-accent/10 last:border-b-0 sm:w-full"
       >
         <td className="px-2 py-1 text-sm">
           <Input

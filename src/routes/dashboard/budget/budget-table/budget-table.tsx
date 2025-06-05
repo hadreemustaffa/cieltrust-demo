@@ -37,9 +37,9 @@ export default function BudgetTable({ table }: BudgetTableProps) {
   }, [isSuccess]);
 
   return (
-    <div className="flex flex-col items-start gap-4 border border-b-0 border-accent/10 text-left first:rounded-t-md last:rounded-b-md last:border-b">
+    <div className="border-accent/10 flex flex-col items-start gap-4 border border-b-0 text-left first:rounded-t-md last:rounded-b-md last:border-b">
       <table className="flex w-full flex-col items-center justify-between">
-        <caption className="flex w-full flex-row items-center justify-between gap-2 bg-accent/5 p-2">
+        <caption className="bg-accent/5 flex w-full flex-row items-center justify-between gap-2 p-2">
           <h3 className="font-bold">{table.name}</h3>
           <div className="flex gap-2">
             <p className={`text-sm font-bold ${sumOfCategoriesAmount > table.amount ? 'text-red-500' : ''}`}>
@@ -55,16 +55,16 @@ export default function BudgetTable({ table }: BudgetTableProps) {
 
         <tbody className="flex w-full flex-col overflow-x-auto text-sm">
           <tr className="grid min-w-[500px] grid-cols-4 justify-between sm:w-full">
-            <th scope="col" className="border border-x-0 border-accent/10 px-2 py-1 text-copy/70">
+            <th scope="col" className="border-accent/10 text-copy/70 border border-x-0 px-2 py-1">
               Category
             </th>
-            <th scope="col" className="border border-accent/10 px-2 py-1 text-right text-copy/70">
+            <th scope="col" className="border-accent/10 text-copy/70 border px-2 py-1 text-right">
               Budget
             </th>
-            <th scope="col" className="border border-l-0 border-accent/10 px-2 py-1 text-right text-copy/70">
+            <th scope="col" className="border-accent/10 text-copy/70 border border-l-0 px-2 py-1 text-right">
               Spent
             </th>
-            <th scope="col" className="border border-x-0 border-accent/10 px-2 py-1 text-right text-copy/70">
+            <th scope="col" className="border-accent/10 text-copy/70 border border-x-0 px-2 py-1 text-right">
               Remaining
             </th>
           </tr>

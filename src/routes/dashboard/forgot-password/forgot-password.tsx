@@ -119,7 +119,7 @@ export default function ForgotPassword() {
               aria-hidden={!success}
             >
               {success && (
-                <div className="flex flex-row items-center gap-2 rounded bg-green-100 p-2 text-green-900">
+                <div className="flex flex-row items-center gap-2 rounded-sm bg-green-100 p-2 text-green-900">
                   <Icon SvgIcon={CheckCircleIcon} width={16} height={16} isBorderless />
                   <p className="text-xs">{successMessage}</p>
                 </div>

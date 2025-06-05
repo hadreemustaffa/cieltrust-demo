@@ -38,7 +38,7 @@ export default function About() {
           </p>
         </div>
         <div className="flex w-full flex-col gap-8 md:grid md:grid-cols-2">
-          <div className="flex flex-col gap-4 rounded-sm border border-accent/10 p-4 shadow-sm lg:text-left">
+          <div className="flex flex-col gap-4 rounded-xs border border-accent/10 p-4 shadow-xs lg:text-left">
             <h3 className="text-xl font-semibold">Mission</h3>
             <p>
               Empowering individuals to take control of their finances by providing intuitive tools and insights that
@@ -46,7 +46,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 rounded-sm border border-accent/10 p-4 shadow-sm lg:text-left">
+          <div className="flex flex-col gap-4 rounded-xs border border-accent/10 p-4 shadow-xs lg:text-left">
             <h3 className="text-xl font-semibold">Vision</h3>
             <p>
               To create a world where everyone has the confidence and resources to achieve financial freedom, enabling a

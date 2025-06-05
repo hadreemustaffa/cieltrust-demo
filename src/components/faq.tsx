@@ -24,7 +24,7 @@ export default function FaqSection() {
         >
           <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
             <h3 className="text-lg font-medium">How do I open an account with CielTrust?</h3>
-            <div className="h-[1px] w-full bg-accent/10"></div>
+            <div className="h-px w-full bg-accent/10"></div>
             <p>
               Opening an account with CielTrust is easy. Simply visit our website and click on the &quot;Open an
               Account&quot; button. Follow the prompts, provide the required information, and complete the application
@@ -33,7 +33,7 @@ export default function FaqSection() {
           </div>
           <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
             <h3 className="text-lg font-medium">What documents do I need to provide to apply for a loan?</h3>
-            <div className="h-[1px] w-full bg-accent/10"></div>
+            <div className="h-px w-full bg-accent/10"></div>
 
             <p>
               The documents required for a loan application may vary depending on the type of loan you are applying for.
@@ -45,7 +45,7 @@ export default function FaqSection() {
           </div>
           <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
             <h3 className="text-lg font-medium">How can I access my accounts online?</h3>
-            <div className="h-[1px] w-full bg-accent/10"></div>
+            <div className="h-px w-full bg-accent/10"></div>
 
             <p>
               Accessing your accounts online is simple and secure. Visit our website and click on the &quot;Login&quot;
@@ -56,7 +56,7 @@ export default function FaqSection() {
           </div>
           <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
             <h3 className="text-lg font-medium">Are my transactions and personal information secure?</h3>
-            <div className="h-[1px] w-full bg-accent/10"></div>
+            <div className="h-px w-full bg-accent/10"></div>
 
             <p>
               At CielTrust, we prioritize the security of your transactions and personal information. We employ
@@ -67,7 +67,7 @@ export default function FaqSection() {
           </div>
           <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
             <h3 className="text-lg font-medium">What should I do if I forget my password?</h3>
-            <div className="h-[1px] w-full bg-accent/10"></div>
+            <div className="h-px w-full bg-accent/10"></div>
 
             <p>
               If you forget your password, simply click on the &quot;Forgot Password&quot; link on the login page. You
@@ -79,7 +79,7 @@ export default function FaqSection() {
 
           <div className="flex flex-col gap-4 rounded-md border border-accent/10 p-4 text-left">
             <h3 className="text-lg font-medium">How can I dispute a transaction?</h3>
-            <div className="h-[1px] w-full bg-accent/10"></div>
+            <div className="h-px w-full bg-accent/10"></div>
 
             <p>
               To dispute a transaction, log in to your online banking account and navigate to the &quot;Disputes&quot;

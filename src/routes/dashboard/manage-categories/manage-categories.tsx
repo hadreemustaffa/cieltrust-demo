@@ -349,7 +349,7 @@ const CategoryItem = React.memo(({ category, dashboardId }: CategoryItemProps) =
   }, [isSuccess, reset]);
 
   return (
-    <div className="w-full items-center justify-between rounded-sm border-l border-accent/10">
+    <div className="w-full items-center justify-between rounded-xs border-l border-accent/10">
       {isEditting ? (
         <form
           onSubmit={handleSubmit(onEditSubmit)}
@@ -361,7 +361,7 @@ const CategoryItem = React.memo(({ category, dashboardId }: CategoryItemProps) =
           <input
             id={`category-${category.id.toString()}`}
             type="text"
-            className={`w-fit rounded-sm bg-accent/10 px-1 hover:cursor-pointer ${errors.name && 'border border-red-500'}`}
+            className={`w-fit rounded-xs bg-accent/10 px-1 hover:cursor-pointer ${errors.name && 'border border-red-500'}`}
             autoComplete="off"
             defaultValue={category.name}
             {...register('name', {

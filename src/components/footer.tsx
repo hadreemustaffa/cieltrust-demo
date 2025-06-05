@@ -16,7 +16,7 @@ export default function Footer() {
       <nav id="secondary-nav" className="flex flex-col items-center gap-8">
         <Link
           to="/"
-          className="font-montserratSubrayada text-3xl font-bold text-brand/90 transition-colors duration-300 hover:text-brand"
+          className="font-montserrat-subrayada text-3xl font-bold text-brand/90 transition-colors duration-300 hover:text-brand"
           aria-label="go to homepage"
         >
           CielTrust
@@ -27,7 +27,7 @@ export default function Footer() {
         </ul>
       </nav>
 
-      <div className="h-[1px] w-full bg-accent/10"></div>
+      <div className="h-px w-full bg-accent/10"></div>
 
       <div className="flex flex-col items-center justify-center gap-4 lg:flex-row">
         <ButtonTertiary>
@@ -46,7 +46,7 @@ export default function Footer() {
         </ButtonTertiary>
       </div>
 
-      <div className="h-[1px] w-full bg-accent/10"></div>
+      <div className="h-px w-full bg-accent/10"></div>
 
       <div className="flex flex-col items-center gap-8 rounded-md border border-accent/10 p-4 md:w-full md:flex-row md:justify-between">
         <div className="flex flex-row justify-center gap-4">

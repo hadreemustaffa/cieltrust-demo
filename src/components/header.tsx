@@ -36,7 +36,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 col-span-3 col-start-1 flex h-fit flex-row items-center justify-between border-b border-b-accent/10 bg-background px-4 py-3 text-center sm:px-8 md:px-12 lg:px-24 xl:px-40">
       <Link
         to="/"
-        className="font-montserratSubrayada text-3xl font-bold text-brand/90 transition-colors duration-300 hover:text-brand"
+        className="font-montserrat-subrayada text-3xl font-bold text-brand/90 transition-colors duration-300 hover:text-brand"
         aria-label="go to homepage"
       >
         CielTrust
@@ -92,7 +92,7 @@ const HeaderNavMenu = ({ children, isOpen }: { children: ReactElement[]; isOpen:
   return (
     <div
       id="headerNavMenu"
-      className={`fixed right-0 top-0 z-40 flex h-dvh w-[300px] transform justify-between shadow-sm shadow-black/20 ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex-col gap-8 border-l border-l-accent/10 bg-background px-4 pb-16 pt-24 duration-300 ease-in-out sm:px-8 md:px-12 lg:static lg:h-fit lg:w-fit lg:translate-x-0 lg:transform-none lg:flex-row lg:items-center lg:border-none lg:p-0 lg:pt-0 lg:shadow-none lg:duration-0`}
+      className={`fixed right-0 top-0 z-40 flex h-dvh w-[300px] transform justify-between shadow-xs shadow-black/20 ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex-col gap-8 border-l border-l-accent/10 bg-background px-4 pb-16 pt-24 duration-300 ease-in-out sm:px-8 md:px-12 lg:static lg:h-fit lg:w-fit lg:translate-x-0 lg:transform-none lg:flex-row lg:items-center lg:border-none lg:p-0 lg:pt-0 lg:shadow-none lg:duration-0`}
     >
       {children}
     </div>

@@ -68,7 +68,7 @@ export default function ResetPassword() {
             <PasswordInput isRequired label={'Confirm New Password'} id={'confirmPassword'} />
 
             {error && (
-              <div className="flex flex-row items-center gap-2 rounded bg-red-100 p-2 text-left text-red-900">
+              <div className="flex flex-row items-center gap-2 rounded-sm bg-red-100 p-2 text-left text-red-900">
                 <Icon SvgIcon={AlertTriangleIcon} width={16} height={16} isBorderless />
                 <p className="text-xs">{errorMessage}</p>
               </div>
