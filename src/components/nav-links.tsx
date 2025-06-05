@@ -19,25 +19,23 @@ function NavLinks() {
       label: 'Security',
     },
   ];
+
   return (
-    <>
+    <ul className="my-auto flex flex-col gap-8 lg:flex-row">
       {links.map((link) => (
-        <li key={link.to}>
-          <NavLink
-            to={link.to}
-            className={({ isActive, isPending }) =>
-              isPending
-                ? 'animate-pulse'
-                : isActive
-                  ? 'relative after:absolute after:bottom-[-3px] after:left-0 after:h-[2px] after:w-full after:bg-brand'
-                  : 'text-copy/80 transition-colors duration-300 hover:text-copy'
-            }
-          >
-            {link.label}
+        <li key={link.to} className="w-full">
+          <NavLink to={link.to} className="text-copy/80 hover:text-copy block py-2">
+            {({ isActive, isPending }) => (
+              <span
+                className={`${isPending ? 'animate-pulse' : ''} ${isActive ? 'after:bg-brand text-copy relative after:absolute after:bottom-[-3px] after:left-0 after:h-[2px] after:w-full' : ''} `}
+              >
+                {link.label}
+              </span>
+            )}
           </NavLink>
         </li>
       ))}
-    </>
+    </ul>
   );
 }
 

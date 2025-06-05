@@ -80,9 +80,9 @@ export default function LoginForm() {
       </ButtonPrimary>
 
       <div className="flex w-full max-w-4xl flex-row items-center gap-4">
-        <div className="h-px w-full bg-accent/10"></div>
-        <p className="text-sm text-accent/10">or</p>
-        <div className="h-px w-full bg-accent/10"></div>
+        <div className="bg-accent/10 h-px w-full"></div>
+        <p className="text-accent/10 text-sm">or</p>
+        <div className="bg-accent/10 h-px w-full"></div>
       </div>
 
       <FormProvider {...methods}>
@@ -118,7 +118,7 @@ export default function LoginForm() {
               <PasswordInput id="password" label="Password" isRequired />
               <Link
                 to="/forgot-password/"
-                className="absolute right-0 top-0 text-sm text-link transition-colors duration-300 hover:text-link-hover"
+                className="text-link hover:text-link-hover absolute top-0 right-0 text-sm transition-colors duration-300"
               >
                 Forgot password?
               </Link>
@@ -129,15 +129,15 @@ export default function LoginForm() {
 
           <ButtonPrimary
             type="submit"
-            className={`w-full ${isSubmitting ? 'animate-pulse bg-brand-hover' : ''}`}
+            className={`w-full ${isSubmitting ? 'bg-brand-hover animate-pulse' : ''}`}
             disabled={isSubmitting}
           >
             Login
           </ButtonPrimary>
 
-          <p className="mx-auto text-sm text-copy/50">
+          <p className="text-copy/50 mx-auto text-sm">
             Don&apos;t have an account?{' '}
-            <Link to="/signup/" className="text-link underline transition-colors duration-300 hover:text-link-hover">
+            <Link to="/signup/" className="text-link hover:text-link-hover underline transition-colors duration-300">
               Sign up
             </Link>
           </p>

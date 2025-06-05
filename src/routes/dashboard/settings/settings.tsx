@@ -107,7 +107,7 @@ export default function Settings({ firstName, lastName, handleClose }: SettingsP
       <FormProvider {...methods}>
         <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 overflow-y-auto p-4">
           <div className="space-y-4 text-left">
-            {session?.user.email && <p className="text-left text-copy/70">{session?.user.email}</p>}
+            {session?.user.email && <p className="text-copy/70 text-left">{session?.user.email}</p>}
             <div className="flex flex-col gap-2">
               <label htmlFor="firstNameSettings" className="text-sm">
                 First Name:
@@ -145,7 +145,7 @@ export default function Settings({ firstName, lastName, handleClose }: SettingsP
 
             {isError && <ErrorMessage error={errorMessage} />}
           </div>
-          <div className="flex flex-col gap-4 border-y border-y-accent/10 py-6">
+          <div className="border-y-accent/10 flex flex-col gap-4 border-y py-6">
             <div className="rounded-md bg-red-100 p-3 text-left">
               <div className="flex flex-col items-start">
                 <div className="flex flex-row items-center gap-2">

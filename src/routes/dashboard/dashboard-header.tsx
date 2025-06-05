@@ -70,7 +70,7 @@ function DashboardHeader() {
   }, [isSettingsOpen]);
 
   return (
-    <header className="sticky top-0 z-50 col-span-3 col-start-1 flex h-fit flex-row flex-wrap items-center justify-between gap-2 border-b border-b-accent/10 bg-background px-4 py-3 text-center sm:px-8 md:px-12 lg:px-24 xl:px-40">
+    <header className="border-b-accent/10 bg-background sticky top-0 z-50 col-span-3 col-start-1 flex h-fit flex-row flex-wrap items-center justify-between gap-2 border-b px-4 py-3 text-center sm:px-8 md:px-12 lg:px-24 xl:px-40">
       <h1 className="text-lg font-bold md:text-xl lg:text-2xl xl:text-3xl">Dashboard</h1>
 
       <div className="relative flex flex-row items-center gap-4">
@@ -79,7 +79,7 @@ function DashboardHeader() {
         <button
           ref={buttonRef}
           type="button"
-          className="flex flex-nowrap items-center gap-2 text-nowrap rounded-md border border-accent/30 p-2 hover:border-accent/50"
+          className="border-accent/30 hover:border-accent/50 flex flex-nowrap items-center gap-2 rounded-md border p-2 text-nowrap"
           onClick={() => setIsOpen(!isOpen)}
           onBlur={handleBlur}
         >
@@ -91,9 +91,9 @@ function DashboardHeader() {
           <ul
             ref={ref}
             onBlur={handleBlur}
-            className={`absolute right-0 top-12 w-48 rounded-md border border-accent/10 bg-background p-2 shadow-lg transition-opacity`}
+            className={`border-accent/10 bg-background absolute top-12 right-0 w-48 rounded-md border p-2 shadow-lg transition-opacity`}
           >
-            <li className="rounded-xs hover:bg-accent/10">
+            <li className="hover:bg-accent/10 rounded-xs">
               {!isAnonymousUser && (
                 <button
                   type="button"
@@ -105,7 +105,7 @@ function DashboardHeader() {
                 </button>
               )}
             </li>
-            <li className="rounded-xs hover:bg-accent/10">
+            <li className="hover:bg-accent/10 rounded-xs">
               <button
                 type="button"
                 className="flex w-full flex-row items-center gap-2 p-2 text-left"
@@ -120,7 +120,7 @@ function DashboardHeader() {
       </div>
 
       <div
-        className={`fixed inset-y-0 right-0 flex h-full w-full transform flex-col border-l border-l-accent/10 bg-background shadow-lg transition-transform duration-300 ease-in-out sm:w-80 ${
+        className={`border-l-accent/10 bg-background fixed inset-y-0 right-0 flex h-full w-full transform flex-col border-l shadow-lg transition-transform duration-300 ease-in-out sm:w-80 ${
           isSettingsOpen ? 'pointer-events-auto translate-x-0' : 'pointer-events-none translate-x-full'
         } `}
         aria-hidden={!isSettingsOpen}

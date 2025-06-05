@@ -12,7 +12,6 @@ import Icon from '@/components/icon';
 import NavLinks from '@/components/nav-links';
 import ThemeToggle from '@/components/theme-toggle';
 
-
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const { session } = useSession();
@@ -33,57 +32,51 @@ export default function Header() {
   }, [isOpen]);
 
   return (
-    <header className="sticky top-0 z-50 col-span-3 col-start-1 flex h-fit flex-row items-center justify-between border-b border-b-accent/10 bg-background px-4 py-3 text-center sm:px-8 md:px-12 lg:px-24 xl:px-40">
-      <Link
-        to="/"
-        className="font-montserrat-subrayada text-3xl font-bold text-brand/90 transition-colors duration-300 hover:text-brand"
-        aria-label="go to homepage"
-      >
-        CielTrust
-      </Link>
-
-      <nav
-        id="primary-nav"
-        ref={ref}
-        className="relative col-span-full col-start-4 lg:static lg:flex lg:w-full lg:items-center lg:justify-end"
-      >
-        <ButtonSecondary
-          className="absolute right-0 top-0 z-50 -translate-y-1/2 transform rounded-md hover:cursor-pointer lg:hidden lg:px-4"
-          aria-label="navigation toggle button"
-          aria-controls="headerNavMenu"
-          aria-expanded="false"
-          onClick={handleClick}
+    <header className="border-b-accent/10 bg-background grid-cols-base sm:grid-cols-sm md:grid-cols-md lg:grid-cols-lg xl:grid-cols-xl sticky top-0 z-50 col-span-full grid h-fit border-b py-3">
+      <div className="col-start-2 flex flex-row items-center justify-between gap-2">
+        <Link
+          to="/"
+          className="font-montserrat-subrayada text-brand/90 hover:text-brand text-3xl font-bold transition-colors duration-300"
+          aria-label="go to homepage"
         >
-          <Icon SvgIcon={isOpen ? XIcon : MenuIcon} width={16} height={16} isBorderless />
-        </ButtonSecondary>
+          CielTrust
+        </Link>
 
-        <HeaderNavMenu isOpen={isOpen}>
-          <ul className="flex flex-col gap-8 lg:flex-row">
+        <nav id="primary-nav" ref={ref} className="relative lg:static lg:flex lg:w-full lg:items-center lg:justify-end">
+          <ButtonSecondary
+            className="absolute top-0 right-0 z-50 -translate-y-1/2 transform rounded-md hover:cursor-pointer lg:hidden lg:px-4"
+            aria-label="navigation toggle button"
+            aria-controls="headerNavMenu"
+            aria-expanded="false"
+            onClick={handleClick}
+          >
+            <Icon SvgIcon={isOpen ? XIcon : MenuIcon} width={16} height={16} isBorderless />
+          </ButtonSecondary>
+
+          <HeaderNavMenu isOpen={isOpen}>
             <NavLinks />
-          </ul>
 
-          <HeaderNavButtons>
-            <ThemeToggle />
+            <HeaderNavButtons>
+              <ThemeToggle />
 
-            {session ? (
-              <>
+              {session ? (
                 <LinkButtonPrimary to="/dashboard/" className="w-full">
                   Dashboard
                 </LinkButtonPrimary>
-              </>
-            ) : (
-              <>
-                <LinkButtonSecondary to="/signup/" className="w-full">
-                  Sign Up
-                </LinkButtonSecondary>
-                <LinkButtonPrimary to="/login/" className="w-full">
-                  Login
-                </LinkButtonPrimary>
-              </>
-            )}
-          </HeaderNavButtons>
-        </HeaderNavMenu>
-      </nav>
+              ) : (
+                <>
+                  <LinkButtonSecondary to="/signup/" className="w-full">
+                    Sign Up
+                  </LinkButtonSecondary>
+                  <LinkButtonPrimary to="/login/" className="w-full">
+                    Login
+                  </LinkButtonPrimary>
+                </>
+              )}
+            </HeaderNavButtons>
+          </HeaderNavMenu>
+        </nav>
+      </div>
     </header>
   );
 }
@@ -92,7 +85,7 @@ const HeaderNavMenu = ({ children, isOpen }: { children: ReactElement[]; isOpen:
   return (
     <div
       id="headerNavMenu"
-      className={`fixed right-0 top-0 z-40 flex h-dvh w-[300px] transform justify-between shadow-xs shadow-black/20 ${isOpen ? 'translate-x-0' : 'translate-x-full'} flex-col gap-8 border-l border-l-accent/10 bg-background px-4 pb-16 pt-24 duration-300 ease-in-out sm:px-8 md:px-12 lg:static lg:h-fit lg:w-fit lg:translate-x-0 lg:transform-none lg:flex-row lg:items-center lg:border-none lg:p-0 lg:pt-0 lg:shadow-none lg:duration-0`}
+      className={`fixed top-0 right-0 z-40 flex h-dvh w-[min(75%,400px)] transform justify-between shadow-xs shadow-black/20 ${isOpen ? 'translate-x-0' : 'translate-x-full'} border-l-accent/10 bg-background flex-col gap-8 border-l px-4 pt-24 pb-16 duration-300 ease-in-out sm:px-8 md:px-12 lg:static lg:h-fit lg:w-fit lg:translate-x-0 lg:transform-none lg:flex-row lg:items-center lg:border-none lg:p-0 lg:pt-0 lg:shadow-none lg:duration-0`}
     >
       {children}
     </div>
