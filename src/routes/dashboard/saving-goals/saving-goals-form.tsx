@@ -128,7 +128,7 @@ export const AddSavingGoalsForm = ({ handleModalClose }: AddSavingGoalsFormProps
         <div className="flex flex-row items-center justify-end gap-2 disabled:opacity-50">
           <ButtonPrimary type="submit" className={isLoading ? 'opacity-50' : ''} disabled={isLoading}>
             <MoonLoader loading={isLoading} size={16} color="#fff" />
-            <span className="ml-2">{`${isLoading ? 'Adding' : 'Add'}`} Goal</span>
+            <span>{`${isLoading ? 'Adding' : 'Add'}`} Goal</span>
           </ButtonPrimary>
         </div>
       </div>
@@ -262,7 +262,7 @@ export const EditSavingGoalsForm = ({ goal, handleModalClose }: EditSavingGoalsF
         <div className="flex flex-row items-center justify-end gap-2 disabled:opacity-50">
           <ButtonPrimary type="submit" className={isLoading ? 'opacity-50' : ''} disabled={isLoading}>
             <MoonLoader loading={isLoading} size={16} color="#fff" />
-            <span className="ml-2">{`${isLoading ? 'Saving' : 'Save'}`} Goal</span>
+            <span>{`${isLoading ? 'Saving' : 'Save'}`} Goal</span>
           </ButtonPrimary>
         </div>
       </div>

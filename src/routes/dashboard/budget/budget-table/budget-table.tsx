@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { MoonLoader } from 'react-spinners';
 
 import { ButtonDelete, ButtonSecondary } from '@/components/button';
 import Modal from '@/components/modal/modal';
@@ -11,7 +12,8 @@ import { CategoryWithAmount } from '@/routes/dashboard/categories/categories.typ
 
 export default function BudgetTable({ table }: BudgetTableProps) {
   const [activeModal, setActiveModal] = useState<string | null>(null);
-  const [deleteBudgetTable, { isSuccess }] = useDeleteBudgetTableMutation();
+  const [deleteBudgetTable, { isLoading: isDeleteLoading, isSuccess: isDeleteSuccess }] =
+    useDeleteBudgetTableMutation();
 
   let sumOfCategoriesAmount = 0;
   table.budget_categories.forEach((category) => {
@@ -31,10 +33,10 @@ export default function BudgetTable({ table }: BudgetTableProps) {
   };
 
   useEffect(() => {
-    if (isSuccess) {
+    if (isDeleteSuccess) {
       setActiveModal(null);
     }
-  }, [isSuccess]);
+  }, [isDeleteSuccess]);
 
   return (
     <div className="border-accent/10 flex flex-col items-start gap-4 border border-b-0 text-left first:rounded-t-md last:rounded-b-md last:border-b">
@@ -75,38 +77,39 @@ export default function BudgetTable({ table }: BudgetTableProps) {
         </tbody>
       </table>
 
-      {activeModal === `edit-budget-table-${table.id}-modal` && (
-        <Modal
-          id={`edit-budget-table-${table.id}-modal`}
-          title="Edit this budget?"
-          isOpen={activeModal === `edit-budget-table-${table.id}-modal`}
-          handleClose={handleModalClose}
-        >
-          <EditBudgetTableForm table={table} handleModalClose={handleModalClose} />
-        </Modal>
-      )}
+      <Modal
+        id={`edit-budget-table-${table.id}-modal`}
+        title="Edit this budget?"
+        isOpen={activeModal === `edit-budget-table-${table.id}-modal`}
+        handleClose={handleModalClose}
+      >
+        <EditBudgetTableForm table={table} handleModalClose={handleModalClose} />
+      </Modal>
 
-      {activeModal === `delete-budget-table-${table.id}-modal` && (
-        <Modal
-          id="deleteBudgetModal"
-          title="Delete budget"
-          isOpen={activeModal === `delete-budget-table-${table.id}-modal`}
-          handleClose={handleModalClose}
-        >
-          <div className="flex flex-col gap-2">
-            <p>Are you sure you want to delete this budget?</p>
-            <p className="font-semibold">{table.name}</p>
-          </div>
+      <Modal
+        id="deleteBudgetModal"
+        title="Delete budget"
+        isOpen={activeModal === `delete-budget-table-${table.id}-modal`}
+        handleClose={handleModalClose}
+      >
+        <div className="flex flex-col gap-2">
+          <p>Are you sure you want to delete this budget?</p>
+          <p className="font-semibold">{table.name}</p>
+        </div>
+
+        <div className="flex flex-row items-center justify-end gap-2">
+          <ButtonSecondary type="button" onClick={handleModalClose}>
+            Cancel
+          </ButtonSecondary>
 
           <div className="flex flex-row items-center justify-end gap-2">
-            <ButtonSecondary type="button" onClick={handleModalClose}>
-              Cancel
-            </ButtonSecondary>
-
-            <ButtonDelete onClick={handleDeleteBudgetTable}>Delete</ButtonDelete>
+            <ButtonDelete onClick={handleDeleteBudgetTable} className="disabled:opacity-50" disabled={isDeleteLoading}>
+              <MoonLoader loading={isDeleteLoading} size={16} color="#fff" />
+              <span>{`${isDeleteLoading ? 'Deleting' : 'Delete'}`}</span>
+            </ButtonDelete>
           </div>
-        </Modal>
-      )}
+        </div>
+      </Modal>
     </div>
   );
 }

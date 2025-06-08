@@ -44,10 +44,10 @@ export default function SavingGoalsItem({ goal }: SavingGoalsItemProps) {
   }, [isSuccess]);
 
   return (
-    <li className="relative flex flex-row items-center justify-between gap-2 rounded-md border border-accent/10 p-2">
-      <p className="flex flex-row items-center gap-2 pl-4 before:absolute before:left-2 before:top-1/2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-md before:bg-brand before:content-['']">
+    <li className="border-accent/10 relative flex flex-row items-center justify-between gap-2 rounded-md border p-2">
+      <p className="before:bg-brand flex flex-row items-center gap-2 pl-4 before:absolute before:top-1/2 before:left-2 before:h-2 before:w-2 before:-translate-y-1/2 before:rounded-md before:content-['']">
         {goal.name}
-        <span className="text-xs text-copy/30">
+        <span className="text-copy/30 text-xs">
           ({goal.saved_amount !== null ? goal.saved_amount : 0}/{goal.target_amount})
         </span>
       </p>
@@ -100,7 +100,7 @@ export default function SavingGoalsItem({ goal }: SavingGoalsItemProps) {
               disabled={isLoading}
             >
               <MoonLoader loading={isLoading} size={16} color="#fff" />
-              <span className="ml-2">{`${isLoading ? 'Deleting' : 'Delete'}`} Goal</span>
+              <span>{`${isLoading ? 'Deleting' : 'Delete'}`} Goal</span>
             </ButtonDelete>
           </div>
         </div>

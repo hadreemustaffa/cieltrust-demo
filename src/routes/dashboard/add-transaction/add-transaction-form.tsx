@@ -111,7 +111,7 @@ export default function AddTransactionForm({ handleModalClose }: { handleModalCl
               onChange={(event) => setTransactionType(event.currentTarget.value as TransactionType)}
             />
 
-            <span aria-hidden className="absolute right-2 top-1/2 -translate-y-1/2">
+            <span aria-hidden className="absolute top-1/2 right-2 -translate-y-1/2">
               <Icon SvgIcon={ChevronDownIcon} isBorderless />
             </span>
           </div>
@@ -140,7 +140,7 @@ export default function AddTransactionForm({ handleModalClose }: { handleModalCl
 
         <ButtonSecondary type="submit" className={isLoadingIncome || isLoadingExpenses ? 'opacity-50' : ''}>
           <MoonLoader loading={isLoadingIncome || isLoadingExpenses} size={16} color="hsla(210, 96%, 40%, 1)" />
-          <span className="ml-2">Add {transactionType === 'income' ? 'Income' : 'Expenses'}</span>
+          <span>Add {transactionType === 'income' ? 'Income' : 'Expenses'}</span>
         </ButtonSecondary>
       </form>
     </FormProvider>
@@ -294,7 +294,7 @@ const ExpensesForm = () => {
             })}
             onChange={handleBudgetChange}
           />
-          <span aria-hidden className="absolute right-2 top-1/2 -translate-y-1/2">
+          <span aria-hidden className="absolute top-1/2 right-2 -translate-y-1/2">
             <Icon SvgIcon={ChevronDownIcon} isBorderless />
           </span>
         </div>
@@ -319,7 +319,7 @@ const ExpensesForm = () => {
                   required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
                 })}
               />
-              <span aria-hidden className="absolute right-2 top-1/2 -translate-y-1/2">
+              <span aria-hidden className="absolute top-1/2 right-2 -translate-y-1/2">
                 <Icon SvgIcon={ChevronDownIcon} isBorderless />
               </span>
             </div>

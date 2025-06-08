@@ -1,5 +1,7 @@
 import { useEffect } from 'react';
 import { SubmitHandler, useFieldArray, useForm } from 'react-hook-form';
+import Skeleton from 'react-loading-skeleton';
+import { MoonLoader } from 'react-spinners';
 
 import { useAppSelector } from '@/hooks/use-redux';
 
@@ -25,8 +27,9 @@ import { ERROR_MSG } from '@/data/errorMessages';
 
 export const AddBudgetTableForm = ({ tables, handleModalClose }: AddBudgetTableFormProps) => {
   const dashboardId = useAppSelector(getDashboardId);
-  const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
-  const [addBudgetTable, { isSuccess: isAddBudgetSuccess }] = useAddBudgetTableMutation();
+  const { data: categories = [], isLoading, isFetching } = useGetCategoriesQuery(dashboardId);
+  const [addBudgetTable, { isLoading: isAddBudgetLoading, isSuccess: isAddBudgetSuccess }] =
+    useAddBudgetTableMutation();
 
   const {
     register,
@@ -34,7 +37,7 @@ export const AddBudgetTableForm = ({ tables, handleModalClose }: AddBudgetTableF
     reset,
     control,
     setFocus,
-    formState: { errors, isSubmitting },
+    formState: { errors },
     handleSubmit,
   } = useForm<AddBudgetTableFormData>({
     defaultValues: {
@@ -119,29 +122,39 @@ export const AddBudgetTableForm = ({ tables, handleModalClose }: AddBudgetTableF
         {errors.name && <ErrorMessage error={errors.name.message} />}
       </div>
 
-      <Categories
-        handleNewCategoryModal={() => null}
-        selectedCategories={(watch('categories') ?? [])
-          .filter((category) => category.selected)
-          .map((category) => category.id)}
-      >
-        {addCategoriesArr.fields.map((field, index) => (
-          <li key={field._id}>
-            <label
-              htmlFor={field._id}
-              className="flex flex-row items-center justify-between rounded-xs px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10"
-            >
-              {field.name}
-              <input
-                id={field._id}
-                type="checkbox"
-                className="rounded-md border border-accent/10 bg-transparent"
-                {...register(`categories.${index}.selected` as const)}
-              />
-            </label>
-          </li>
-        ))}
-      </Categories>
+      {isLoading ? (
+        <div className="flex flex-col gap-2">
+          <p className="text-sm">Categories</p>
+          <Skeleton height={40} />
+        </div>
+      ) : (
+        <Categories
+          selectedCategories={(watch('categories') ?? [])
+            .filter((category) => category.selected)
+            .map((category) => category.id)}
+        >
+          {addCategoriesArr.fields.map((field, index) => (
+            <li key={field._id}>
+              {isFetching ? (
+                <Skeleton height={28} />
+              ) : (
+                <label
+                  htmlFor={field._id}
+                  className="hover:bg-accent/10 flex flex-row items-center justify-between rounded-xs px-2 py-1 text-sm hover:cursor-pointer"
+                >
+                  {field.name}
+                  <input
+                    id={field._id}
+                    type="checkbox"
+                    className="border-accent/10 rounded-md border bg-transparent"
+                    {...register(`categories.${index}.selected` as const)}
+                  />
+                </label>
+              )}
+            </li>
+          ))}
+        </Categories>
+      )}
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
@@ -153,7 +166,7 @@ export const AddBudgetTableForm = ({ tables, handleModalClose }: AddBudgetTableF
             id="budgetAmount"
             type="number"
             min={0}
-            className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            className="border-accent/10 w-full rounded-md border bg-transparent p-2"
             placeholder="$ 0"
             defaultValue={''}
             aria-invalid={errors.name ? 'true' : 'false'}
@@ -169,9 +182,10 @@ export const AddBudgetTableForm = ({ tables, handleModalClose }: AddBudgetTableF
         </div>
       </div>
 
-      <div className="flex flex-row items-center justify-end gap-2 disabled:opacity-50">
-        <ButtonPrimary type="submit" disabled={isSubmitting}>
-          Create budget table
+      <div className="flex flex-row items-center justify-end gap-2">
+        <ButtonPrimary type="submit" name="add-submit" className="disabled:opacity-50" disabled={isAddBudgetLoading}>
+          <MoonLoader loading={isAddBudgetLoading} size={16} color="#fff" />
+          <span>{`${isAddBudgetLoading ? 'Adding' : 'Add'}`} budget table</span>
         </ButtonPrimary>
       </div>
     </form>
@@ -180,8 +194,8 @@ export const AddBudgetTableForm = ({ tables, handleModalClose }: AddBudgetTableF
 
 export const EditBudgetTableForm = ({ table, handleModalClose }: EditBudgetTableFormProps) => {
   const dashboardId = useAppSelector(getDashboardId);
-  const { data: categories = [] } = useGetCategoriesQuery(dashboardId);
-  const [editBudgetTable, { isSuccess }] = useEditBudgetTableMutation();
+  const { data: categories = [], isLoading, isFetching } = useGetCategoriesQuery(dashboardId);
+  const [editBudgetTable, { isLoading: isEditBudgetLoading, isSuccess }] = useEditBudgetTableMutation();
 
   const {
     register,
@@ -299,45 +313,55 @@ export const EditBudgetTableForm = ({ table, handleModalClose }: EditBudgetTable
         {errors.name && <ErrorMessage error={errors.name.message} />}
       </div>
 
-      <Categories
-        handleNewCategoryModal={() => null}
-        selectedCategories={[
-          ...(watch('categories')
-            ?.filter((category) => category.selected)
-            .map((category) => category.id) ?? []),
-        ]}
-      >
-        {editCategoriesArr.fields.map((field, index) => {
-          const isChecked = table.budget_categories.some((category) => category.category_id === field.id);
-          return (
-            <li key={field.id}>
-              <label
-                htmlFor={field._id}
-                className={`flex flex-row items-center justify-between rounded-xs px-2 py-1 text-sm hover:cursor-pointer hover:bg-accent/10`}
-              >
-                {field.name}
-
-                {isChecked ? (
-                  <input
-                    id={field._id}
-                    type="checkbox"
-                    className="rounded-md border border-accent/10 bg-transparent"
-                    defaultChecked={isChecked}
-                    {...register(`categories.${index}.selected` as const)}
-                  />
+      {isLoading ? (
+        <div className="flex flex-col gap-2">
+          <p className="text-sm">Categories</p>
+          <Skeleton height={40} />
+        </div>
+      ) : (
+        <Categories
+          selectedCategories={[
+            ...(watch('categories')
+              ?.filter((category) => category.selected)
+              .map((category) => category.id) ?? []),
+          ]}
+        >
+          {editCategoriesArr.fields.map((field, index) => {
+            const isChecked = table.budget_categories.some((category) => category.category_id === field.id);
+            return (
+              <li key={field.id}>
+                {isFetching ? (
+                  <Skeleton height={28} />
                 ) : (
-                  <input
-                    id={field._id}
-                    type="checkbox"
-                    className="rounded-md border border-accent/10 bg-transparent"
-                    {...register(`categories.${index}.selected` as const)}
-                  />
+                  <label
+                    htmlFor={field._id}
+                    className={`hover:bg-accent/10 flex flex-row items-center justify-between rounded-xs px-2 py-1 text-sm hover:cursor-pointer`}
+                  >
+                    {field.name}
+
+                    {isChecked ? (
+                      <input
+                        id={field._id}
+                        type="checkbox"
+                        className="border-accent/10 rounded-md border bg-transparent"
+                        defaultChecked={isChecked}
+                        {...register(`categories.${index}.selected` as const)}
+                      />
+                    ) : (
+                      <input
+                        id={field._id}
+                        type="checkbox"
+                        className="border-accent/10 rounded-md border bg-transparent"
+                        {...register(`categories.${index}.selected` as const)}
+                      />
+                    )}
+                  </label>
                 )}
-              </label>
-            </li>
-          );
-        })}
-      </Categories>
+              </li>
+            );
+          })}
+        </Categories>
+      )}
 
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-2">
@@ -349,7 +373,7 @@ export const EditBudgetTableForm = ({ table, handleModalClose }: EditBudgetTable
             id="budgetAmount"
             type="number"
             min={0}
-            className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            className="border-accent/10 w-full rounded-md border bg-transparent p-2"
             placeholder="$ 0"
             defaultValue={table.amount}
             aria-invalid={errors.amount ? 'true' : 'false'}
@@ -365,9 +389,10 @@ export const EditBudgetTableForm = ({ table, handleModalClose }: EditBudgetTable
         </div>
       </div>
 
-      <div className="flex flex-row items-center justify-end gap-2 disabled:opacity-50">
-        <ButtonPrimary type="submit" disabled={isSubmitting}>
-          Save budget table
+      <div className="flex flex-row items-center justify-end gap-2">
+        <ButtonPrimary type="submit" name="edit-submit" className="disabled:opacity-50" disabled={isEditBudgetLoading}>
+          <MoonLoader loading={isEditBudgetLoading} size={16} color="#fff" />
+          <span>{`${isEditBudgetLoading ? 'Saving' : 'Save'}`} budget table</span>
         </ButtonPrimary>
       </div>
     </form>

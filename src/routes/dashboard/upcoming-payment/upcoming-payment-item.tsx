@@ -45,11 +45,11 @@ export default function UpcomingPaymentItem({ payment }: UpcomingPaymentItemProp
   return (
     <li
       key={payment.id}
-      className="grid grid-cols-[1fr_auto] items-center justify-between gap-2 rounded-md border border-accent/10 p-2"
+      className="border-accent/10 grid grid-cols-[1fr_auto] items-center justify-between gap-2 rounded-md border p-2"
     >
       <div className="flex flex-col">
         <p className="font-semibold">{payment.name}</p>
-        <p className="text-sm text-copy/70">
+        <p className="text-copy/70 text-sm">
           {payment.recurrence}, next on {nextPaymentDate.format('DD/MM/YY')}
         </p>
       </div>
@@ -97,7 +97,7 @@ export default function UpcomingPaymentItem({ payment }: UpcomingPaymentItemProp
               onClick={handleDeleteUpcomingPayment}
             >
               <MoonLoader loading={isLoading} size={16} color="#fff" />
-              <span className="ml-2">Delete</span>
+              <span>Delete</span>
             </ButtonDelete>
           </div>
         </div>

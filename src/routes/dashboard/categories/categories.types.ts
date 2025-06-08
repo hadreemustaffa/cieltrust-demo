@@ -1,3 +1,5 @@
+import React from 'react';
+
 export type Category = {
   id: number;
   name: string;
@@ -36,3 +38,8 @@ export type DB_CategoryWithAmount = DB_Category & {
 };
 
 export type DB_CategoriesWithAmount = DB_CategoryWithAmount[];
+
+export interface CategoriesProps {
+  children: React.ReactNode;
+  selectedCategories: number[];
+}

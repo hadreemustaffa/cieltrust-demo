@@ -97,7 +97,7 @@ export const AddUpcomingPaymentForm = ({ handleModalClose }: AddUpcomingPaymentF
         <Input
           id="startDate"
           type="date"
-          className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+          className="border-accent/10 w-full rounded-md border bg-transparent p-2"
           defaultValue={''}
           {...register('date', {
             required: {
@@ -120,7 +120,7 @@ export const AddUpcomingPaymentForm = ({ handleModalClose }: AddUpcomingPaymentF
             id="upcomingPaymentAmount"
             type="number"
             min={0}
-            className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            className="border-accent/10 w-full rounded-md border bg-transparent p-2"
             placeholder="$ 0"
             {...register('amount', {
               required: {
@@ -148,7 +148,7 @@ export const AddUpcomingPaymentForm = ({ handleModalClose }: AddUpcomingPaymentF
                 { label: 'Weekly', value: 'Weekly' },
               ]}
             />
-            <span className="absolute right-2 top-1/2 -translate-y-1/2">
+            <span className="absolute top-1/2 right-2 -translate-y-1/2">
               <Icon SvgIcon={ChevronDownIcon} isBorderless />
             </span>
           </div>
@@ -158,7 +158,7 @@ export const AddUpcomingPaymentForm = ({ handleModalClose }: AddUpcomingPaymentF
       <div className="flex flex-row items-center justify-end gap-2 disabled:opacity-50">
         <ButtonPrimary type="submit" className={isLoading ? 'opacity-50' : ''} disabled={isLoading}>
           <MoonLoader loading={isLoading} size={16} color="#fff" />
-          <span className="ml-2">Add Upcoming Payment</span>
+          <span>Add Upcoming Payment</span>
         </ButtonPrimary>
       </div>
     </form>
@@ -262,7 +262,7 @@ export const EditUpcomingPaymentForm = ({ payment, handleModalClose }: EditUpcom
         <Input
           id="startDate"
           type="date"
-          className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+          className="border-accent/10 w-full rounded-md border bg-transparent p-2"
           aria-invalid={errors.date ? 'true' : 'false'}
           {...register('date', {
             required: {
@@ -284,7 +284,7 @@ export const EditUpcomingPaymentForm = ({ payment, handleModalClose }: EditUpcom
             id="upcomingPaymentAmount"
             type="number"
             min={0}
-            className="w-full rounded-md border border-accent/10 bg-transparent p-2"
+            className="border-accent/10 w-full rounded-md border bg-transparent p-2"
             placeholder="$ 0"
             aria-invalid={errors.amount ? 'true' : 'false'}
             {...register('amount', {
@@ -312,7 +312,7 @@ export const EditUpcomingPaymentForm = ({ payment, handleModalClose }: EditUpcom
                 { label: 'Weekly', value: 'Weekly' },
               ]}
             />
-            <span className="absolute right-2 top-1/2 -translate-y-1/2">
+            <span className="absolute top-1/2 right-2 -translate-y-1/2">
               <Icon SvgIcon={ChevronDownIcon} isBorderless />
             </span>
           </div>
@@ -322,7 +322,7 @@ export const EditUpcomingPaymentForm = ({ payment, handleModalClose }: EditUpcom
       <div className="flex flex-row items-center justify-end gap-2 disabled:opacity-50">
         <ButtonPrimary type="submit" className={isLoading ? 'opacity-50' : ''} disabled={isLoading}>
           <MoonLoader loading={isLoading} size={16} color="#fff" />
-          <span className="ml-2">Save Payment Details</span>
+          <span>Save Payment Details</span>
         </ButtonPrimary>
       </div>
     </form>

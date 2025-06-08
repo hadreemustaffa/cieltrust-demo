@@ -28,8 +28,8 @@ export default function Budget() {
   };
 
   return (
-    <div className="col-span-full rounded-md sm:border sm:border-accent/10 sm:p-4 xl:col-span-2 xl:col-start-1 xl:row-start-1">
-      <div className="flex flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
+    <div className="sm:border-accent/10 col-span-full rounded-md sm:border sm:p-4 xl:col-span-2 xl:col-start-1 xl:row-start-1">
+      <div className="border-accent/10 bg-surface flex flex-col gap-4 rounded-md border p-4">
         <div className="flex flex-row flex-wrap items-center justify-between gap-4">
           <h2 className="text-lg font-semibold">Budgets</h2>
 
