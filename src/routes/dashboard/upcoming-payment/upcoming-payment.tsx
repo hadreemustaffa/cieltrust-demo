@@ -31,8 +31,8 @@ export default function UpcomingPayments() {
   };
 
   return (
-    <div className="col-span-full rounded-md sm:border sm:border-accent/10 sm:p-4 xl:col-span-2 xl:col-start-3">
-      <div className="flex w-full flex-col gap-4 rounded-md border border-accent/10 bg-surface p-4">
+    <div className="sm:border-accent/10 col-span-full rounded-md sm:border sm:p-4 xl:col-span-2 xl:col-start-3">
+      <div className="border-accent/10 bg-surface flex w-full flex-col gap-4 rounded-md border p-4">
         <div className="flex flex-row flex-wrap items-center justify-between gap-4">
           <h2 className="text-lg font-semibold">Upcoming Payments</h2>
 
@@ -46,9 +46,9 @@ export default function UpcomingPayments() {
           <>
             {upcomingPayments.length > 0 ? (
               <div className="flex flex-col gap-4">
-                <div className="flex flex-col items-center justify-center rounded-md border border-accent/10 bg-card p-4 text-center">
-                  <p className="text-lg font-medium">{`$ ${totalExpectedPayments}`}</p>
-                  <p className="text-sm text-copy/70">Estimated payments for the upcoming month</p>
+                <div className="border-accent/10 bg-card flex flex-col items-center justify-center rounded-md border p-4 text-center">
+                  <p className="text-lg font-bold">{`$ ${totalExpectedPayments}`}</p>
+                  <p className="text-copy/70 text-sm">Estimated payments for the upcoming month</p>
                 </div>
 
                 <ul

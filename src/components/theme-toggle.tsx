@@ -70,7 +70,7 @@ export default function ThemeToggle() {
       title="Toggles light & dark"
       aria-label="auto"
       aria-live="polite"
-      className="w-full"
+      className="w-full p-1.5 sm:p-2"
       onClick={themeHandleClick}
     >
       <span>

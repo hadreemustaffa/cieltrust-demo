@@ -28,7 +28,7 @@ export default function AccountOverviewCard({
 
   const isPositiveTrend = isExpenses ? !isIncrease : isIncrease;
 
-  const trendColor = isPositiveTrend ? 'bg-green-800' : 'bg-red-700';
+  const trendColor = isPositiveTrend ? 'bg-green-900' : 'bg-red-900';
   const TrendIcon = isIncrease ? TrendingUpIcon : TrendingDownIcon;
 
   const formattedPercent = `${isIncrease ? '+' : ''}${percentChange}%`;
@@ -36,7 +36,7 @@ export default function AccountOverviewCard({
   const formattedTitle = columnTitle.charAt(0).toUpperCase() + columnTitle.slice(1);
 
   return (
-    <div className="flex min-w-60 flex-col gap-2 rounded-md border border-accent/10 bg-surface p-4">
+    <div className="border-accent/10 bg-surface flex min-w-60 flex-col gap-2 rounded-md border p-4">
       <div className="flex flex-col justify-between gap-2 text-left">
         <div className="flex flex-row items-center justify-between">
           <div className="relative flex flex-row items-center gap-2">
@@ -56,7 +56,7 @@ export default function AccountOverviewCard({
         </p>
       </div>
 
-      <div className="h-px w-full bg-accent/10"></div>
+      <div className="bg-accent/10 h-px w-full"></div>
 
       <p className="text-sm">
         Last month: <span className="font-semibold">{Math.round(lastMonthAmount)}</span>

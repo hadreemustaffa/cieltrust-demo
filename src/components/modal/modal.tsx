@@ -47,26 +47,39 @@ export default function Modal({ title, isOpen, children, handleClose, className 
       }
     };
 
+    const handleFocusOutsideClick = (event: FocusEvent) => {
+      console.log(event.target);
+      if (
+        modalRef.current &&
+        event.relatedTarget instanceof HTMLElement &&
+        !modalRef.current.contains(event.relatedTarget)
+      ) {
+        handleClose();
+      }
+    };
+
     if (isOpen) {
       document.addEventListener('keydown', handleKeyDown);
-      document.addEventListener('mousedown', handleOutsideClick);
+      document.addEventListener('mouseup', handleOutsideClick);
+      document.addEventListener('focusout', handleFocusOutsideClick);
     }
 
     return () => {
       document.removeEventListener('keydown', handleKeyDown);
-      document.removeEventListener('mousedown', handleOutsideClick);
+      document.removeEventListener('mouseup', handleOutsideClick);
+      document.removeEventListener('focusout', handleFocusOutsideClick);
     };
   }, [isOpen, handleClose]);
 
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex h-full w-full items-center justify-center bg-background/90 p-4">
+    <div className="bg-background/90 fixed inset-0 z-50 flex h-full w-full items-center justify-center p-4">
       <div
         ref={modalRef}
         role="dialog"
         aria-labelledby="modal-title"
-        className={cn('flex w-full max-w-lg flex-col gap-6 rounded-md border border-accent/10 bg-card p-4', className)}
+        className={cn('border-accent/10 bg-card flex w-full max-w-lg flex-col gap-6 rounded-md border p-4', className)}
       >
         <div className="flex flex-row items-center justify-between gap-2">
           <h2 id="modal-title" className="text-lg font-semibold">
@@ -97,7 +110,7 @@ export const ModalLoading = ({ isOpen, handleClose }: Pick<ModalProps, 'isOpen' 
 export const ModalError = ({ isOpen, handleClose, error }: ModalErrorProps) => {
   return (
     <Modal id="errorModal" title="" isOpen={isOpen} handleClose={handleClose}>
-      <div className="flex h-[300px] flex-col items-center justify-center gap-4 rounded-md border border-accent/10">
+      <div className="border-accent/10 flex h-[300px] flex-col items-center justify-center gap-4 rounded-md border">
         <Icon SvgIcon={AlertCircleIcon} width={64} height={64} isBorderless />
         <h2 className="text-lg font-semibold">Something went wrong</h2>
         <ErrorMessage error={error} />

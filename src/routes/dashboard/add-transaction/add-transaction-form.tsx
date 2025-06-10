@@ -174,7 +174,6 @@ const IncomeForm = () => {
             id="income-amount"
             type="number"
             min={0}
-            step={50}
             placeholder="Enter amount"
             {...register('amount', {
               required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },
@@ -331,7 +330,6 @@ const ExpensesForm = () => {
               id="expenses-amount"
               type="number"
               min={0}
-              step={50}
               placeholder="Enter amount"
               {...register('amount', {
                 required: { value: true, message: ERROR_MSG.FIELD_IS_REQUIRED },

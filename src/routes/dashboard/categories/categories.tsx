@@ -10,6 +10,7 @@ import { cn } from '@/utils/cn';
 import useOutsideClick from '@/hooks/use-outside-click';
 import { useAppSelector } from '@/hooks/use-redux';
 
+import ErrorMessage from '@/components/error-message';
 import Icon from '@/components/icon';
 import { useAddNewCategoryMutation } from '@/routes/dashboard/api.slice';
 import { CategoriesProps } from '@/routes/dashboard/categories/categories.types';
@@ -22,7 +23,13 @@ function Categories({ children, selectedCategories }: CategoriesProps) {
   const dashboardId = useAppSelector(getDashboardId);
   const [addNewCategory, { isLoading, isSuccess }] = useAddNewCategoryMutation();
 
-  const { register, setFocus, reset, handleSubmit } = useForm<{ newCategoryName: string }>();
+  const {
+    register,
+    setFocus,
+    reset,
+    handleSubmit,
+    formState: { errors },
+  } = useForm<{ newCategoryName: string }>();
 
   const handleButtonClick = () => {
     setIsOpen(!isOpen);
@@ -86,34 +93,42 @@ function Categories({ children, selectedCategories }: CategoriesProps) {
         {children}
 
         {isNewCategoryOpen && (
-          <div className="flex w-full flex-row gap-2">
-            <input
-              type="text"
-              placeholder="Category name"
-              className="border-accent/10 w-full rounded-md border px-2 py-1 text-sm disabled:opacity-50"
-              disabled={isLoading}
-              {...register('newCategoryName')}
-            />
-            <div className="flex flex-row justify-end gap-2">
-              <button
-                type="submit"
-                name="new-category-submit"
-                className="text-copy/80 hover:text-copy text-sm underline hover:cursor-pointer disabled:opacity-50"
+          <>
+            <div className="flex w-full flex-row gap-2">
+              <input
+                type="text"
+                placeholder="Category name"
+                className="border-accent/10 w-full rounded-md border px-2 py-1 text-sm disabled:opacity-50"
                 disabled={isLoading}
-                onClick={handleSubmit(onSubmit)}
-              >
-                <Icon SvgIcon={CheckIcon} width={16} height={16} isBorderless />
-              </button>
-              <button
-                type="button"
-                className="text-copy/80 hover:text-copy text-sm underline hover:cursor-pointer disabled:opacity-50"
-                disabled={isLoading}
-                onClick={() => setIsNewCategoryOpen(false)}
-              >
-                <Icon SvgIcon={XIcon} width={16} height={16} isBorderless />
-              </button>
+                {...register('newCategoryName', {
+                  required: {
+                    value: true,
+                    message: 'Please enter a category name',
+                  },
+                })}
+              />
+              <div className="flex flex-row justify-end gap-2">
+                <button
+                  type="submit"
+                  name="new-category-submit"
+                  className="text-copy/80 hover:text-copy text-sm underline hover:cursor-pointer disabled:opacity-50"
+                  disabled={isLoading}
+                  onClick={handleSubmit(onSubmit)}
+                >
+                  <Icon SvgIcon={CheckIcon} width={16} height={16} isBorderless />
+                </button>
+                <button
+                  type="button"
+                  className="text-copy/80 hover:text-copy text-sm underline hover:cursor-pointer disabled:opacity-50"
+                  disabled={isLoading}
+                  onClick={() => setIsNewCategoryOpen(false)}
+                >
+                  <Icon SvgIcon={XIcon} width={16} height={16} isBorderless />
+                </button>
+              </div>
             </div>
-          </div>
+            {errors.newCategoryName && <ErrorMessage error={errors.newCategoryName.message} />}
+          </>
         )}
 
         <div className="border-accent/10 flex flex-wrap gap-2 rounded-md border p-2 text-xs">

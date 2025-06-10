@@ -73,7 +73,7 @@ function DashboardHeader() {
     <header className="border-b-accent/10 bg-background sticky top-0 z-50 col-span-3 col-start-1 flex h-fit flex-row flex-wrap items-center justify-between gap-2 border-b px-4 py-3 text-center sm:px-8 md:px-12 lg:px-24 xl:px-40">
       <h1 className="text-lg font-bold md:text-xl lg:text-2xl xl:text-3xl">Dashboard</h1>
 
-      <div className="relative flex flex-row items-center gap-4">
+      <div className="relative flex flex-row items-center gap-2">
         <ThemeToggle />
 
         <button
