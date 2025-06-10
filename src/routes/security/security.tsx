@@ -22,20 +22,20 @@ export default function Security() {
           className="md:max-h-[500px]"
         />
 
-        <div className="flex flex-col gap-4 border border-accent/10 bg-background p-8 md:absolute md:bottom-0 md:left-0 xl:max-w-[85ch]">
+        <div className="border-accent/10 bg-background flex flex-col gap-4 border p-8 md:absolute md:bottom-0 md:left-0 xl:max-w-[85ch]">
           <h1 className="text-3xl font-medium lg:text-5xl">
             Empowering You with <span className="text-brand">Safety</span> and{' '}
             <span className="text-brand">Confidence</span>
           </h1>
           <p>
             Your security is more than just a feature—it’s our commitment. From secure logins to account alerts, we
-            offer a range of tools to help you protect your accounts. Bank confidently with CielTrust, knowing your
+            offer a range of tools to help you protect your accounts. Bank confidently with Cieltrust, knowing your
             financial safety is always our priority
           </p>
         </div>
       </div>
 
-      <div className="h-px w-full bg-accent/10"></div>
+      <div className="bg-accent/10 h-px w-full"></div>
 
       <div className="flex flex-col gap-8 lg:text-left">
         <div className="flex max-w-[80ch] flex-col gap-4">
@@ -52,7 +52,7 @@ export default function Security() {
               <Fragment key={feature.title}>
                 <div className="flex flex-col gap-4">
                   <div className="flex flex-col items-center gap-4 lg:flex-row">
-                    <div className="flex rounded-md border border-accent/10 p-4">
+                    <div className="border-accent/10 flex rounded-md border p-4">
                       <Icon SvgIcon={feature.icon} />
                     </div>
                     <h3 className="text-lg font-medium">{feature.title}</h3>
@@ -65,7 +65,7 @@ export default function Security() {
         </div>
       </div>
 
-      <div className="h-px w-full bg-accent/10"></div>
+      <div className="bg-accent/10 h-px w-full"></div>
 
       <div className="flex flex-col gap-8 lg:text-left">
         <div className="flex max-w-[80ch] flex-col gap-4">
@@ -92,7 +92,7 @@ export default function Security() {
         </div>
       </div>
 
-      <div className="h-px w-full bg-accent/10"></div>
+      <div className="bg-accent/10 h-px w-full"></div>
 
       <FaqSection />
     </>

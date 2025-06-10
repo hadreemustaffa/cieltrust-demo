@@ -23,7 +23,7 @@ export default function JobOpenings() {
           <span>Job Openings</span>
         </h2>
         <p>
-          Explore exciting job openings at CielTrust, where we value talent, innovation, and a passion for customer
+          Explore exciting job openings at Cieltrust, where we value talent, innovation, and a passion for customer
           service. Join our team and be part of shaping a brighter future in the banking industry
         </p>
       </div>
@@ -46,15 +46,15 @@ export default function JobOpenings() {
 
 const JobArticle: React.FC<JobArticleProps> = ({ title, location, department, about, requirements }) => {
   return (
-    <article className="flex flex-col items-start justify-between gap-8 rounded-md border border-accent/10 p-4 text-left">
+    <article className="border-accent/10 flex flex-col items-start justify-between gap-8 rounded-md border p-4 text-left">
       <div className="flex flex-col gap-4">
         <header className="flex flex-col gap-4">
           <h3 className="text-xl font-semibold">{title}</h3>
           <div className="flex flex-row flex-wrap gap-2">
-            <p className="w-fit rounded-md border border-accent/10 p-2">
+            <p className="border-accent/10 w-fit rounded-md border p-2">
               <strong>Location</strong>: {location}
             </p>
-            <p className="w-fit rounded-md border border-accent/10 p-2">
+            <p className="border-accent/10 w-fit rounded-md border p-2">
               <strong>Department</strong>: {department}
             </p>
           </div>

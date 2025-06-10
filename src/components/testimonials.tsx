@@ -12,7 +12,7 @@ export default function Testimonials() {
         </h2>
 
         <p>
-          Discover how YourBank has transformed lives with innovative digital solutions and personalized customer
+          Discover how Cieltrust has transformed lives with innovative digital solutions and personalized customer
           service. See why our clients trust us for a secure and prosperous financial journey
         </p>
       </TabSectionTitle>

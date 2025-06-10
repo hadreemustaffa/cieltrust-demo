@@ -17,10 +17,10 @@ export default function About() {
           className="md:max-h-[500px]"
         />
 
-        <div className="bottom-0 left-0 flex flex-col gap-4 border border-accent/10 bg-background p-8 md:absolute xl:max-w-[85ch]">
+        <div className="border-accent/10 bg-background bottom-0 left-0 flex flex-col gap-4 border p-8 md:absolute xl:max-w-[85ch]">
           <h1 className="text-3xl font-medium lg:text-5xl">Building a simpler, brighter financial journey for you.</h1>
           <p>
-            At CielTrust, we believe in removing barriers to financial success, offering tools and support that make
+            At Cieltrust, we believe in removing barriers to financial success, offering tools and support that make
             banking easy and rewarding so you can focus on what matters most.
           </p>
         </div>
@@ -38,7 +38,7 @@ export default function About() {
           </p>
         </div>
         <div className="flex w-full flex-col gap-8 md:grid md:grid-cols-2">
-          <div className="flex flex-col gap-4 rounded-xs border border-accent/10 p-4 shadow-xs lg:text-left">
+          <div className="border-accent/10 flex flex-col gap-4 rounded-xs border p-4 shadow-xs lg:text-left">
             <h3 className="text-xl font-semibold">Mission</h3>
             <p>
               Empowering individuals to take control of their finances by providing intuitive tools and insights that
@@ -46,7 +46,7 @@ export default function About() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 rounded-xs border border-accent/10 p-4 shadow-xs lg:text-left">
+          <div className="border-accent/10 flex flex-col gap-4 rounded-xs border p-4 shadow-xs lg:text-left">
             <h3 className="text-xl font-semibold">Vision</h3>
             <p>
               To create a world where everyone has the confidence and resources to achieve financial freedom, enabling a

@@ -12,14 +12,14 @@ import NavLinks from '@/components/nav-links';
 
 export default function Footer() {
   return (
-    <footer className="col-span-full col-start-1 flex flex-col items-center gap-8 border border-accent/10 bg-surface p-8 text-center">
+    <footer className="border-accent/10 bg-surface col-span-full col-start-1 flex flex-col items-center gap-8 border p-8 text-center">
       <nav id="secondary-nav" className="flex flex-col items-center gap-8">
         <Link
           to="/"
-          className="font-montserrat-subrayada text-3xl font-bold text-brand/90 transition-colors duration-300 hover:text-brand"
+          className="font-montserrat-subrayada text-brand/90 hover:text-brand text-3xl font-bold transition-colors duration-300"
           aria-label="go to homepage"
         >
-          CielTrust
+          Cieltrust
         </Link>
 
         <ul className="flex flex-col gap-8 md:flex-row">
@@ -27,7 +27,7 @@ export default function Footer() {
         </ul>
       </nav>
 
-      <div className="h-px w-full bg-accent/10"></div>
+      <div className="bg-accent/10 h-px w-full"></div>
 
       <div className="flex flex-col items-center justify-center gap-4 lg:flex-row">
         <ButtonTertiary>
@@ -46,9 +46,9 @@ export default function Footer() {
         </ButtonTertiary>
       </div>
 
-      <div className="h-px w-full bg-accent/10"></div>
+      <div className="bg-accent/10 h-px w-full"></div>
 
-      <div className="flex flex-col items-center gap-8 rounded-md border border-accent/10 p-4 md:w-full md:flex-row md:justify-between">
+      <div className="border-accent/10 flex flex-col items-center gap-8 rounded-md border p-4 md:w-full md:flex-row md:justify-between">
         <div className="flex flex-row justify-center gap-4">
           <LinkButtonSecondary to="#">
             <Icon SvgIcon={FacebookIcon} isBorderless />
@@ -59,10 +59,10 @@ export default function Footer() {
           </LinkButtonSecondary>
         </div>
 
-        <p className="text-sm text-accent/80">CielTrust All Rights Reserved</p>
+        <p className="text-accent/80 text-sm">Cieltrust All Rights Reserved</p>
 
         <div className="flex flex-row gap-4">
-          <Link to="/privacy/" className="text-sm text-link hover:text-link-hover">
+          <Link to="/privacy/" className="text-link hover:text-link-hover text-sm">
             Privacy Policy
           </Link>
         </div>

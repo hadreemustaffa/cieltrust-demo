@@ -23,7 +23,9 @@ export default function PressReleases() {
         <h2 className="text-2xl font-semibold">
           <span>Press Releases</span>
         </h2>
-        <p>Stay updated with the latest happenings and exciting developments at YourBank through our press releases.</p>
+        <p>
+          Stay updated with the latest happenings and exciting developments at Cieltrust through our press releases.
+        </p>
       </div>
 
       <div className="flex flex-col gap-8 lg:grid lg:grid-cols-2">
@@ -65,10 +67,10 @@ const PressReleasesArticle: React.FC<PressReleasesArticleProps> = ({
             <LinkButtonTertiary to={`/press-releases/${id}`}>{title}</LinkButtonTertiary>
           </h3>
           <div className="flex flex-row flex-wrap gap-2">
-            <p className="w-fit rounded-md border border-accent/10 p-2">
+            <p className="border-accent/10 w-fit rounded-md border p-2">
               <strong>Location</strong>: {location}
             </p>
-            <p className="w-fit rounded-md border border-accent/10 p-2">
+            <p className="border-accent/10 w-fit rounded-md border p-2">
               <strong>Date</strong>: {date}
             </p>
           </div>

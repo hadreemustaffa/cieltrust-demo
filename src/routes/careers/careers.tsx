@@ -26,7 +26,7 @@ export default function Careers() {
             Challenge Yourself and <span className="text-brand">Transform</span> Banking
           </h1>
           <p className="basis-1/2">
-            Step into a career where your talents and ambitions are truly valued. At CielTrust, we’re dedicated to
+            Step into a career where your talents and ambitions are truly valued. At Cieltrust, we’re dedicated to
             creating meaningful financial experiences for our customers, and we’re looking for bright minds to help us
             lead the way. Here, you’ll grow professionally, gain invaluable insights, and play a key role in reshaping
             the future of banking.
@@ -56,14 +56,14 @@ export default function Careers() {
             Our <span className="text-brand">Values</span>
           </h2>
           <p>
-            At CielTrust, our values form the foundation of our organization and guide our actions. We believe in
+            At Cieltrust, our values form the foundation of our organization and guide our actions. We believe in
             upholding the highest standards of integrity, delivering exceptional service, and embracing innovation.
             These values define our culture and shape the way we work together to achieve our goals.
           </p>
         </div>
 
         <div className="flex flex-col gap-8 md:grid md:grid-cols-2">
-          <div className="flex flex-col gap-4 p-4 lg:border-l-2 lg:border-l-brand lg:pl-4 lg:text-left">
+          <div className="lg:border-l-brand flex flex-col gap-4 p-4 lg:border-l-2 lg:pl-4 lg:text-left">
             <h3 className="text-xl font-semibold">Integrity</h3>
             <p>
               We conduct ourselves with utmost honesty, transparency, and ethical behavior. We believe in doing what is
@@ -71,7 +71,7 @@ export default function Careers() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 p-4 lg:border-l-2 lg:border-l-brand lg:pl-4 lg:text-left">
+          <div className="lg:border-l-brand flex flex-col gap-4 p-4 lg:border-l-2 lg:pl-4 lg:text-left">
             <h3 className="text-xl font-semibold">Customer Centricity</h3>
             <p>
               Our customers are at the heart of everything we do. We are dedicated to understanding their needs,
@@ -79,7 +79,7 @@ export default function Careers() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 p-4 lg:border-l-2 lg:border-l-brand lg:pl-4 lg:text-left">
+          <div className="lg:border-l-brand flex flex-col gap-4 p-4 lg:border-l-2 lg:pl-4 lg:text-left">
             <h3 className="text-xl font-semibold">Collaboration</h3>
             <p>
               We foster a collaborative and inclusive work environment, where teamwork and diversity are celebrated. By
@@ -88,7 +88,7 @@ export default function Careers() {
             </p>
           </div>
 
-          <div className="flex flex-col gap-4 p-4 lg:border-l-2 lg:border-l-brand lg:pl-4 lg:text-left">
+          <div className="lg:border-l-brand flex flex-col gap-4 p-4 lg:border-l-2 lg:pl-4 lg:text-left">
             <h3 className="text-xl font-semibold">Innovation</h3>
             <p>
               We embrace change and constantly seek innovative solutions to meet the evolving needs of our customers. We
@@ -105,28 +105,28 @@ export default function Careers() {
             Our <span className="text-brand">Benefits</span>
           </h2>
           <p>
-            At CielTrust, we value our employees and are dedicated to their well-being and success. We offer a
+            At Cieltrust, we value our employees and are dedicated to their well-being and success. We offer a
             comprehensive range of benefits designed to support their personal and professional growth.
           </p>
         </div>
 
         <div className="flex flex-col gap-8 md:grid md:grid-cols-2">
-          <div className="flex flex-col items-center gap-4 rounded-md border border-accent/10 p-4 lg:items-start lg:text-left">
+          <div className="border-accent/10 flex flex-col items-center gap-4 rounded-md border p-4 lg:items-start lg:text-left">
             <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-center">
-              <div className="flex rounded-md border border-accent/10 p-4">
+              <div className="border-accent/10 flex rounded-md border p-4">
                 <Icon SvgIcon={DollarSignIcon} />
               </div>
               <h3 className="text-xl font-semibold">Competitive Compensation</h3>
             </div>
             <p>
               We provide a competitive salary package that recognizes the skills and expertise of our employees.
-              CielTrust believes in rewarding exceptional performance and offering opportunities for financial growth.
+              Cieltrust believes in rewarding exceptional performance and offering opportunities for financial growth.
             </p>
           </div>
 
-          <div className="flex flex-col items-center gap-4 rounded-md border border-accent/10 p-4 lg:items-start lg:text-left">
+          <div className="border-accent/10 flex flex-col items-center gap-4 rounded-md border p-4 lg:items-start lg:text-left">
             <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-center">
-              <div className="flex rounded-md border border-accent/10 p-4">
+              <div className="border-accent/10 flex rounded-md border p-4">
                 <Icon SvgIcon={HeartIcon} />
               </div>
               <h3 className="text-xl font-semibold">Health and Wellness</h3>
@@ -138,28 +138,28 @@ export default function Careers() {
             </p>
           </div>
 
-          <div className="flex flex-col items-center gap-4 rounded-md border border-accent/10 p-4 lg:items-start lg:text-left">
+          <div className="border-accent/10 flex flex-col items-center gap-4 rounded-md border p-4 lg:items-start lg:text-left">
             <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-center">
-              <div className="flex rounded-md border border-accent/10 p-4">
+              <div className="border-accent/10 flex rounded-md border p-4">
                 <Icon SvgIcon={ArchiveIcon} />
               </div>
               <h3 className="text-xl font-semibold">Retirement Planning</h3>
             </div>
             <p>
-              CielTrust is committed to helping employees plan for their future. We offer a retirement savings plan with
+              Cieltrust is committed to helping employees plan for their future. We offer a retirement savings plan with
               a generous employer match to help them build a secure financial foundation for the long term.
             </p>
           </div>
 
-          <div className="flex flex-col items-center gap-4 rounded-md border border-accent/10 p-4 lg:items-start lg:text-left">
+          <div className="border-accent/10 flex flex-col items-center gap-4 rounded-md border p-4 lg:items-start lg:text-left">
             <div className="flex flex-col items-center gap-4 lg:flex-row lg:items-center">
-              <div className="flex rounded-md border border-accent/10 p-4">
+              <div className="border-accent/10 flex rounded-md border p-4">
                 <Icon SvgIcon={ClockIcon} />
               </div>
               <h3 className="text-xl font-semibold">Work-Life Balance</h3>
             </div>
             <p>
-              We understand the importance of maintaining a healthy work-life balance. CielTrust offers flexible work
+              We understand the importance of maintaining a healthy work-life balance. Cieltrust offers flexible work
               arrangements, paid time off, parental leave, and other programs that support employees in managing their
               personal and professional commitments.
             </p>

@@ -39,7 +39,7 @@ export default function Header() {
           className="font-montserrat-subrayada text-brand/90 hover:text-brand text-3xl font-bold transition-colors duration-300"
           aria-label="go to homepage"
         >
-          CielTrust
+          Cieltrust
         </Link>
 
         <nav id="primary-nav" ref={ref} className="relative lg:static lg:flex lg:w-full lg:items-center lg:justify-end">

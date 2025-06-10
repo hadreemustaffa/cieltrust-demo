@@ -17,20 +17,20 @@ export default function Image({ alt, mobile, laptop, desktop, className, ...prop
   };
 
   return (
-    <div className="relative w-full">
+    <picture className="relative w-full">
       {isLoading && <Skeleton height={320} />}
+      <source srcSet={desktop} media="(min-width: 1440px)" />
+      <source srcSet={laptop} media="(min-width: 768px)" />
       <img
         className={cn(
           `aspect-4/3 w-full object-cover shadow-xs transition-opacity duration-500 ${isLoading ? 'absolute inset-0 opacity-0' : 'block opacity-100'}`,
           className,
         )}
         src={mobile}
-        srcSet={`${mobile} 480w, ${laptop} 768w, ${desktop} 1440w`}
-        sizes="(min-width: 1440px) 1440px, (min-width: 768px) 768px, 100vw"
         alt={alt}
         onLoad={handleImageLoad}
         {...props}
       />
-    </div>
+    </picture>
   );
 }
